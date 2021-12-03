@@ -18,7 +18,7 @@
 		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
-		<!-- 동적SQL생성을 위한 라이브러리 준비 -->
+		<!-- 동적SQL생성을 위한 라이브러리 준비 1 -->
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
