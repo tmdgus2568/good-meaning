@@ -41,9 +41,8 @@ public class ProductOptionVO {
 	private int option_stock;
 	private int extraprice;
 	
-	@JsonIgnore
+	@JoinColumn(name="product_num")
 	@ManyToOne
-	@JoinColumn(name = "product_num")
 	ProductVO product_num;
 	
 }

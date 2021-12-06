@@ -64,10 +64,10 @@ public class ProductVO {
 	@Column(nullable = false)
 	private String product_detailimg;
 	
-	@BatchSize(size=100)
-	@JsonIgnore
-	@OneToMany(mappedBy = "product_num",
-	cascade = CascadeType.ALL,
-	fetch = FetchType.LAZY)
-	List<ProductOptionVO> options;
+//	@BatchSize(size=100)
+//	@JsonIgnore
+//	@OneToMany(mappedBy = "product_num",
+//	cascade = CascadeType.ALL,
+//	fetch = FetchType.LAZY)
+//	List<ProductOptionVO> options;
 }

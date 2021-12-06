@@ -36,8 +36,6 @@ import lombok.ToString;
 @Entity 
 @Table(name="tbl_user")
 public class UserVO {
-	
-	// hsh test
 
 	@Id
 	private String user_phone;
@@ -72,10 +70,10 @@ public class UserVO {
 	@Enumerated(EnumType.STRING)
 	private UserRole user_role;
 	
-	@BatchSize(size=100)
-	@JsonIgnore
-	@OneToMany(mappedBy = "userphone",
-	cascade = CascadeType.ALL,
-	fetch = FetchType.LAZY)
-	List<OrderVO> orders;
+//	@BatchSize(size=100)
+//	@JsonIgnore
+//	@OneToMany(mappedBy = "userphone",
+//	cascade = CascadeType.ALL,
+//	fetch = FetchType.LAZY)
+//	List<OrderVO> orders;
 }

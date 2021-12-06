@@ -47,14 +47,12 @@ public class ReviewAnswerVO {
 	@UpdateTimestamp
 	private Timestamp ranswer_updatedate;
 
-	@JsonIgnore
+	@JoinColumn(name="user_phone")
 	@ManyToOne
-	@JoinColumn(name = "user_phone")
 	UserVO user_phone;
 	
-	@JsonIgnore
+	@JoinColumn(name="review_num")
 	@ManyToOne
-	@JoinColumn(name = "review_num")
 	ReviewVO review_num;
 	
 	

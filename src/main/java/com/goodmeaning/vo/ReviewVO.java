@@ -62,22 +62,20 @@ public class ReviewVO {
 	@ColumnDefault("0")
 	private int review_like;
 	
-	@JsonIgnore
+	@JoinColumn(name="user_phone")
 	@ManyToOne
-	@JoinColumn(name = "user_phone")
 	UserVO user_phone;
 	
-	@JsonIgnore
+	@JoinColumn(name="product_num")
 	@ManyToOne
-	@JoinColumn(name = "product_num")
 	ProductVO product_num;
 	
-	@BatchSize(size=100)
-	@JsonIgnore
-	@OneToMany(mappedBy = "review_num",
-	cascade = CascadeType.ALL,
-	fetch = FetchType.LAZY)
-	List<ReviewAnswerVO> answers;
+//	@BatchSize(size=100)
+//	@JsonIgnore
+//	@OneToMany(mappedBy = "review_num",
+//	cascade = CascadeType.ALL,
+//	fetch = FetchType.LAZY)
+//	List<ReviewAnswerVO> answers;
 	
 	
 
