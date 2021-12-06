@@ -36,6 +36,8 @@ import lombok.ToString;
 @Entity 
 @Table(name="tbl_user")
 public class UserVO {
+	
+	// hsh test
 
 	@Id
 	private String user_phone;
