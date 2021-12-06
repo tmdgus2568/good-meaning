@@ -58,4 +58,5 @@ public class OrderVO {
 	@ManyToOne
 	UserVO userphone;
 	
+	//
 }
