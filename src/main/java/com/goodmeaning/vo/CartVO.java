@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -45,10 +46,11 @@ public class CartVO {
 	@Column(nullable = false)
 	private int cart_price;
 	
-
+	@JoinColumn(name="product_num")
 	@ManyToOne
-	ProductVO product;	
+	ProductVO product_num;	
 	
+	@JoinColumn(name="user_phone")
 	@ManyToOne
-	UserVO userphone;
+	UserVO user_phone;
 }

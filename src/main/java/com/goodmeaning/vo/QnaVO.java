@@ -56,20 +56,18 @@ public class QnaVO {
 	@UpdateTimestamp
 	private Timestamp qna_updatedate;
 	
-	@JsonIgnore
+	@JoinColumn(name="user_phone")
 	@ManyToOne
-	@JoinColumn(name = "user_phone")
 	UserVO user_phone;
 	
-	@JsonIgnore
+	@JoinColumn(name="product_num")
 	@ManyToOne
-	@JoinColumn(name = "product_num")
 	ProductVO product_num;
 	
-	@BatchSize(size=100)
-	@JsonIgnore
-	@OneToMany(mappedBy = "qna_num",
-	cascade = CascadeType.ALL,
-	fetch = FetchType.LAZY)
-	List<QnaAnswerVO> answers;
+//	@BatchSize(size=100)
+//	@JsonIgnore
+//	@OneToMany(mappedBy = "qna_num",
+//	cascade = CascadeType.ALL,
+//	fetch = FetchType.LAZY)
+//	List<QnaAnswerVO> answers;
 }

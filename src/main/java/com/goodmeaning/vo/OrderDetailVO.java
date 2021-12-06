@@ -48,9 +48,11 @@ public class OrderDetailVO {
 	@Column(nullable = false)
 	private int order_detail_price;
 	
+	@JoinColumn(name="product_num")
 	@ManyToOne
 	ProductVO product_num;
 
+	@JoinColumn(name="order_num")
 	@ManyToOne
 	OrderVO order_num;	
 }

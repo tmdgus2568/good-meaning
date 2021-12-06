@@ -47,14 +47,13 @@ public class QnaAnswerVO {
 	@UpdateTimestamp
 	private Timestamp qna_updatedate;
 	
-	@JsonIgnore
+
+	@JoinColumn(name="user_phone")
 	@ManyToOne
-	@JoinColumn(name = "user_phone")
 	UserVO user_phone;
 	
-	@JsonIgnore
+	@JoinColumn(name="qna_num")
 	@ManyToOne
-	@JoinColumn(name = "qna_num")
 	QnaVO qna_num;
 
 }
