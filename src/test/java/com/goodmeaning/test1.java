@@ -20,7 +20,7 @@ public class test1 {
 	@Autowired
 	UserRepository urepo;
 	
-	@Test
+	//@Test
 	public void insert() {
 	
 		Date to = Date.valueOf("2012-03-15");
