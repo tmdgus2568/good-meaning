@@ -1,12 +1,8 @@
 package com.goodmeaning.vo;
 
-import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,12 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.BatchSize;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,17 +37,11 @@ public class ProductVO {
 	@NonNull
 	@Column(nullable = false)
 	private String product_name;
-	@NonNull
 	@Column(nullable = false)
 	private int product_price;
-
 	private int product_stock;
-	@NonNull
-	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-//	@Convert(converter = SetConverter.class)
-//	@ElementCollection
-	private Category product_category;
+	@ElementCollection(targetClass = Category.class, fetch = FetchType.EAGER)
+	private Set<Category> product_category;
 	@NonNull
 	@Column(nullable = false)
 	private String product_mainimg;

@@ -9,9 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +33,6 @@ public class ProductOptionVO {
 	@NonNull
 	@Column(nullable = false)
 	private String option_name;
-	@NonNull
 	@Column(nullable = false)
 	private int option_stock;
 	private int extraprice;
