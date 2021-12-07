@@ -20,6 +20,8 @@ public class test1 {
 	@Autowired
 	UserRepository urepo;
 	
+	
+	
 	//@Test
 	public void insert() {
 	
