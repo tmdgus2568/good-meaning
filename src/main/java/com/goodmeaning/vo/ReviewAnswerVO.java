@@ -35,25 +35,25 @@ import lombok.ToString;
 public class ReviewAnswerVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long ranswer_num;
+	private Long ranswerNum;
 	
 	@NonNull
 	@Column(nullable = false)
-	private String ranser_content;
+	private String ranserContent;
 	
 	@CreationTimestamp
-	private Timestamp ranswer_createdate;
+	private Timestamp ranswerCreatedate;
 	
 	@UpdateTimestamp
-	private Timestamp ranswer_updatedate;
+	private Timestamp ranswerUpdatedate;
 
-	@JoinColumn(name="user_phone")
+	@JoinColumn(name="userPhone")
 	@ManyToOne
-	UserVO user_phone;
+	UserVO userPhone;
 	
-	@JoinColumn(name="review_num")
+	@JoinColumn(name="reviewNum")
 	@ManyToOne
-	ReviewVO review_num;
+	ReviewVO reviewNum;
 	
 	
 }

@@ -38,21 +38,21 @@ public class OrderDetailVO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long order_detail_num;
+	private Long orderDetailNum;
 	
 	@NonNull
 	@Column(nullable = false)
-	private int order_detail_quantity;
+	private int orderDetailQuantity;
 	
 	@NonNull
 	@Column(nullable = false)
-	private int order_detail_price;
+	private int orderDetailPrice;
 	
-	@JoinColumn(name="product_num")
+	@JoinColumn(name="productNum")
 	@ManyToOne
-	ProductVO product_num;
+	ProductVO productNum;
 
-	@JoinColumn(name="order_num")
+	@JoinColumn(name="orderNum")
 	@ManyToOne
-	OrderVO order_num;	
+	OrderVO orderNum;	
 }

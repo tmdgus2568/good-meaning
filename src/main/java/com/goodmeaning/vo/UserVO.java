@@ -38,37 +38,37 @@ import lombok.ToString;
 public class UserVO {
 
 	@Id
-	private String user_phone;
+	private String userPhone;
 	@NonNull
 	@Column(nullable = false)
-	private String user_id;
+	private String userId;
 	@NonNull
 	@Column(nullable = false)
-	private String user_pw;
+	private String userPw;
 	@NonNull
 	@Column(nullable = false)
-	private String user_email;
+	private String userEmail;
 	@NonNull
 	@Column(nullable = false)
-	private String user_name;
+	private String userName;
 	@NonNull
 	@Column(nullable = false)
-	private String user_postcode;
+	private String userPostcode;
 	@NonNull
 	@Column(nullable = false)
-	private String user_address;
+	private String userAddress;
 
-	private String user_address_detail;
+	private String userAddressDetail;
 	@NonNull
 	@Column(nullable = false)
-	private Date user_birth;
+	private Date userBirth;
 	@CreationTimestamp
-	private Timestamp user_joindate;
+	private Timestamp userJoindate;
 	@NonNull
 	@Column(nullable = false)
-	private String join_platform;
+	private String joinPlatform;
 	@Enumerated(EnumType.STRING)
-	private UserRole user_role;
+	private UserRole userRole;
 	
 //	@BatchSize(size=100)
 //	@JsonIgnore

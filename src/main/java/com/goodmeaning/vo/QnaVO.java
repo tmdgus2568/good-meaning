@@ -42,27 +42,27 @@ public class QnaVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long qna_num;
+	private Long qnaNum;
 	@NonNull
 	@Column(nullable = false)
-	private String qna_title;
+	private String qnaTitle;
 	@NonNull
 	@Column(nullable = false)
 	@ColumnDefault("0")
-	private int qna_secret; //0 공개, 1 비공개
+	private int qnaSecret; //0 공개, 1 비공개
 	
 	@CreationTimestamp
-	private Timestamp qna_createdate;
+	private Timestamp qnaCreatedate;
 	@UpdateTimestamp
-	private Timestamp qna_updatedate;
+	private Timestamp qnaUpdatedate;
 	
-	@JoinColumn(name="user_phone")
+	@JoinColumn(name="userPhone")
 	@ManyToOne
-	UserVO user_phone;
+	UserVO userPhone;
 	
-	@JoinColumn(name="product_num")
+	@JoinColumn(name="productNum")
 	@ManyToOne
-	ProductVO product_num;
+	ProductVO productNum;
 	
 //	@BatchSize(size=100)
 //	@JsonIgnore

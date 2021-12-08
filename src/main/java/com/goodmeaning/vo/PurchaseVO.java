@@ -33,15 +33,15 @@ public class PurchaseVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long purchase_num;
+	private Long purchaseNum;
 	@NonNull
 	@Column(nullable = false)
-	private int purchase_quantity;
+	private int purchaseQuantity;
 	@CreationTimestamp
-	private Timestamp purchase_date;
+	private Timestamp purchaseDate;
 	
-	@JoinColumn(name="product_num")
+	@JoinColumn(name="productNum")
 	@ManyToOne
-	ProductVO product_num;
+	ProductVO productNum;
 	
 }
