@@ -36,21 +36,21 @@ import lombok.ToString;
 public class CartVO {
 	
 	@Id
-	private Long cart_num;
+	private Long cartNum;
 	
 	@NonNull
 	@Column(nullable = false)
-	private int cart_count;
+	private int cartCount;
 	
 	@NonNull
 	@Column(nullable = false)
-	private int cart_price;
+	private int cartPrice;
 	
-	@JoinColumn(name="product_num")
+	@JoinColumn(name="productNum")
 	@ManyToOne
-	ProductVO product_num;	
+	ProductVO productNum;	
 	
-	@JoinColumn(name="user_phone")
+	@JoinColumn(name="userPhone")
 	@ManyToOne
-	UserVO user_phone;
+	UserVO userPhone;
 }

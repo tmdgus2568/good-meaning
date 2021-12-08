@@ -33,21 +33,21 @@ public class ProductVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long product_num;
+	private Long productNum;
 	@NonNull
 	@Column(nullable = false)
-	private String product_name;
+	private String productName;
 	@Column(nullable = false)
-	private int product_price;
-	private int product_stock;
+	private int productPrice;
+	private int productStock;
 	@ElementCollection(targetClass = Category.class, fetch = FetchType.EAGER)
-	private Set<Category> product_category;
+	private Set<Category> productCategory;
 	@NonNull
 	@Column(nullable = false)
-	private String product_mainimg;
+	private String productMainimg;
 	@NonNull
 	@Column(nullable = false)
-	private String product_detailimg;
+	private String productDetailimg;
 	
 //	@BatchSize(size=100)
 //	@JsonIgnore

@@ -37,23 +37,23 @@ public class QnaAnswerVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long qanswer_num;
+	private Long qanswerNum;
 	@NonNull
 	@Column(nullable = false)
-	private String qanswer_content;
+	private String qanswerContent;
 	
 	@CreationTimestamp
-	private Timestamp qna_createdate;
+	private Timestamp qnaCreatedate;
 	@UpdateTimestamp
-	private Timestamp qna_updatedate;
+	private Timestamp qnaUpdatedate;
 	
 
-	@JoinColumn(name="user_phone")
+	@JoinColumn(name="userPhone")
 	@ManyToOne
-	UserVO user_phone;
+	UserVO userPhone;
 	
-	@JoinColumn(name="qna_num")
+	@JoinColumn(name="qnaNum")
 	@ManyToOne
-	QnaVO qna_num;
+	QnaVO qnaNum;
 
 }

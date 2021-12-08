@@ -42,33 +42,33 @@ public class ReviewVO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long review_num;
+	private Long reviewNum;
 	
 	@NonNull
 	@Column(nullable = false)
-	private String review_title;
+	private String reviewTitle;
 	
 	@NonNull
 	@Column(nullable = false)
-	private String review_content;
+	private String reviewContent;
 	
 	@CreationTimestamp
-	private Timestamp review_createdate;
+	private Timestamp reviewCreatedate;
 	
 	@UpdateTimestamp
-	private Timestamp review_updatedate;
+	private Timestamp reviewUpdatedate;
 	
 	@Column(nullable = false)
 	@ColumnDefault("0")
-	private int review_like;
+	private int reviewLike;
 	
-	@JoinColumn(name="user_phone")
+	@JoinColumn(name="userPhone")
 	@ManyToOne
-	UserVO user_phone;
+	UserVO userPhone;
 	
-	@JoinColumn(name="product_num")
+	@JoinColumn(name="productNum")
 	@ManyToOne
-	ProductVO product_num;
+	ProductVO productNum;
 	
 //	@BatchSize(size=100)
 //	@JsonIgnore

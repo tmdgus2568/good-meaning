@@ -30,16 +30,16 @@ import lombok.ToString;
 public class OrderVO {
 
 	@Id
-	private Long order_num;
+	private Long orderNum;
 	@NonNull
 	@Column(nullable = false)
-	private Date order_date;
+	private Date orderDate;
 	@NonNull
 	@Column(nullable = false)
-	private String delivery_recipient;
+	private String deliveryRecipient;
 	@NonNull
 	@Column(nullable = false)
-	private String deivery_phone;
+	private String deiveryPhone;
 	@NonNull
 	@Column(nullable = false)
 	private String postcode;
@@ -47,17 +47,17 @@ public class OrderVO {
 	@Column(nullable = false)
 	private String address;
 	
-	private String address_detail;
+	private String addressDetail;
 	@NonNull
 	@Column(nullable = false)
-	private int order_total_price;
+	private int orderTotalPrice;
 	@NonNull
 	@Column(nullable = false)
-	private String order_status;
+	private String orderStatus;
 	
-	@JoinColumn(name="user_phone")
+	@JoinColumn(name="userPhone")
 	@ManyToOne
-	UserVO user_phone;
+	UserVO userPhone;
 	
 	//
 }
