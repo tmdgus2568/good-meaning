@@ -11,13 +11,13 @@ import com.goodmeaning.vo.UserVO;
 // 회원 관리 
 // 회원가입, 로그인, 회원탈퇴 
 @Service
-public class ManageUserService {
+public class UserService {
 	
 	@Autowired
 	UserRepository userRepo;
 	
 	// 회원가입 
-	public void singUp(UserVO user) {
+	public void register(UserVO user) {
 		userRepo.save(user);
 	}
 	
@@ -25,5 +25,6 @@ public class ManageUserService {
 	public Optional<UserVO> checkLogin(String id, String pw) {
 		return userRepo.findByUserIdAndUserPw(id, pw);
 	}
+
 
 }

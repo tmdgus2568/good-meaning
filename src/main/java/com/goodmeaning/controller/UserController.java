@@ -11,32 +11,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.goodmeaning.service.ManageUserService;
+import com.goodmeaning.service.UserService;
 import com.goodmeaning.vo.UserVO;
 
 
 //회원 관리 
-//회원가입, 로그인, 회원탈퇴 
+//회원가입, 로그인, 회원탈퇴 , 회원수정 
 
 
 @Controller
-public class ManageUserController {
+public class UserController {
 	
 	@Autowired
-	ManageUserService manageUserService;
+	UserService manageUserService;
 	
 	// 회원가입 - 회원가입창 
-	@RequestMapping(value = "/auth/signUp", method = RequestMethod.GET)
-	public String signUpForm() {
-		return "user/auth/signUp";
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public String registerForm() {
+		return "user/auth/register";
 	}
 	
 	// 회원가입 - 회원가입 완료
-	@RequestMapping(value = "/auth/signUp", method = RequestMethod.POST)
-	public String signUp(UserVO user) {
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public String register(UserVO user) {
 		System.out.println(user);
-		manageUserService.singUp(user);
-		return "user/auth/signUpConfirm";
+		manageUserService.register(user);
+		return "user/auth/registerConfirm";
 	}
 	
 	
@@ -59,5 +59,20 @@ public class ManageUserController {
 		return "user/auth/login";
 		
 	}
+	
+	// 회원수정 
+	@RequestMapping(value = "/mypage/user", method = RequestMethod.GET)
+	public String updateUserForm() {
 
+		return "user/mypage/userUpdate";
+	}
+
+	// 회원수정 
+	@RequestMapping(value = "/mypage/user", method = RequestMethod.POST)
+	public String updateUser(UserVO user) {
+		System.out.println(user);
+		manageUserService.register(user);
+		return "user/mypage/userUpdate";
+	}
+	
 }

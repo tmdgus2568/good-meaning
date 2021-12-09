@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.UserRepository;
-import com.goodmeaning.service.ManageUserService;
+import com.goodmeaning.service.UserService;
 import com.goodmeaning.vo.UserRole;
 import com.goodmeaning.vo.UserVO;
 
@@ -21,7 +21,7 @@ public class ShTest {
 	UserRepository urepo;
 	
 	@Autowired
-	ManageUserService uservice;
+	UserService uservice;
 	
 	//@Test
 	public void insert() {
