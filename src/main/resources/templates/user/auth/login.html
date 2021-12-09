@@ -9,8 +9,16 @@
 <h1>로그인</h1>
 <form action="/auth/login" method="post">
 	<input type="text" placeholder="아이디" name="userId"><br>
-	<input type="text" placeholder="비밀번호" name="userPw"><br>
+	<input type="password" placeholder="비밀번호" name="userPw"><br>
+	
+	<a href="">아이디/비밀번호찾기</a>
+	<a href="/auth/signUp">회원가입</a>
+	<br>
 	<input type="submit" value="로그인하기">
+	<br>
+	<button>네이버로그인</button>
+	<button>카카오로그인</button>
+	
 </form>
 
 </body>
