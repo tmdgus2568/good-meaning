@@ -2,6 +2,6 @@ package com.goodmeaning.vo;
 
 public enum Category {
 
-	lIVING, KITCHEN, OFFICE, BATHROOM, TRAVEL, MARKET
+	LIVING, KITCHEN, OFFICE, BATHROOM, TRAVEL, MARKET
 	
 }
