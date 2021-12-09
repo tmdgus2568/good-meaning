@@ -43,8 +43,14 @@ public class ProductVO {
 	@ElementCollection(targetClass = Category.class, fetch = FetchType.EAGER)
 	private Set<Category> productCategory;
 	@NonNull
-	@Column(nullable = false)
-	private String productMainimg;
+	@Column(nullable = false, length = 1000)
+	private String productMainimg1;
+	@Column(length = 1000)
+	private String productMainimg2;
+	@Column(length = 1000)
+	private String productMainimg3;
+	@Column(length = 1000)
+	private String productMainimg4;
 	@NonNull
 	@Column(nullable = false)
 	private String productDetailimg;
