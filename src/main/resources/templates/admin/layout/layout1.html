@@ -1,31 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"  
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet"
-href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <style>
-  p { color:red;}
-  
+p {
+	color: red;
+}
 </style>
 <script>
-  //alert("부모에서 작성된 JavaScript");
-  console.log("부모에서 작성된 JavaScript");
+	//alert("부모에서 작성된 JavaScript");
+	console.log("부모에서 작성된 JavaScript");
 </script>
 </head>
 <body>
-	<!-- 하위 HTML에서 CSS 재정의할 예정 -->
-	<th:block layout:fragment="style1"></th:block>
-	<!-- fragment 삽입하기 -->
-	<header th:replace="fragments/header :: header1"></header>
-	<!-- 하위 HTML에서 content 재정의할 예정 -->
-	<div class="panel panel-default" layout:fragment="content1">!!!!!!</div>
-	<footer th:replace="fragments/footer :: footer1"></footer>
-	<!-- 하위 HTML에서 javascript 재정의할 예정   th:block 은 없어지는 태그이다 -->
-	<th:block layout:fragment="script1">
-	</th:block>
+	<th:block layout:fragment="style"></th:block>
+	<header th:insert="admin/layout/header :: header"></header>
+	<div class="panel panel-default" layout:fragment="content"></div>
+	<footer th:replace="admin/layout/footer :: footer"></footer>
+	<th:block layout:fragment="script"></th:block>
 </body>
-</html> 
+</html>
