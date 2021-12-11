@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="admin/layout/layout1">
+<head>
+<meta charset="UTF-8">
+<title>상품목록</title>
+<!-- <th:block layout:fragment="style">
+	<style>
+		div {border:1px solid gray;}
+	</style>
+</th:block> -->
+
+</head>
+<body>
+
+	<div class="panel panel-default" layout:fragment="content">
+		<a th:href="@{/admin/register}">게시판쓰기</a>
+		<p>[[${msg}]]</p>
+		
+		<div class="pull-left">
+			<select id="searchType">
+				<option>전체</option>
+				<option value="productNum" th:selected="${pageVO.type=='productNum'}">상품번호</option>
+				<option value="productName" th:selected="${pageVO.type=='productName'}">상품이름</option>
+			</select> <input type="text" id="searchKeyword" th:value="${pageVO.keyword}">
+			<button id="searchBtn">조건검색</button>
+			<img alt="이미지" th:src="@{/images/coffee-blue.jpg}" width="50px"
+				height="50px">
+		</div>
+
+		<table class="table table-striped table-bordered table-hover">
+			<tr>
+				<th>상품번호</th>
+				<th>상품명</th>
+				<th>가격</th>
+				<th>재고</th>
+			</tr>
+			<tr th:each="product:${productList.result.content}">
+				<td th:text="${product.productNum}"></td>
+				<td th:text="${product.productName}"></td>
+				<td th:text="${product.productPrice}"></td>
+				<td th:text="${product.productStock}"></td>
+			</tr>
+		</table>
+
+		<!-- paging -->
+		<nav>
+			<div>
+				<ul class="pagination">
+					<li class="page-item" th:if="${productList.prevPage}"><a
+						th:href="${productList.prevPage.pageNumber}+1">PREV
+							[[${productList.prevPage.pageNumber}+1]]</a></li>
+					<li class="page-item"
+						th:classappend="${p.pageNumber==productList.currentPageNum-1}?active:''"
+						th:each="p:${productList.pageList}"><a
+						th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a></li>
+					<li class="page-item" th:if="${productList.nextPage}"><a
+						th:href="${productList.nextPage.pageNumber}+1">NEXT
+							[[${productList.nextPage.pageNumber}+1]]</a></li>
+				</ul>
+			</div>
+		</nav>
+		<form id="f1" th:action="@{list}" method="get">
+			<input type="text" name="page"
+				th:value="${productList.currentPageNum}"> <input type="text"
+				name="size" th:value="${productList.currentPage.pageSize}">
+			<input type="text" name="type" th:value="${pageVO.type}"> <input
+				type="text" name="keyword" th:value="${pageVO.keyword}">
+		</form>
+	</div>
+
+	<th:block layout:fragment="script">
+		<script>
+			$(function() {
+				var formObj = $("#f1");
+
+				//조건 검색시
+				$("#searchBtn").click(function() {
+					var typeStr = $("#searchType").find(":selected").val();// = $("#searchType").val(), 조건
+					var keywordStr = $("#searchKeyword").val(); //검색내용
+					formObj.find("[name='type']").val(typeStr); //type에 저장
+					formObj.find("[name='keyword']").val(keywordStr); //keyword에 저장
+					formObj.find("[name='page']").val(1); //첫번째 페이지 얻은 것
+					alert(typeStr + ":" + keywordStr);
+					formObj.submit();
+				});
+
+				//페이지 클릭시
+				$(".pagination a").click(function(e) { //클래스 pagination 자식중 a 클릭시 
+					alert($(this).attr('href'));
+					e.preventDefault(); //링크취소
+					formObj.find("[name='page']").val($(this).attr('href'));
+					//다시 그 폼에서 이름이 page인걸 찾아서 href가 가지고 있는 숫자를 page(this) 값으로 넣어줌
+					formObj.submit(); //그리고 나서 submit > list로 다시 감. 그때 pageVO로 넘어가는 것
+					//(controller에서 pagevo가 들어가는 것!)
+				});
+			});
+		</script>
+	</th:block>
+</body>
+</html>
