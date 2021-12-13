@@ -1,5 +1,6 @@
 package com.goodmeaning.vo;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -12,6 +13,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,6 +58,10 @@ public class ProductVO {
 	@NonNull
 	@Column(nullable = false)
 	private String productDetailimg;
+	@CreationTimestamp
+	private Timestamp productCreatedate;
+	@UpdateTimestamp
+	private Timestamp productUpdatedate;
 	
 //	@BatchSize(size=100)
 //	@JsonIgnore
