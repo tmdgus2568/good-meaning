@@ -42,8 +42,7 @@ public class UserVO {
 	@NonNull
 	@Column(nullable = false)
 	private String userId;
-	@NonNull
-	@Column(nullable = false)
+
 	private String userPw;
 	@NonNull
 	@Column(nullable = false)
