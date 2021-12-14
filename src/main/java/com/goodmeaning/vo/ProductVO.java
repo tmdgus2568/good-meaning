@@ -6,16 +6,16 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,7 +46,6 @@ public class ProductVO {
 	private int productStock;
 	@ElementCollection(targetClass = Category.class, fetch = FetchType.EAGER)
 	private Set<Category> productCategory;
-	@NonNull
 	@Column(nullable = false, length = 1000)
 	private String productMainimg1;
 	@Column(length = 1000)
@@ -55,13 +54,14 @@ public class ProductVO {
 	private String productMainimg3;
 	@Column(length = 1000)
 	private String productMainimg4;
-	@NonNull
 	@Column(nullable = false)
 	private String productDetailimg;
 	@CreationTimestamp
 	private Timestamp productCreatedate;
 	@UpdateTimestamp
 	private Timestamp productUpdatedate;
+	@Transient
+	private MultipartFile[] uploadFile; //배열
 	
 //	@BatchSize(size=100)
 //	@JsonIgnore
