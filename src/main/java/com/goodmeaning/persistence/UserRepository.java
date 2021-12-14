@@ -8,5 +8,9 @@ import com.goodmeaning.vo.UserVO;
 
 public interface UserRepository extends CrudRepository<UserVO, String>{
 	Optional<UserVO> findByUserIdAndUserPw(String userId, String userPw);
+	
+	Optional<UserVO> findByUserId(String userId);
+	
+
 
 }

@@ -8,7 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.UserRepository;
-import com.goodmeaning.service.UserService;
+import com.goodmeaning.service.LoginService;
+import com.goodmeaning.service.MypageService;
 import com.goodmeaning.vo.UserRole;
 import com.goodmeaning.vo.UserVO;
 
@@ -21,7 +22,10 @@ public class ShTest {
 	UserRepository urepo;
 	
 	@Autowired
-	UserService uservice;
+    LoginService lservice;
+	
+	@Autowired
+	MypageService mservice;
 	
 	//@Test
 	public void insert() {
@@ -47,9 +51,14 @@ public class ShTest {
 		urepo.save(user);
 	}
 	
-	@Test
+	//@Test
 	public void loginTest() {
-		System.out.println(uservice.checkLogin("abc", "11"));
+		System.out.println(lservice.checkLogin("abc", "11"));
+	}
+	
+	@Test
+	public void delete() {
+		urepo.deleteById("0104444222");
 	}
 
 }

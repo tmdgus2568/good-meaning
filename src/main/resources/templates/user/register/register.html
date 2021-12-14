@@ -11,35 +11,88 @@
 <title>회원가입</title>
 </head>
 <body>
-<h1>회원가입</h1>
-<form action="/auth/signUp" method="post" id="signUpForm">
-아이디 <input type="text" name="userId"><input type="button" value="중복확인" id="idCheck"><br>
-비밀번호 <input type="password" name="userPw"><br>
-비밀번호확인 <input type="password"><br>
-휴대폰번호 <input type="text" name="userPhone" id="userPhone"><input type="button" value="인증번호"><br>
-이메일 <input type="text" id="emailHead">@<input type="text" id="emailTail" disabled>
-<select id="selectEmailTail">
-	<option selected="selected">선택하기</option>
-	<option id="naver">naver.com</option>
-	<option id="daum">daum.net</option>
-	<option id="inputText">직접입력</option>
-</select>
-
+<h1 id="title">일반 회원가입</h1>
 <br>
-이름 <input type="text" name="userName">
-<br>
-생년월일 <input type="text" name="userBirth" id="userBirth"><br>
-주소 <input type="text" name="userAddress" id="userAddress" readOnly>
-<input type="text" name="userPostcode" id="userPostcode"><br>
-상세주소 <input type="text" name="userAddressDetail"><br>
+<input type="text" id="param_method" th:value="${param.method}" hidden="true">
+<form action="/register" method="post" id="registerForm">
+	<table>
+		<tr id="tr_userId">
+			<th>아이디</th>
+			<td>
+				<input type="text" name="userId" th:value="${userId}">
+				<input type="button" value="중복확인" id="idCheck">
+			</td>
+		</tr>
+		<tr id="tr_userEmail">
+			<th>이메일</th>
+			<td><input type="text" name="userEmail" id="userEmail" th:value="${userEmail}" readOnly></td>
+		</tr>
+		
+		<tr id="tr_userPw">
+			<th>비밀번호</th>
+			<td><input type="password" name="userPw"></td>
+		</tr>
+		<tr id="tr_userPw_confirm">
+			<th>비밀번호확인</th>
+			<td><input type="password"></td>
+		</tr>
+		<tr>
+			<th>휴대폰번호</th>
+			<td>
+				<input type="text" name="userPhone" id="userPhone">
+				<input type="button" value="인증번호 요청">
+			</td>
+		</tr>
+		<tr>
+			<th></th>
+			<td>
+				<input type="text" name="auth_num" id="auth_num">
+				<input type="button" value="인증확인">
+			</td>
+		</tr>
+		<tr id="tr_input_email">
+			<th>이메일</th>
+			<td>
+				<input type="text" id="emailHead">@
+				<input type="text" id="emailTail" disabled>
+				<select id="selectEmailTail">
+					<option selected="selected">선택하기</option>
+					<option id="naver">naver.com</option>
+					<option id="daum">daum.net</option>
+					<option id="inputText">직접입력</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>이름</th>
+			<td><input type="text" name="userName"></td>
+		</tr>
+		<tr>
+			<th>생년월일</th>
+			<td><input type="text" name="userBirth" id="userBirth"></td>
+		</tr>
+		
+		<tr>
+			<th>주소</th>
+			<td>
+				<input type="text" name="userAddress" id="userAddress" readOnly>
+				<input type="text" name="userPostcode" id="userPostcode">
+			</td>
+		</tr>
+		
+		<tr>
+			<th>상세주소</th>
+			<td><input type="text" name="userAddressDetail"></td>
+		</tr>
 
-<!-- hidden -->
-<input type="text" name="userEmail" id="userEmail" hidden="true">
-<input type="text" name="joinPlatform" value="일반" hidden="true">
-<input type="text" th:value="${T(com.goodmeaning.vo.UserRole).USER}" name="userRole" hidden="true">
+	</table>
+
+	<!-- hidden -->
+	<input type="text" id="joinPlatform" name="joinPlatform" value="normal" hidden="true">
+	<input type="text" th:value="${T(com.goodmeaning.vo.UserRole).USER}" name="userRole" hidden="true">
 
 
-<input type="submit" value="회원가입">
+	<input type="submit" value="회원가입">
 
 
 </form>
@@ -50,6 +103,32 @@
 <script>
 
 $(function () {
+	
+	// 파라미터가 카카오이면 
+	// 아이디 hidden 처리 
+	if($("#param_method").val()=='kakao'){
+		$("#tr_userId").hide();
+		$("#title").text("카카오로 회원가입");
+		$("#tr_userPw").hide();
+		$("#tr_userPw_confirm").hide();
+		
+	}
+	
+	// userEmail이 안들어왔으면 
+	// email(full) hidden 처리, input_email show 처리 
+	if($("#userEmail").val()==''){
+		$("#tr_userEmail").hide();
+		$("#tr_input_email").show();
+	}
+	else{
+		$("#tr_userEmail").show();
+		$("#tr_input_email").hide();
+	}
+	
+	
+	console.log($("#userEmail").val());
+	
+	
 	// 주소 api
 	$("#userAddress").click(function(){
 		
@@ -79,8 +158,16 @@ $(function () {
 	
 	// submit 버튼 눌렀을 때
 	// 1. userEmail = emailHead + emailTail
-	$("#signUpForm").submit(function(){
-		$("#userEmail").val($("#emailHead").val()+'@'+$("#emailTail").val());
+	// 2. method에 따라 joinPlatform 변경 
+	$("#registerForm").submit(function(){
+		
+ 		if($("#userEmail").val()==''){
+			$("#userEmail").val($("#emailHead").val()+'@'+$("#emailTail").val());
+		}
+		if($("#param_method").val()!='' && $("#param_method").val()!=null){
+			$("#joinPlatform").val($("#param_method").val());
+		} 
+		
 	});
 	
 	// datepicker
