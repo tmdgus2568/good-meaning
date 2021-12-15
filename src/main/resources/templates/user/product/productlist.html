@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<table class="table table-striped table-bordered table-hover">
+			<tr>
+				<th>메인사진1</th>
+				<th>메인사진2</th>
+				<th>상품명</th>
+				<th>가격</th>
+			</tr>
+			<tr th:each="product:${plist}">
+				<td><img th:src="${product.productMainimg1}" th:onmouseover="this.src=[[${product.productMainimg2}]]" th:onmouseout="this.src=[[${product.productMainimg1}]]" th:width="100"></td>
+				<td><img th:src="${product.productMainimg2}" width="100"></td>
+				<td th:text="${product.productName}"></td>
+				<td th:text="${product.productPrice}"></td>
+			</tr>
+		</table>
+
+
+</body>
+</html>
