@@ -17,7 +17,7 @@ import lombok.ToString;
 @ToString
 public class PageVO {
 
-	private static final int DEFAULT_SIZE = 10;
+	private static final int DEFAULT_SIZE = 12;
 	private static final int DEFAULT_MAX_SIZE = 50;
 	
 	int page; //몇번째
@@ -41,6 +41,8 @@ public class PageVO {
 	public Pageable makePaging(int direction, String...props) {
 		Sort.Direction dir = direction==0?Direction.DESC:Direction.ASC; //0 desc, 1 asc
 		return PageRequest.of(this.page-1, this.size , dir, props );
+		////0부터 시작 size수만큼 prop기준으로 dir방향정렬
+
 	}
 	public void setType(String type) {
 		this.type = type;
