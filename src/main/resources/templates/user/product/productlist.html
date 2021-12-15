@@ -2,29 +2,94 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+a.productname {
+	text-decoration: none
+}
+</style>
 </head>
 <body>
-<table class="table table-striped table-bordered table-hover">
-			<tr>
-				<th>메인사진1</th>
-				<th>메인사진2</th>
-				<th>상품명</th>
-				<th>가격</th>
-			</tr>
-			<tr th:each="product:${plist}">
-				<td><img th:src="${product.productMainimg1}" th:onmouseover="this.src=[[${product.productMainimg2}]]" th:onmouseout="this.src=[[${product.productMainimg1}]]" th:width="100"></td>
-				<td><img th:src="${product.productMainimg2}" width="100"></td>
-				<td th:text="${product.productName}"></td>
-				<td th:text="${product.productPrice}"></td>
-			</tr>
-		</table>
 
+<a th:href="@{/productlist(category='LIVING')}">일상에서</a>
+<a th:href="@{/productlist(category='KITCHEN')}">부엌에서</a>
+<a th:href="@{/productlist(category='OFFICE')}">사무실에서</a>
+<a th:href="@{/productlist(category='BATHROOM')}">욕실에서</a>
+<a th:href="@{/productlist(category='TRAVEL')}">여행갈때</a>
+<a th:href="@{/productlist(category='MARKET')}">마트갈때</a>
+	<div>
+		<!--div 전체 추가-->
+		<select id="searchType">
+			<option value="name" th:selected="${pagevo.type=='name'}">상품명</option>
+		</select> <input type="text" id="searchKeyword">
+		<button id="searchBtn">검색</button>
+	</div>
+	<table class="table table-striped table-bordered table-hover">
+		<tr>
+			<th>상품사진</th>
+			<th>상품명</th>
+			<th>가격</th>
+		</tr>
+		
+		<tr th:each="product:${plist}">
+			<td><a th:href="@{/productdetail(pno=${product.productNum})}"><img
+					th:src="${product.productMainimg1}"
+					th:onmouseover="this.src=[[${product.productMainimg2}]]"
+					th:onmouseout="this.src=[[${product.productMainimg1}]]"
+					th:width="100"></a></td>
+			<td><a class="productname" th:href="@{/productdetail(pno=${product.productNum})}">[[${product.productName}]]</a></td>
+			<td th:text="${product.productPrice}"></td>
+		</tr>
+	</table>
+	<form id="f1" th:action="@{/productlist}" method="get">
+		<input type="hidden" name="page" th:value="${result.currentPageNum}">
+		<input type="hidden" name="size"
+			th:value="${result.currentPage.pageSize}"> <input type="hidden"
+			name="type" th:value="${pagevo.type}"> <input type="hidden"
+			name="keyword" th:value="${pagevo.keyword}">
+	</form>
+	<!-- paging -->
+	<nav>
+		<div>
+			<ul class="pagination">
+				<li class="page-item" th:if="${result.prevPage}"><a
+					th:href="${result.prevPage.pageNumber}+1">PREV</a></li>
+				<li class="page-item"
+					th:classappend="${p.pageNumber==result.currentPageNum-1}?active:''"
+					th:each="p:${result.pageList}"><a th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a>
+				</li>
+				<li class="page-item" th:if="${result.nextPage}"><a
+					th:href="${result.nextPage.pageNumber}+1">NEXT</a></li>
+			</ul>
+		</div>
+	</nav>
+	<script>
+		$(function() {
+			var formObj = $("#f1"); //폼을 가져온다.
+			$(".pagination a").click(function(e) {
+				e.preventDefault(); //본래의 event(기능)을 취소(link 취소)
+				formObj.find("[name='page']").val($(this).attr("href"));
+				formObj.submit();
+			});
+
+			//검색을 위한 js 코드 추가하기
+			$("#searchBtn").click(function() {
+				var typeStr = $("#searchType").find(":selected").val(); //writer, title, content 중 
+				var keywordStr = $("#searchKeyword").val();
+
+				formObj.find("[name='page']").val(1);
+				formObj.find("[name='type']").val(typeStr);
+				formObj.find("[name='keyword']").val(keywordStr);
+				formObj.submit();
+			});
+		});
+	</script>
 
 </body>
 </html>
