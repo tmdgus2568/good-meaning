@@ -58,7 +58,7 @@ public class ShTest {
 	
 	@Test
 	public void delete() {
-		urepo.deleteById("0104444222");
+		urepo.deleteById("[object Object][object Object][object Object]");
 	}
 
 }

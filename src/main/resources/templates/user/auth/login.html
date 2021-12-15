@@ -19,9 +19,9 @@
 	<br>
 	
 </form>
-	<a href=""><img src="/img/login_naver.png" width="222"/></a>
+	<a th:href="${naverApiUrl}"><img src="/img/login_naver.png" width="222"/></a>
 	<br>
-    <a href="https://kauth.kakao.com/oauth/authorize?client_id=e3722962b6921f10e51dc9d4f5488151&&scope=account_email&redirect_uri=http://localhost:8888/auth/loginKakao&response_type=code">  
+    <a th:href="${kakaoApiUrl}">  
     <img src="/img/login_kakao.png" width="222"/>
     </a>
 
