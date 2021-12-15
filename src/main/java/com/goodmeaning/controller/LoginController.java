@@ -26,7 +26,6 @@ import com.goodmeaning.vo.UserVO;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.twilio.rest.messaging.v1.Session;
 
 /*
  * 카카오 로그인 로직 : 
@@ -39,6 +38,11 @@ import com.twilio.rest.messaging.v1.Session;
 public class LoginController {
 	@Autowired
 	LoginService loginService;
+	
+	@RequestMapping(value = "/auth/loginNaver", method = RequestMethod.GET)
+	public void loginNaver() {
+		
+	}
 	
 	// 카카오 로그인 
 	@RequestMapping(value = "/auth/loginKakao", method = RequestMethod.GET)
