@@ -19,7 +19,7 @@ public class LoginService {
 	}
 	
 	// 카카오 로그인 확인(id 확인)
-	public Optional<UserVO> checkKakaoLogin(String id){
+	public Optional<UserVO> checkSocialLogin(String id){
 		return userRepo.findByUserId(id);
 	}
 

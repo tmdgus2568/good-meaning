@@ -15,4 +15,11 @@ public class RegisterService {
 	public void register(UserVO user) {
 		userRepo.save(user);
 	}
+	
+	// 아이디 중복 체크 (true: 이미 있음, false: 없음 )
+	public boolean checkUserId(String userId) {
+		boolean result = false;
+		if(userRepo.findByUserId(userId).isPresent()) result = true;
+		return result;
+	}
 }
