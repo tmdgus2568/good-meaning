@@ -60,6 +60,8 @@ public class ProductVO {
 	private Timestamp productCreatedate;
 	@UpdateTimestamp
 	private Timestamp productUpdatedate;
+	
+	private String postingState;
 	@Transient
 	private MultipartFile[] uploadFile; //배열
 	
