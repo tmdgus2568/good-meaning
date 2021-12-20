@@ -28,7 +28,7 @@ import lombok.ToString;
 
 @Getter
 @Setter 
-@ToString 
+@ToString (exclude ="orderNum")
 @Builder
 @AllArgsConstructor 
 @NoArgsConstructor
@@ -52,6 +52,7 @@ public class OrderDetailVO {
 	@ManyToOne
 	ProductVO productNum;
 
+	@JsonIgnore
 	@JoinColumn(name="orderNum")
 	@ManyToOne
 	OrderVO orderNum;	
