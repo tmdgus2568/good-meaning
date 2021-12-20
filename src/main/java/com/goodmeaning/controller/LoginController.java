@@ -40,7 +40,7 @@ import com.google.gson.JsonParser;
  * */
 @Controller
 public class LoginController {
-	private String url = "http://localhost:8888";
+	private static String domain_url = "http://localhost:8888";
 	
 	// naver
 	private String naverClientId = "BXs_UNlvqj1zkgyIOMnn";
@@ -122,7 +122,7 @@ public class LoginController {
 	    
 	    String naverApiUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=code"
 	    					+ "&client_id=" + naverClientId
-	    					+ "&redirect_uri=" + url + naverRedirectUrl
+	    					+ "&redirect_uri=" + domain_url + naverRedirectUrl
 	    					+ "&state=" + state;
 	    session.setAttribute("naverState", state);
 	    
@@ -131,7 +131,7 @@ public class LoginController {
 	    // kakao
 	    String kakaoApiUrl = "https://kauth.kakao.com/oauth/authorize?response_type=code"
 	    					+ "&client_id=" + kakaoClientId
-	    					+ "&redirect_uri=" + url + kakaoRedirectUrl
+	    					+ "&redirect_uri=" + domain_url + kakaoRedirectUrl
 	    					+ "&scope=" + kakaoScope;
 	    
 	    model.addAttribute("kakaoApiUrl",kakaoApiUrl);
@@ -179,20 +179,22 @@ public class LoginController {
             
             if(platform.equals("kakao")) {
                 sb.append("&client_id=").append(kakaoClientId); //본인이 발급받은 key
-                sb.append("&redirect_uri=").append(kakaoRedirectUrl);     // 본인이 설정해 놓은 경로
+                sb.append("&redirect_uri=").append(domain_url).append(kakaoRedirectUrl);     // 본인이 설정해 놓은 경로
             }
             else if(platform.equals("naver")) {
                 sb.append("&client_id=").append(naverClientId); //본인이 발급받은 key
-                sb.append("&redirect_uri=").append(naverRedirectUrl);     // 본인이 설정해 놓은 경로
+                sb.append("&redirect_uri=").append(domain_url).append(naverRedirectUrl);     // 본인이 설정해 놓은 경로
                 sb.append("&client_secret=").append(naverClientSecret); //본인이 발급받은 secret key
                 sb.append("&state=").append(naverState);  
                 
             }
             
             sb.append("&code=" + authorize_code);
+            System.out.println("code : " +sb.toString());
             bw.write(sb.toString());
             bw.flush();
 
+            
             //    결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);

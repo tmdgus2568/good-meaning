@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_mypage">
+
+<head>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ 
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<meta charset="UTF-8">
+<title>회원수정</title>
+</head>
+<body>
+
+<div class="panel panel-default" layout:fragment="content" align="center">
+
+	<form action="/mypage/user" method="post" id="updateForm">
+	<table>
+		<tr>
+			<th>아이디</th>
+			<td><input type="text" name="userId" readOnly th:value="${session.user.userId}"></td>
+		</tr>
+		<tr>
+			<th>비밀번호</th>
+			<td><input type="password" name="userPw"></td>
+		</tr>
+		<tr>
+			<th>비밀번호확인</th>
+			<td><input type="password" name="userPw"></td>
+		</tr>
+		<tr>
+			<th>휴대폰번호</th>
+			<td><input type="text" name="userPhone" id="userPhone" readOnly th:value="${session.user.userPhone}"></td>
+		</tr>
+		<tr>
+			<th>이메일</th>
+			<td><input type="text" name="userEmail" id="userEmail" th:value="${session.user.userEmail}" readOnly></td>
+		</tr>
+		<tr>
+			<th>이름</th>
+			<td><input type="text" name="userName" th:value="${session.user.userName}"></td>
+		</tr>
+		<tr>
+			<th>생년월일</th>
+			<td><input type="text" name="userBirth" id="userBirth" th:value=${session.user.userBirth}></td>
+		</tr>
+		<tr>
+			<th>주소</th>
+			<td>
+			<input type="text" name="userAddress" id="userAddress" readOnly th:value="${session.user.userAddress}" required="required">
+			<input type="text" name="userPostcode" id="userPostcode" th:value="${session.user.userPostcode}" readOnly required="required">
+			</td>
+		</tr>
+		<tr>
+			<th>상세주소</th>
+			<td><input type="text" name="userAddressDetail" th:value="${session.user.userAddressDetail}"></td>
+		</tr>
+
+		
+	</table>
+
+	<!-- hidden -->
+
+	<input type="text" name="joinPlatform" hidden="true" th:value="${session.user.joinPlatform}">
+	<input type="text" th:value="${session.user.userRole}" name="userRole" hidden="true">
+	
+	
+	<input type="submit" value="수정하기">
+	
+	
+	</form>
+
+</div>
+
+</body>
+<th:block layout:fragment="script">
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+
+$(function () {
+	// 주소 api
+	$("#userAddress").click(function(){
+		
+		new daum.Postcode({
+			oncomplete: function(data) {
+				$("#userAddress").val(data.address);
+				$("#userPostcode").val(data.zonecode);
+				$("input[name=userAddressDetail]").focus();
+			}
+			
+		}).open();
+	});
+	
+	
+
+
+});
+
+
+</script>
+</th:block>
+</html>

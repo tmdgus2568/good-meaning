@@ -6,11 +6,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<style>
-p {
-	color: red;
-}
-</style>
+
 <script>
 	//alert("부모에서 작성된 JavaScript");
 	console.log("부모에서 작성된 JavaScript");
@@ -18,9 +14,10 @@ p {
 </head>
 <body>
 	<th:block layout:fragment="style"></th:block>
-	<header th:insert="user/layout/header :: header"></header>
-	<div class="panel panel-default" layout:fragment="content"></div>
-	<footer th:replace="user/layout/footer :: footer"></footer>
+	<header th:insert="user/fragments/header :: header"></header>
+	<nav th:insert="user/fragments/nav_mypage :: nav"></nav>
+	<section class="panel panel-default" layout:fragment="content"></section>
+	<footer th:replace="user/fragments/footer :: footer"></footer>
 	<th:block layout:fragment="script"></th:block>
 </body>
 </html>

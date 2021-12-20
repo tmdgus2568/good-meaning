@@ -1,5 +1,7 @@
 package com.goodmeaning.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +17,9 @@ public class MypageController {
 	
 	// 회원수정 
 	@RequestMapping(value = "/mypage/user", method = RequestMethod.GET)
-	public String updateUserForm() {
-
-		return "user/mypage/userUpdate";
+	public String updateUserForm(HttpSession session) {
+		
+		return "user/mypage/user_update";
 	}
 
 	// 회원수정 
@@ -25,7 +27,7 @@ public class MypageController {
 	public String updateUser(UserVO user) {
 		System.out.println(user);
 		mypageService.update(user);
-		return "user/mypage/userUpdate";
+		return "user/mypage/user_update";
 	}
 
 }

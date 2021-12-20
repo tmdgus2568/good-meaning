@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<!-- 항상 따라야할것 :로고, 메뉴바, 로그인 정보, 로그아웃버튼, 마이페이지버튼  -->
+<body>
+	<div th:fragment="header"> 
+ 		<div align="right" th:if="!${session.user eq null}">
+			<span th:text="${session.user.userName}"></span>
+			<a href="/invalidate">로그아웃</a>
+		</div>
+		<div align="right" th:if="${session.user eq null}">
+			<a href="/auth/login">로그인</a>
+		</div>
+		<h1 align="center">굿미닝</h1>
+	</div>
+</body>
+</html>
