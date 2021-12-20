@@ -1,115 +1,120 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
 
 <head>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
- 
-<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <meta charset="UTF-8">
 <title>회원가입</title>
 </head>
 <body>
-<h1 id="title">일반 회원가입</h1>
-<br>
-<input type="text" id="param_method" th:value="${param.method}" hidden="true">
-<form action="/register" method="post" id="registerForm">
-	<table>
-		<tr id="tr_userId">
-			<th>아이디</th>
-			<td>
-				<input type="text" name="userId" id="userId" th:value="${userId}">
-				<input type="button" value="중복확인" id="btn_check_userId">
-				<span id="check_userId_result"></span>
-			</td>
-		</tr>
-		<tr id="tr_userEmail">
-			<th>이메일</th>
-			<td><input type="text" name="userEmail" id="userEmail" th:value="${userEmail}" readOnly required="required"></td>
-		</tr>
-		
-		<tr id="tr_userPw">
-			<th>비밀번호</th>
-			<td><input type="password" name="userPw" id="userPw" required="required"></td>
-		</tr>
-		<tr id="tr_userPw_confirm">
-			<th>비밀번호확인</th>
-			<td><input type="password"></td>
-		</tr>
-		<tr>
-			<th>휴대폰번호</th>
-			<td>
-				<select id="userPhone1" th:value="${userPhone1}">
-					<option value="" th:selected="${userPhone1}==''">선택</option>
-					<option value="010" th:selected="${userPhone1}=='010'">010</option>
-					<option value="011" th:selected="${userPhone1}=='011'">011</option>
-				</select>
-				-
-				<input type="text" id="userPhone2" th:value="${userPhone2}" required="required">
-				-
-				<input type="text" id="userPhone3" th:value="${userPhone3}" required="required">
-				<input id="btn_auth" type="button" value="인증번호 요청">
-			</td>
-		</tr>
-		<tr id="tr_auth_num">
-			<th></th>
-			<td>
-				<input type="text" name="auth_num" id="auth_num">
-				<input type="button" value="인증확인">
-			</td>
-		</tr>
-		<tr id="tr_input_email">
-			<th>이메일</th>
-			<td>
-				<input type="text" id="emailHead">@
-				<input type="text" id="emailTail" readOnly>
-				<select id="selectEmailTail">
-					<option selected="selected" value="">선택하기</option>
-					<option id="naver">naver.com</option>
-					<option id="daum">daum.net</option>
-					<option id="inputText">직접입력</option>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<th>이름</th>
-			<td><input type="text" name="userName" th:value="${userName}" required="required"></td>
-		</tr>
-		<tr>
-			<th>생년월일</th>
-			<td><input type="text" name="userBirth" id="userBirth" th:value="${userBirth}" required="required"></td>
-		</tr>
-		
-		<tr>
-			<th>주소</th>
-			<td>
-				<input type="text" name="userAddress" id="userAddress" readOnly required="required">
-				<input type="text" name="userPostcode" id="userPostcode" required="required">
-			</td>
-		</tr>
-		
-		<tr>
-			<th>상세주소</th>
-			<td><input type="text" name="userAddressDetail"></td>
-		</tr>
+<div class="panel panel-default" layout:fragment="content" align="center">
+	<h1 id="title">일반 회원가입</h1>
+	<br>
+	<input type="text" id="param_method" th:value="${param.method}" hidden="true">
+	<form action="/register" method="post" id="registerForm">
+		<table>
+			<tr id="tr_userId">
+				<th>아이디</th>
+				<td>
+					<input type="text" name="userId" id="userId" th:value="${userId}">
+					<input type="button" value="중복확인" id="btn_check_userId">
+					<span id="check_userId_result"></span>
+				</td>
+			</tr>
+			<tr id="tr_userEmail">
+				<th>이메일</th>
+				<td><input type="text" name="userEmail" id="userEmail" th:value="${userEmail}" readOnly required="required"></td>
+			</tr>
+			
+			<tr id="tr_userPw">
+				<th>비밀번호</th>
+				<td><input type="password" name="userPw" id="userPw" required="required"></td>
+			</tr>
+			<tr id="tr_userPw_confirm">
+				<th>비밀번호확인</th>
+				<td><input type="password"></td>
+			</tr>
+			<tr>
+				<th>휴대폰번호</th>
+				<td>
+					<select id="userPhone1" th:value="${userPhone1}">
+						<option value="" th:selected="${userPhone1}==''">선택</option>
+						<option value="010" th:selected="${userPhone1}=='010'">010</option>
+						<option value="011" th:selected="${userPhone1}=='011'">011</option>
+					</select>
+					-
+					<input type="text" id="userPhone2" th:value="${userPhone2}" required="required">
+					-
+					<input type="text" id="userPhone3" th:value="${userPhone3}" required="required">
+					<input id="btn_auth" type="button" value="인증번호 요청">
+				</td>
+			</tr>
+			<tr id="tr_auth_num">
+				<th></th>
+				<td>
+					<input type="text" name="auth_num" id="auth_num">
+					<input type="button" value="인증확인">
+				</td>
+			</tr>
+			<tr id="tr_input_email">
+				<th>이메일</th>
+				<td>
+					<input type="text" id="emailHead">@
+					<input type="text" id="emailTail" readOnly>
+					<select id="selectEmailTail">
+						<option selected="selected" value="">선택하기</option>
+						<option id="naver">naver.com</option>
+						<option id="daum">daum.net</option>
+						<option id="inputText">직접입력</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>이름</th>
+				<td><input type="text" name="userName" th:value="${userName}" required="required"></td>
+			</tr>
+			<tr>
+				<th>생년월일</th>
+				<td><input type="text" name="userBirth" id="userBirth" th:value="${userBirth}" required="required"></td>
+			</tr>
+			
+			<tr>
+				<th>주소</th>
+				<td>
+					<input type="text" name="userAddress" id="userAddress" readOnly required="required">
+					<input type="text" name="userPostcode" id="userPostcode" required="required">
+				</td>
+			</tr>
+			
+			<tr>
+				<th>상세주소</th>
+				<td><input type="text" name="userAddressDetail"></td>
+			</tr>
+	
+		</table>
+	
+		<!-- hidden -->
+		<input type="text" id="userPhone" name="userPhone" hidden="true">
+		<input type="text" id="joinPlatform" name="joinPlatform" value="normal" hidden="true">
+		<input type="text" th:value="${T(com.goodmeaning.vo.UserRole).USER}" name="userRole" hidden="true">
+	
+	
+		<input type="submit" value="회원가입">
 
-	</table>
 
-	<!-- hidden -->
-	<input type="text" id="userPhone" name="userPhone" hidden="true">
-	<input type="text" id="joinPlatform" name="joinPlatform" value="normal" hidden="true">
-	<input type="text" th:value="${T(com.goodmeaning.vo.UserRole).USER}" name="userRole" hidden="true">
+	</form>
 
 
-	<input type="submit" value="회원가입">
-
-
-</form>
+</div>
 
 
 </body>
+<th:block layout:fragment="script">
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
 <script>
 
 $(function () {
@@ -254,4 +259,5 @@ $(function () {
 
 
 </script>
+</th:block>
 </html>

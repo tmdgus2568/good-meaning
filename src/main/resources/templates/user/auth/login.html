@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
 <head>
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
@@ -7,24 +10,26 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>로그인</h1>
-<form action="/auth/login" method="post">
-	<input type="text" placeholder="아이디" name="userId"><br>
-	<input type="password" placeholder="비밀번호" name="userPw"><br>
-	
-	<a href="">아이디/비밀번호찾기</a>
-	<a href="/register">회원가입</a>
-	<br>
-	<input type="submit" value="로그인하기">
-	<br>
-	
-</form>
-	<a th:href="${naverApiUrl}"><img src="/img/login_naver.png" width="222"/></a>
-	<br>
-    <a th:href="${kakaoApiUrl}">  
-    <img src="/img/login_kakao.png" width="222"/>
-    </a>
-
+	<div class="panel panel-default" layout:fragment="content" align="center">
+		<h3>로그인</h3>
+		<form action="/auth/login" method="post">
+			<input type="text" placeholder="아이디" name="userId" style="width:220px;height:40px"><br>
+			<input type="password" placeholder="비밀번호" name="userPw" style="width:220px;height:40px"><br>
+			
+			<a href="">아이디/비밀번호찾기</a>
+			<a href="/register">회원가입</a>
+			<br>
+			<input type="submit" value="로그인하기" style="width:220px;height:40px">
+			<br>
+			<br>
+		</form>
+			<a th:href="${naverApiUrl}"><img src="/img/login_naver.png" width="220"/></a>
+			<br>
+		    <a th:href="${kakaoApiUrl}">
+<!-- 		    <a> -->
+		    <img src="/img/login_kakao.png" width="220"/>
+		    </a>
+	</div>
 
 
 
