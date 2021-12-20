@@ -11,9 +11,9 @@
 </head>
 <body>
 
-<div class="panel panel-default" layout:fragment="content" align="center">
+<section class="panel panel-default" layout:fragment="content" align="center">
 	<h2 align="left">구매내역</h2>
-	<table>
+	<table class="table table-striped table-bordered table-hover">
 		<tr>
 			<th>상품이미지</th>
 			<th>상품이름</th>
@@ -23,18 +23,21 @@
 			<th>취소가능여부</th>
 		</tr>
 		<tr th:each="order:${orders}">
-			<td></td>
-			<td></td>
+			<td><img th:src="${order.details[0].productNum.productMainimg1}" width="150" height="150"></td>
+			<td>
+				<a href="" th:text="|${order.details[0].productNum.productName}외 ${order.details.size-1}건|"></a>
+				
+			</td>
 			<td th:text="${order.orderTotalPrice}"></td>
 			<td th:text="${order.orderStatus}"></td>
 			<td th:text="${order.orderDate}"></td>
-			<td></td>
+			<td><button>구매취소</button></td>
 		
 		</tr>
 		
 	</table>
 
-</div>
+</section>
 
 </body>
 <th:block layout:fragment="script">
