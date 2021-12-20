@@ -1,13 +1,19 @@
 package com.goodmeaning.vo;
 
 import java.sql.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -31,8 +37,9 @@ public class OrderVO {
 
 	@Id
 	private Long orderNum;
-	@NonNull
-	@Column(nullable = false)
+	
+	
+	@CreationTimestamp
 	private Date orderDate;
 	@NonNull
 	@Column(nullable = false)
@@ -59,5 +66,11 @@ public class OrderVO {
 	@ManyToOne
 	UserVO userPhone;
 	
-	//
+	// eager : 즉시로딩 
+	// lazy : 지연로딩
+	@JsonIgnore
+	@OneToMany(mappedBy = "orderNum", 
+			cascade = CascadeType.ALL,
+			fetch = FetchType.EAGER )
+	List<OrderDetailVO> details;
 }
