@@ -62,6 +62,8 @@ public class OrderVO {
 	@Column(nullable = false)
 	private String orderStatus;
 	
+	private String orderWaybill;
+	
 	@JoinColumn(name="userPhone")
 	@ManyToOne
 	UserVO userPhone;

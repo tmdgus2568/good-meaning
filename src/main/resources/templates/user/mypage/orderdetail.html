@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_mypage">
+
+<head>
+
+<meta charset="UTF-8">
+<title>주문상세</title>
+</head>
+<body>
+
+<section class="panel panel-default" layout:fragment="content" align="center">
+	<h2 align="left">주문상세</h2>
+	<br>
+	<br>
+	<h3 align="left">발송정보</h3>
+	<table id=sender_info class="table table-bordered">
+		<tr>
+			<th width=150>발송인</th>
+			<td th:text="${order.userPhone.userName}"></td>
+			<th width=150>전화번호</th>
+			<td th:text="${order.userPhone.userPhone}"></td>
+		</tr>
+		<tr>
+			<th>발송주소</th>
+			<td th:text="|${order.userPhone.userAddress} ${order.userPhone.userAddressDetail} (${order.userPhone.userPostcode})|" colspan="3"></td>
+		</tr>
+		
+	</table>
+	<br>
+	<h3 align="left">수령정보</h3>
+	<table id=reciever_info class="table table-bordered">
+		<tr>
+			<th width=150>수령인</th>
+			<td th:text="${order.deliveryRecipient}"></td>
+			<th width=150>전화번호</th>
+			<td th:text="${order.deiveryPhone}"></td>
+		</tr>
+		<tr>
+			<th>수령주소</th>
+			<td th:text="|${order.address} ${order.addressDetail} (${order.postcode})|" colspan="3"></td>
+		</tr>
+		
+	</table>
+	<br>
+	<br>
+	<h3 align="left">상세정보</h3>
+	<table id=order_info class="table table-striped table-bordered table-hover">
+		<tr>
+			<th>상품이미지</th>
+			<th>상품이름</th>
+			<th>수량</th>
+			<th>개당가격</th>
+		</tr>
+		<tr th:each="detail:${order.details}">
+			<td>
+				<img th:src="${detail.productNum.productMainimg1}" width="80">
+			</td>
+			<td th:text="${detail.productNum.productName}"></td>
+			<td th:text="${detail.orderDetailQuantity}"></td>
+			<td th:text="${detail.orderDetailPrice}"></td>
+		</tr>
+		
+	</table> 
+	<br>
+	<br>
+	<div align="right">
+		<h3>총 가격</h3>
+		<h1 th:text="|${#numbers.formatInteger(order.orderTotalPrice, 0, 'COMMA')} 원|"></h1>
+	
+	</div>
+
+</section>
+
+</body>
+<th:block layout:fragment="script">
+<script>
+
+</script>
+</th:block>
+</html>

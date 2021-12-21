@@ -12,6 +12,7 @@ import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.UserVO;
+import com.querydsl.core.types.Predicate;
 
 @Service
 public class MypageService {
@@ -34,15 +35,12 @@ public class MypageService {
 		return orderRepo.findByUserPhone(user);
 	}
 	
-	// orderNum을 가지고 그 orderNum을 가지는 Detail들을 가져온다 
-	public List<OrderDetailVO> orderDetails(Long orderNum){
-		Optional<OrderVO> order = orderRepo.findById(orderNum);
-		List<OrderDetailVO> details = null;
-		if(order.isPresent()) {
-			details = orderDetailRepo.findByOrderNum(order.get());
-		}
-		return details;
-		
+	public Optional<OrderVO> findOrderById(long oid){
+		return orderRepo.findById(oid);
 	}
+	
+	
+	
+	
 
 }
