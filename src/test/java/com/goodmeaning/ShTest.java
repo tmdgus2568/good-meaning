@@ -76,53 +76,57 @@ public class ShTest {
 		urepo.deleteById("[object Object][object Object][object Object]");
 	}
 	
-	//@Test
+	@Test
 	public void orderInsert() {
-		Optional<ProductVO> product1 = prepo.findById(790L);
-		Optional<ProductVO> product2 = prepo.findById(793L);
+		Optional<ProductVO> product1 = prepo.findById(820L);
+		Optional<ProductVO> product2 = prepo.findById(810L);
 		Optional<UserVO> user = urepo.findById("01011111111");
 		OrderDetailVO detail1 = null;
 		OrderDetailVO detail2 = null;
-//		OrderVO order = OrderVO.builder()
-//						.orderNum(1L)
-//						.address("qqqq")
-//						.addressDetail("123호")
-//						.deiveryPhone("0101112323")
-//						.deliveryRecipient("홍길동")
-//						.orderStatus("배송준비중")
-//						.orderTotalPrice(30000)
-//						.postcode("232323")
-//						.userPhone(user.get())
-//						.build();
-//		
-//		orepo.save(order);
-		
-		Optional<OrderVO> order = orepo.findById(1L);
-						
-//		if(product1.isPresent()) {
-//			detail1 = OrderDetailVO.builder()
-//					.orderDetailQuantity(2)
-//					.orderDetailPrice(4000*2)
-//					.productNum(product1.get())
-//					.orderNum(order.get())
-//					.build();
-//			odrepo.save(detail1);
-//			
-//		}
-
-		if(product2.isPresent()) {
-			detail2 = OrderDetailVO.builder()
-					.orderDetailQuantity(4)
-					.orderDetailPrice(5500*4)
-					.productNum(product2.get())
-					.orderNum(order.get())
+		for(long i=15;i<16;i++) {
+			OrderVO order = OrderVO.builder()
+					.orderNum(i)
+					.address("123ㅇㅇㅇㅇ")
+					.addressDetail("123호")
+					.deiveryPhone("01033712568")
+					.deliveryRecipient("홍길동")
+					.orderStatus("배송준비중")
+					.orderTotalPrice(30000)
+					.postcode("232323")
+					.userPhone(user.get())
 					.build();
 			
-			odrepo.save(detail2);
+			orepo.save(order);
+			
+//			Optional<OrderVO> order = orepo.findById(2L);
+							
+			if(product1.isPresent()) {
+				detail1 = OrderDetailVO.builder()
+						.orderDetailQuantity(2)
+						.orderDetailPrice(4000*2)
+						.productNum(product1.get())
+						.orderNum(order)
+						.build();
+				odrepo.save(detail1);
+				
+			}
+
+			if(product2.isPresent()) {
+				detail2 = OrderDetailVO.builder()
+						.orderDetailQuantity(4)
+						.orderDetailPrice(5500*4)
+						.productNum(product2.get())
+						.orderNum(order)
+						.build();
+				
+				odrepo.save(detail2);
+			}
 		}
 		
+
+		
 	}
-	@Test
+	//@Test
 	public void orderDetailTest() {
 //		Optional<UserVO> user = urepo.findById("01011111111");
 		Optional<OrderVO> order = orepo.findById(1L);
