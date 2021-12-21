@@ -22,8 +22,8 @@ public class PageVO {
 	
 	int page; //몇번째
 	int size; //한페이지 당 몇개
-	String type; //조건
-	String keyword; //조건에 해당하는 키워드
+	String[] type; //조건
+	Object[] keyword; //조건에 해당하는 키워드
 	
 	public PageVO() {
 		this.page = 1;
@@ -44,11 +44,11 @@ public class PageVO {
 		////0부터 시작 size수만큼 prop기준으로 dir방향정렬
 
 	}
-	public void setType(String type) {
+	public void setType(String[] type) {
 		this.type = type;
 	}
 
-	public void setKeyword(String keyword) {
+	public void setKeyword(Object[] keyword) {
 		this.keyword = keyword;
 	}
 }
