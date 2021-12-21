@@ -32,6 +32,9 @@ public class ProductOptionVO {
 	private Long optionNum;
 	@NonNull
 	@Column(nullable = false)
+	private String optionCategory;
+	@NonNull
+	@Column(nullable = false)
 	private String optionName;
 	@Column(nullable = false)
 	private int optionStock;
