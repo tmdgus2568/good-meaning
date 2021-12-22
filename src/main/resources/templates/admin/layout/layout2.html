@@ -22,21 +22,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 
-
 <style>
-    .sidenav {
-        position: fixed;
-        width: 230px;
-        height: 100%;
-        margin-top:80px
-    }
     .page {
+   		position: fixed;
 	    width: auto;
-	    margin-top: 130px;
-	    margin-left: 280px;
-    }
-	li {
-        margin: 10px 0px;
+	    height: 100%;
     }
 </style>
 <script>
@@ -45,12 +35,9 @@
 </head>
 <body>
 	<th:block layout:fragment="style"></th:block>
-	<header th:insert="admin/layout/header :: header"></header>
-	<div class="d-flex justify-content-start">
-		<div class="sidenav bg-dark panel panel-default" th:insert="admin/layout/aside :: aside"></div>
-		<div class="page container-fluid w-75 panel panel-default" layout:fragment="content"></div >
-	</div>
-	<footer th:replace="admin/layout/footer :: footer"></footer>
+	<!-- <header class="bg-dark" th:insert="admin/layout/header2 :: header"></header> -->
+	<div class="page  bg-dark container-fluid panel panel-default " layout:fragment="content"></div >
+	<!-- <footer th:replace="admin/layout/footer2 :: footer"></footer> -->
 	<th:block layout:fragment="script"></th:block>
 </body>
 </html>
