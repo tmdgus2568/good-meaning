@@ -11,7 +11,8 @@ public class ProductService {
 
 	@Autowired
 	ProductRepository prepo;
-	public ProductVO selectById(Long pid) {
+	
+	public ProductVO selectById(Long pid) {//CartController참조
 		return prepo.findById(pid).orElse(null);
 	}
 }
