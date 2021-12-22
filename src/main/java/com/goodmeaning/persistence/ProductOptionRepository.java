@@ -6,4 +6,5 @@ import com.goodmeaning.vo.ProductOptionVO;
 
 public interface ProductOptionRepository extends CrudRepository<ProductOptionVO, Long> {
 
+	public ProductOptionVO findByProductNum(Long productNum);
 }
