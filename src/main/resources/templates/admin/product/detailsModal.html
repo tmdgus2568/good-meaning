@@ -17,6 +17,9 @@
 		div {
 		  background-color: gray;
 		}
+		button{
+		  float: right;
+		}
 	</style>
 </th:block>
 </head>
@@ -68,7 +71,7 @@
 										<div class="form-check-inline" >
 											<label th:each="category:${T(com.goodmeaning.vo.Category).values()}" class="form-check-label" >
 											<input type="checkbox"  name="productCategory"  class="form-check-input productCategory" 	 
-											th:value="${category.name()}" required />&nbsp;[[${category.name()}]]&nbsp;&nbsp;&nbsp;&nbsp;</label>
+											th:value="${category.name()}" required   />&nbsp;[[${category.name()}]]&nbsp;&nbsp;&nbsp;&nbsp;</label>
 										</div>
 									</td>
 								</tr>
@@ -107,10 +110,10 @@
 												<div id="keyupOptionPrice">
 												</div>
 												<div class="col-1">
-													<button id="addOptionBtn" class="btn form-control"><i class="material-icons">add_to_photos</i></button>
+													<input type="button" id="addOptionBtn" value="add_to_photos" class="btn form-control material-icons">
 												</div>
 												<div class="col-1" id="deleteOption">
-													<button class="btn deleteBtn form-control"><i class="material-icons">delete</i></button> 
+													<input type="button" value="delete" class="btn deleteBtn form-control material-icons"> 
 												</div>
 											</div>
 											<div id="addOptions"></div>
@@ -120,23 +123,16 @@
 								<tr>
 									<th>대표이미지</th>
 									<td>
-										<div class="d-flex justify-content-around" th:each="num : ${#numbers.sequence(1,4)}">
+										<div class="d-flex justify-content-around mb-2" th:each="num : ${#numbers.sequence(1,4)}">
 											<div class="custom-file">
 												<input type="file" class="custom-file-input" th:id="|productMainimg${num}|" name="uploadFile" 
-													 > th:placeholder="|Choose File${num}|" onfocus="this.placeholder=''" th:onblur="this.placeholder='|Choose File${num}|'"
-												<label class="custom-file-label" th:for="|productMainimg${num}|" >Choose File[[${num}]]</label>
+													 > 
+												<label th:id="|label${num}|" class="custom-file-label" th:for="|productMainimg${num}|" >Choose File[[${num}]]</label>
 											</div>
 											<div class="col-1">
-												<input type="button" value="delete" class="btn form-control btnDelete"><i class="material-icons">delete</i>
-													th:id="|editDeleteBtn${num}|" 
+												<input type="button" value="delete" class="btn form-control btnDelete material-icons">
 											</div>
 										</div>
-										a미리보기 나중에
-										<div class="images d-flex justify-content-around" th:each="num : ${#numbers.sequence(1,4)}">
-											<div class="preview" th:id="|preview${num}|">
-											</div>
-										</div>
-				
 									</td>
 								</tr>
 								<tr>
@@ -145,7 +141,7 @@
 										<div class="d-flex justify-content-around">
 											<div class="custom-file">
 												<input type="file" class="custom-file-input" id="productDetailimg" name="uploadFile" required>
-												<label class="custom-file-label" for="productDetailimg">Choose File</label>
+												<label id="label5" class="custom-file-label" for="productDetailimg">Choose File</label>
 											</div>
 											<div class="col-1">
 												<button id="deleteBtn5" class="btn form-control btnDelete" hidden="true">삭제</button>
@@ -168,15 +164,13 @@
 								
 							</table>
 							<input type="hidden" name="postingState" value="게시중">
-							<button type="submit" id="registerBtn" class="btn btn-default " onClick="alert('상품을 등록하시겠습니까?')">등록</button>
+							<div class="float-right ">
+								<button type="submit" class="btn btn-secondary" onClick="alert('상품 정보를 수정하시겠습니까?')">수정</button>
+								<button type="submit" class="btn btn-danger" onClick="alert('상품을 삭제하시겠습니까?')">삭제</button>
+							</div>
 						</form>
  					</div>
 					
-					Modal footer
-					<div class="modal-footer">
-						<button type="submit" class="btn btn-secondary">수정</button>
-						<button type="submit" class="btn btn-danger">삭제</button>
-					</div>
 
 				</div>
  			</div>
@@ -220,7 +214,7 @@
 			});
 			
 			//카테고리 checkbox 선택시 required 해제
-			var tmp = document.getElementsByName('productCategory');
+ 			var tmp = document.getElementsByName('productCategory');
 			console.log(tmp);
 			$(".productCategory").change(function(){
 				for(var i = 0; i < tmp.length; i++) {
@@ -233,7 +227,7 @@
 					}
 				}
 			});
-			
+		
 			//옵션추가 클릭시 옵션명/추가금액 추가
 			$(".deleteBtn").css("display", "none");
 			$("#addOptionBtn").click(function(){

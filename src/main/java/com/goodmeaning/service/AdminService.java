@@ -19,13 +19,13 @@ public class AdminService {
 
 	@Autowired
 	private HJRepository repo;
-	
+
 	@Autowired
 	private ProductRepository productRepo;
-	
+
 	@Autowired
 	private ProductOptionRepository productOptionRepo;
-	
+
 //	// 재고리스트 보여주기
 //	public Page<ProductVO> stockList(PageVO pageVO) {
 //		
@@ -36,24 +36,26 @@ public class AdminService {
 //		
 //		return result; 
 //	}
+	///select count() from aaa where 절 
 
 	// 상품리스트 보여주기
 	public Page<ProductVO> productList(PageVO pageVO, int direction, String colmnName) {
-		
-		Pageable paging = pageVO.makePaging(direction, colmnName); //전체 order
-		
+
+		Pageable paging = pageVO.makePaging(direction, colmnName); // 전체 order
+
 		Predicate pre = repo.makePredicate(pageVO); // 조건넣기
 		Page<ProductVO> result = repo.findAll(pre, paging);
 
-		return result; 
+		return result;
 	}
-	
+
+	 
 	// 상품등록
 	public ProductVO insertProduct(ProductVO product, String[] optionName, int[] optionPrice, String optionCategory) {
-		ProductVO newproduct =  repo.save(product); //객체생성후 저장
+		ProductVO newproduct = repo.save(product); // 객체생성후 저장
 		System.out.println(newproduct);
-		for(int i = 0; i < optionName.length; i++) {
-			ProductOptionVO option = new ProductOptionVO(); //객체 생성 후 저장
+		for (int i = 0; i < optionName.length; i++) {
+			ProductOptionVO option = new ProductOptionVO(); // 객체 생성 후 저장
 			option.setOptionName(optionName[i]);
 			option.setExtraprice(optionPrice[i]);
 			option.setOptionCategory(optionCategory);
@@ -61,27 +63,29 @@ public class AdminService {
 			System.out.println(option);
 			productOptionRepo.save(option);
 		}
-		
+
 		return newproduct;
 	}
 
-
 	// 상품딕테일
-	public ProductOptionVO findByProductNum(Long productNum) {
-		return productOptionRepo.findByProductNum(productNum);
+	public ProductOptionVO findByProductNum(ProductVO product) {
+		return productOptionRepo.findByProductNum(product);
 	}
 
 	// 재고 리스트 가져오기
 	public Page<Object[]> stockList(PageVO pageVO, int direction, String colmnName) {
-		
-		Pageable paging = pageVO.makePaging(direction, colmnName); //전체 order
-		
+
+		Pageable paging = pageVO.makePaging(direction, colmnName); // 전체 order
+
 		Predicate pre = repo.makePredicate(pageVO); // 조건넣기
 		Page<Object[]> result = repo.findProductAll(pre, paging);
 
-		return result; 
+		return result;
 	}
-	
 
-	 
+	public Long selectAll() {
+		// TODO Auto-generated method stub
+		return productRepo.count();
+	}
+
 }

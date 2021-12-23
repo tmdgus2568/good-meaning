@@ -8,7 +8,7 @@
 <title>상품등록</title>
 <th:block layout:fragment="style">
 	<style>
-		/* #addOptionBtn {background-color: gray; color: white;} */
+
 	</style>
 </th:block>
 </head>
@@ -82,10 +82,10 @@
 								<div id="keyupOptionPrice">
 								</div>
 								<div class="col-1">
-									<button id="addOptionBtn" class="btn form-control"><i class="material-icons">add_to_photos</i></button>
+									<input type="button" id="addOptionBtn" value="add_to_photos" class="btn form-control material-icons">
 								</div>
 								<div class="col-1" id="deleteOption">
-									<button class="btn deleteBtn form-control"><i class="material-icons">delete</i></button> 
+									<input type="button" value="delete" class="btn deleteBtn form-control material-icons">
 								</div>
 							</div>
 							<div id="addOptions"></div>
@@ -95,14 +95,14 @@
 				<tr>
 					<th>대표이미지</th>
 					<td>
-						<div class="d-flex justify-content-around" th:each="num : ${#numbers.sequence(1,4)}">
+						<div class="d-flex justify-content-around mb-2" th:each="num : ${#numbers.sequence(1,4)}">
 							<div class="custom-file">
 								<input type="file" class="custom-file-input" th:id="|productMainimg${num}|" name="uploadFile" 
 									 > <!-- th:placeholder="|Choose File${num}|" onfocus="this.placeholder=''" th:onblur="this.placeholder='|Choose File${num}|'" -->
 								<label class="custom-file-label" th:for="|productMainimg${num}|" >Choose File[[${num}]]</label>
 							</div>
 							<div class="col-1">
-								<input type="button" value="delete" class="btn form-control btnDelete"><i class="material-icons">delete</i>
+								<input type="button" value="delete" class="btn form-control btnDelete material-icons">
 									<!-- th:id="|editDeleteBtn${num}|"  -->
 							</div>
 						</div>
@@ -131,13 +131,16 @@
 				
 			</table>
 			<input type="hidden" name="postingState" value="게시중">
-			<button type="submit" id="registerBtn" class="btn btn-default " onClick="alert('상품을 등록하시겠습니까?')">등록</button>
+			<button type="submit" id="registerBtn" class="btn btn-default float-right" onClick="alert('상품을 등록하시겠습니까?')">등록</button>
 		</form>
 	</div>
 	
 	<!-- JavaScript -->
 	<th:block layout:fragment="script">
 		<script>
+		
+		    
+		
 			// 옵션 사용/사용안함 선택
 			$('#optionNo').click(function(){
 				$('#demo').css("display", "none") //data-toggle="collapse" data-target="#demo"

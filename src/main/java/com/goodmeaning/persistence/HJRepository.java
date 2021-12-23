@@ -52,9 +52,8 @@ public interface HJRepository
 			to = Timestamp.valueOf(to_localDate);
 		}
 		
-		objects= pageVO.getKeyword();
 		if(objects[0]!=null && objects[0]!="") builder.and(product.productName.like("%" + (String)objects[0] + "%"));
-		if(objects[1]!=null && objects[1]!="") builder.and(product.productNum.eq((Long)objects[1]));
+		if(objects[1]!=null && objects[1]!="") builder.and(product.productNum.eq(Long.valueOf((String)objects[1])));
 		if(objects[2]!=null && objects[2]!="") builder.and(product.productCreatedate.between(from, to));
 		System.out.println(objects[4]);
 		if(objects[4]!=null && objects[4]!="" && !(((String)objects[4]).equals("전체"))) builder.and(product.postingState.eq((String)objects[4]));

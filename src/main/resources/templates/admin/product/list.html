@@ -18,7 +18,7 @@
 	<div layout:fragment="content">
 		<h4>상품검색</h4>
 		<hr>
-		<div class="mt-4">
+		<div id="searchBox" class="mt-4">
 			<div class="input-group mb-3">
 				<div class="input-group-prepend">
 					<span class="input-group-text">검색어</span>
@@ -50,7 +50,7 @@
 			<label for="statePosting">게시상태</label>
 			<div id="statePosting">
 				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" name="postingState" value="전체" 
+					<label class="form-check-label"><input type="radio" class="form-check-input" id="all" name="postingState" value="전체" 
 					th:checked="${pageVO.keyword==null || pageVO.keyword[4]=='전체'}">전체</label>
 				</div>
 				<div class="form-check-inline">
@@ -79,9 +79,9 @@
 			<hr>
 		</div>
 		<div class="d-flex justify-content-between">
-<!-- 			<div th:each="product, pstate:${productPaging.result.content}">
-				<p th:text="'총 ' + ${pstate.count} + '건'"></p>
-			</div> -->
+			<div>
+				<p th:text="'총 ' + ${totalCount} + '건'"></p>
+			</div>
 			<div class="form-group" style="float:right; width:190px;">
 				<select id = "sortColumn" class="form-control"> <!-- asc desc 가져가는 방법 찾기 -->
 					<option value="productCreatedate0" th:selected="${sortColumn=='productCreatedate0'}">최신순</option>
@@ -106,7 +106,7 @@
 					</tr>
 				</thead>
 				<tbody id="myTable">
-					<tr th:each="product, pstate:${productPaging.result.content}"> <!-- 객체, status(반복상태변수)  -->
+					<tr th:each="product, pstate:${productPaging.result.content}" > <!-- 객체, status(반복상태변수)  -->
 						<td th:text="${pstate.count + (productPaging.currentPageNum-1) * productPaging.currentPage.pageSize}"></td>
 						<td th:text="${product.productNum}"></td>
 						<td th:text="${product.productName}">
@@ -153,38 +153,130 @@
 	</div>
 
 	<th:block layout:fragment="script">
-		<script>
+		<script th:inline="javascript">
 			//jQuery는 ready를 여러번 쓸 수 있음. js는 불가능
 			
-			//modifyModal띄우기
- 			$("#myTable").on("click", "tr", function(){
- 				$.ajax({
- 	               url:"/admin/detail/[[${product.productNum}]]",
- 	               data:{"productNum": $(this).find("td")[1].html()},   
- 	               success:function(responseData){
- 	                  //JSON을 가져오기 {"키":"값 ", , , , , , ,}
- 	                  //modal에 setting 
- 	                  alert(responseData);
- 	               }
- 	            });
-				
-				$("#myModal").modal("show");
-			});
-
-			//resetBtn 누를때
 			$(function() {
+				
+				//modal 띄우기
+				$("#myTable").on("click", "tr", function(){
+				    
+					var tds = $(this).find("td"); //여러개
+			    	var rno = tds[1].innerHTML;
+					alert(rno);
+					//일반컨트롤러에서 url 뒤에 / + 값 X (레스트컨트롤러에서만줌/값. 일반?키=값)
+					$.ajax({
+			            url:"/admin/detail?productNum=" + rno,
+			            success:function(responseData){
+			            	//console.log(responseData.optionPrice);
+			                  //JSON을 가져오기 {"키":"값 ", , , , , , ,}
+			          
+			                  //modal에 setting 
+			                //alert(responseData);
+			                //console.log(responseData);
+			               // var key = Object.keys(responseData);
+			                //var strobj = JSON.stringify(responseData); //$.each 불가
+			                //console.log(responseData.gets("optionCategory"));
+			                //console.log(responseData.name("optionNum"));
+			                //console.log(responseData.name("optionNum").value());
+			                
+			                 
+			                
+			               	
+			               
+			                
+			                
+			                //console.log(responseData.productNum.productNum); //'질감'
+							
+			                //$.each(responseData, function(name, value){
+				                //var str = "";
+			                	//str = "<p>" + name + "</p>";
+			                	//str += "<p>" + value + "</p>";
+			                	//console.log(name + " : " + value);
+			                	
+			                	//if($()){}
+			                	
+			                	//$(".modal-header").append(str);
+			                //});
+							$("#myModal").modal("show");
+							putDataList(responseData);
+			            }
+			        });
+	 				
+				});
+				
+				function putDataList(responseData){
+					//{"product":{}, "productOption":{}}
+					var product = responseData.product; 
+					var option = responseData.productOption;
+					
+					$("input[name='productNum']").val(product.productNum);
+	                $("input[name='productName']").val(product.productName);
+	                $("input[name='productPrice']").val(product.productPrice);
+	                $("input[name='productPrice']").val(product.productPrice);
+	                $("input[name='productCreatedate']").val(product.productCreatedate);
+	                $("input[name='productUpdatedate']").val(product.productUpdatedate);
+					$("#label1").text(product.productMainimg1);
+					$("#label2").text(product.productMainimg2);
+					$("#label3").text(product.productMainimg3);
+					$("#label4").text(product.productMainimg4);
+					$("#label5").text(product.productDetailimg);
+	                
+	                //체크박스확인필요
+	                console.log(product.productCategory); 
+	                 
+	                $('input:checkbox[name=productCategory]').each(function(index, item){
+	                	 
+	                	 
+	                	//console.log( $.inArray($(item).val(), product.productCategory)  );
+	                	//console.log($(item).attr("checked"));
+	                	//console.log(item);
+	                	if($.inArray($(item).val(), product.productCategory) == 0 ){
+	                		alert($(item).val());
+	                		$(item).attr("checked");
+	                	}
+	                });
+	                
+	             	if(option == null) {
+	             		//지우기 
+		             	$("input[name='optionName']").val("");
+		                $("input[name='optionPrice']").val("");
+	             		return;
+	             	}
+	                //옵션
+					$("#optionYes").attr("checked", "true");
+					$("#demo").css("display", "block");
+	                $("input[name='optionName']").val(option.optionName);
+	                $("input[name='optionPrice']").val(option.extraprice);
+	                
+	                var categories = $('#optionCategory').find('option').map(function() {return $(this).val();}).get();
+	                var checkCategory = categories.includes(option.optionCategory);
+	                if(checkCategory == false){
+	                	$('#optionCategory').val('Other').prop("selected",true);
+	                	$("#writeOther").attr("type", "text");
+	                	$("#writeOther").val(option.optionCategory);
+	                } else {
+	                	$('#optionCategory').val(option.optionCategory).prop("selected",true);
+	                }
+				}
+				
+				
+				//resetBtn 누를때
 				$("#resetBtn").click(function(){
+					var val = $("#searchBox").children('input');
+					
 					$('input').each(function(index, item){
-						console.log()
-						$(item).val('');
+						console.log(index + " : " + $(item).val());
+						if(index < 4) {
+							$(item).val(''); 
+							$("input:radio[name ='postingState']:input[value='전체']").attr("checked", true);
+							$("#searchBtn").click();
+						}
 					});
 				});
-			});
-			
-
- 			//datepicker 사용
-			  $(function(){
-			      $('.datepicker').datepicker({
+				
+				//datepicker 사용
+				$('.datepicker').datepicker({
 			    	  weekStart: 0,
 			    	  clearBtn: true,
 			    	  language: "ko",
@@ -194,13 +286,13 @@
 			    	  autoclose: true,
 			    	  todayHighlight: true
 			      });
-			  });
-
+			});
+			
 		
 			$(function() {
 				var formObj = $("#f1");
 				
-				// 게시글 제목 클릭시 값 넘어가기
+/* 				// 게시글 제목 클릭시 값 넘어가기
 				$(".boardLink").click(function(event){ //타이틀을 누르면
 					alert("링크누름")
 		    		event.preventDefault(); //a태그의 본래기능은 취소 
@@ -211,9 +303,28 @@
 		    		alert("링크누름")
 		    		formObj.submit();
 		    		formObj.attr("action", "[[@{list}]]"); //다시 원상복귀
-		    	});
+		    	}); */
+		    	//저장하고 난 후 input에 정보남2
+		    	var columnName = ["productName", "productNum", "from", "to", "postingState"];
+		    	var columnValue = [[${pageVO.keyword}]]; //배열
+		    	
+		    	for(var idx = 0; columnValue!=null && idx < columnName.length; idx++){
+		    		formObj.find("input[name='type']").eq(idx).val(columnName[idx]);
+		    		formObj.find("input[name='keyword']").eq(idx).val(columnValue[idx]);
+		    	}
+				 
+		    	//for(var idx = 0; idx < columnName.length; idx++){
+		    	//}
+				
+		    	//check한 값 넣기
+		    	//formObj.find("input[name='keyword']").eq(4).val(pageVO.keyword[4]);
+				
+				if(formObj.find("[name='page']").val()==''){
+					formObj.find("[name='page']").val(1);
+				}
 				
 				//조건 검색시
+				 
 				$("#searchBtn").click(function() {
 					
 					formObj.find("input[name='type']").eq(0).val("productName");
@@ -224,19 +335,22 @@
 					 
 					formObj.find("input[name='keyword']").eq(0).val($("#searchKeyword1").val());
 					formObj.find("input[name='keyword']").eq(1).val($("#searchKeyword2").val());
+					alert($("#searchKeyword2").val());
 					formObj.find("input[name='keyword']").eq(2).val($("#datepicker1").val());
 					formObj.find("input[name='keyword']").eq(3).val($("#datepicker2").val());
 					formObj.find("input[name='keyword']").eq(4).val($("input:radio[name='postingState']:checked").val());
-					//var typeStr = $("#searchType").find(":selected").val();// = $("#searchType").val(), 조건
-					//var keywordStr = $("#searchKeyword").val(); //검색내용
-					//formObj.find("[name='type']").val(typeStr); //type에 저장
-					//formObj.find("[name='keyword']").val(keywordStr); //keyword에 저장
+					
 					if(formObj.find("[name='page']").val()==''){
 						formObj.find("[name='page']").val(1);
 					}
 					//formObj.find("[name='page']").val(); //첫번째 페이지 얻은 것
 					//alert(typeStr + ":" + keywordStr);
 					formObj.submit();
+				});
+				
+				
+				$("#searchBox input").change(function(){ //값이 바껴서 커서가 바껴야함.(change)
+					formObj.find("[name='page']").val(1);
 				});
 				
 				//전체 sort시
@@ -251,7 +365,9 @@
 					alert($(this).attr('href'));
 					e.preventDefault(); //링크취소
 					formObj.find("[name='page']").val($(this).attr('href'));
+					 
 					$("#searchBtn").click(); //페이지만달라지고 다시 조회
+					
 					//다시 그 폼에서 이름이 page인걸 찾아서 href가 가지고 있는 숫자를 page(this) 값으로 넣어줌
 					//formObj.submit(); //그리고 나서 submit > list로 다시 감. 그때 pageVO로 넘어가는 것
 					//(controller에서 pagevo가 들어가는 것!)

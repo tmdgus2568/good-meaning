@@ -3,6 +3,7 @@ package com.goodmeaning.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +27,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.goodmeaning.service.AdminService;
 import com.goodmeaning.service.LoginService;
+import com.goodmeaning.service.ProductService;
 import com.goodmeaning.util.UpLoadFileUtils;
 import com.goodmeaning.vo.PageMaker;
 import com.goodmeaning.vo.PageVO;
@@ -48,6 +49,9 @@ public class AdminController {
 	
 	@Autowired
 	LoginService loginService;
+	
+	@Autowired
+	ProductService productService;
 
 	/*
 	 * 
@@ -115,16 +119,19 @@ public class AdminController {
 		model.addAttribute("productPaging", new PageMaker<>(result));
 		model.addAttribute("pageVO", pageVO);
 		model.addAttribute("sortColumn", sortColumn);
+		model.addAttribute("totalCount", result.getNumberOfElements());
+		 
+		
 		//model.addAttribute("productOptionVO",prdOptVO);
          
-		return "redirect:list";
+		return "admin/product/list";
 	}
 	
 	// 상품등록 페이지
 	@GetMapping("/productregister")
 	public String registerProduct(HttpSession session) {
 		//sessions 넣기
-		return "admin/product/register"; //forward
+		return "admin/product/register"; //forward 
 	}
 	
 	// 상품등록
@@ -184,16 +191,21 @@ public class AdminController {
 	}
 	
 	//상품딕테일 보여주기
-	@GetMapping("/detail/{productNum}")
+	@GetMapping("/detail")
 	@ResponseBody
-	public ResponseEntity<ProductOptionVO> getDetail(@PathVariable("productNum") Long productNum) {
+	public ResponseEntity<Map<String, Object>> getDetail(Long productNum) {//html에서 받을때 @RequestBody(url, data)
+		Map<String, Object> map = new HashMap<>();
+		System.out.println(productNum);
+		ProductVO product = productService.selectById(productNum);
+		ProductOptionVO productOption = adminService.findByProductNum(product); //레파지토리 호출
+		map.put("product", product);
+		map.put("productOption", productOption);
 		
-		ProductOptionVO pvo = adminService.findByProductNum(productNum); //레파지토리 호출
-		System.out.println("pvo" + pvo);
+		System.out.println("pvo : " + map);
 		
 		//ProductOptionVO 레파지토리에서 findbyproductnum생성
 		 //컬럼값으로 옴.productNum is present > optional > get으로 받아옴
-		return new ResponseEntity<>(pvo, HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	} 
 
 	/*
