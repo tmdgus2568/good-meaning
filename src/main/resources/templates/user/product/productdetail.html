@@ -60,12 +60,24 @@ window.onload = function() {
 	<img th:src="${product.productMainimg1}" th:width="100">
 	<a th:value=${product.productNum}>[[${product.productName}]]</a>
 	<br>
-	<a th:value=${product.productPrice}>[[${product.productPrice}]]원</a>
+	<div th:if="${options.size() == 0}">
+		<a th:value=${product.productPrice}>[[${product.productPrice}]]원</a>
+	</div>
+
+
 	<div>
 		수량 <input type='button' onclick='count("minus")' value='-' /> <span
 			id="result">1</span> <input type='button' onclick='count("plus")'
 			value='+' />
 	</div>
+
+	<div th:if="${options.size() != 0}">
+		<select name="productoptions">
+			<option th:each="options:${options}"
+				value='[[${options.optionName}]]'>[[${options.optionName}]]</option>
+		</select>
+	</div>
+
 	총상품금액
 	<span id="result2">1</span>개
 	<span id="totalprice">[[${product.productPrice}]]</span>원
