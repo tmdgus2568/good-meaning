@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.goodmeaning.persistence.CartRepository;
 import com.goodmeaning.persistence.UserRepository;
@@ -75,8 +76,15 @@ public class CartController {
             }
         return "redirect:/cartlist";
     }
-
-
+    
+    //장바구니 수정
+    @RequestMapping(value="/cart/update", method = RequestMethod.POST)//브라우저에서 요청하는 코드
+	public String updateCartItemCount(@RequestParam Long cartNum, @RequestParam int count) {
+    	System.out.println("cartNum:"+cartNum);
+    	System.out.println("count:"+count);
+    	cartService.updateCartItemCount(cartNum, count);		
+		return "redirect:/cartlist"; //이 페이지에 뿌려서 보여줌
+	}
 
     //장바구니 삭제
     @RequestMapping(value="/cart/delete", method = RequestMethod.GET)
@@ -88,7 +96,7 @@ public class CartController {
     
 
     //장바구니 수정
-    @RequestMapping("update")
+    /*@RequestMapping(value="cart/update", method = RequestMethod.GET)
     public String update(Long[] cartNum,  int[] amount, HttpSession session) {
         // session의 id
     	UserVO user = UserVO.builder().userPhone("123").build();
@@ -101,7 +109,7 @@ public class CartController {
             cartService.insertOrUpdate(vo);
         }
         return "redirect:/cartlist";
-    }
+    }*/
     
     
 }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
+<head>
+<meta charset="UTF-8">
+<title>구매하기</title>
+</head>
+<body>
+<div class="panel panel-default" layout:fragment="content" align="center">
+	<h1 id="title">구매정보</h1>
+	<br>
+	<!-- 선택 상품 list -->
+	<div th:each="cart:${clist}">
+	<div class="card d-flex">
+            <div th:each="orderItem : ${order.orderItemDtoList}">
+                <div>
+                    <img th:src="${}" >
+                </div>
+                <div>
+                    <span th:text="${}" ></span>
+                    <div>
+                        <span th:text="${} +'원'"></span>
+                        <span th:text="${} +'개'"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+	
+	
+	<!-- 주문form -->
+	<form action="/purchase" method="post" id="purchaseForm">
+		<table>
+			<tr>
+				<th>받으시는 분</th>
+				<td><input type="text" name="userName" th:value="${userName}" required="required"></td>
+			</tr>			
+						
+			<tr>
+				<th>휴대폰번호</th>
+				<td>
+					<input type="text" id="userPhone1" th:value="${userPhone1}" required="required">
+					-
+					<input type="text" id="userPhone2" th:value="${userPhone2}" required="required">
+					-
+					<input type="text" id="userPhone3" th:value="${userPhone3}" required="required">
+					
+				</td>
+			</tr>
+			
+			<tr id="tr_userEmail">
+				<th>이메일</th>
+				<td><input type="text" name="userEmail" id="userEmail" th:value="${userEmail}" readOnly required="required"></td>
+			</tr>
+			
+			<tr id="tr_input_email">
+				<th>이메일</th>
+				<td>
+					<input type="text" id="emailHead">@
+					<input type="text" id="emailTail" readOnly>
+					<select id="selectEmailTail">
+						<option selected="selected" value="">선택하기</option>
+						<option id="naver">naver.com</option>
+						<option id="google">gmail.com</option>
+						<option id="daum">daum.net</option>
+						<option id="inputText">직접입력</option>
+					</select>
+				</td>
+			</tr>			
+			
+			<tr>
+				<th>주소</th>
+				<td>
+					<input type="text" name="userAddress" id="userAddress" readOnly required="required">
+					<input type="text" name="userPostcode" id="userPostcode" required="required">
+				</td>
+			</tr>
+			
+			<tr>
+				<th>상세주소</th>
+				<td><input type="text" name="userAddressDetail"></td>
+			</tr>
+	
+		</table>
+		
+		<input type="submit" value="구매하기">
+
+
+	</form>
+
+
+</div>
+</body>
+</html>
