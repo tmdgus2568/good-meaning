@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.goodmeaning.persistence.OrderRepository;
@@ -51,7 +52,7 @@ public class MypageController {
 	@RequestMapping(value = "/mypage/user", method = RequestMethod.POST)
 	public String updateUser(UserVO user) {
 		System.out.println(user);
-		mypageService.update(user);
+		mypageService.updateUser(user);
 		return "user/mypage/update";
 	}
 
@@ -102,7 +103,8 @@ public class MypageController {
 		return "user/mypage/orders";
 	}
 	
-	@GetMapping("/mypage/orders/{oid}")
+	// 주문 상세 정보 확인 
+	@RequestMapping(value = "/mypage/orders/{oid}", method = RequestMethod.GET)
 	public String orderDetails(@PathVariable long oid, Model model) {
 		Optional<OrderVO> order = mypageService.findOrderById(oid);
 		int sum = 0;
@@ -112,6 +114,66 @@ public class MypageController {
 		
 		}
 		return "/user/mypage/orderdetail";
+	}
+	
+	// 구매취소 누르기
+	@RequestMapping(value = "/mypage/orders/{oid}", method = RequestMethod.POST)
+	public String orderCancel(@PathVariable long oid, RedirectAttributes rattrs) {
+		Optional<OrderVO> order = mypageService.findOrderById(oid);
+		if(order.isPresent()) {
+			order.get().setOrderStatus("구매취소");
+			mypageService.updateOrder(order.get());
+			rattrs.addFlashAttribute("result","success");
+		}
+		else rattrs.addFlashAttribute("result","failed");
+		return "redirect:/mypage/orders";
+	}
+	
+	
+	// 구매취소 항목 확인 
+	@RequestMapping(value = "/mypage/updateorders", method = RequestMethod.GET)
+	public String updateorders(Model model, HttpSession session, PageVO pageVO, HttpServletRequest request) {
+		
+		
+		UserVO user = (UserVO)session.getAttribute("user");
+
+		String[] types = {"userPhone","orderCancel","orderReturn", "orderChange"};
+		Object[] keywords = {user, "구매취소", "반품완료", "교환완료"};
+
+		// RedirectAttributes를 통해서 받기
+		PageVO pageVO2 = null;
+		 
+		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+		if (flashMap != null) {
+			String resultmsg = (String) flashMap.get("resultmsg");
+			model.addAttribute("msg", resultmsg);
+			pageVO2 = (PageVO) flashMap.get("pageVO");
+			if(pageVO2!=null) {
+				pageVO = pageVO2;
+			} 
+		}
+
+		
+		System.out.println(pageVO);
+		
+		if(pageVO == null) pageVO = PageVO.builder().page(1).size(5).type(types).keyword(keywords).build();
+		
+		// 무슨일이 있어도 user는 적용되어야함 
+		pageVO.setKeyword(keywords);
+		pageVO.setType(types);
+		
+		Pageable paging = pageVO.makePaging(0, "orderNum"); // sort Direction, sort할 칼럼
+		Predicate pre = orderRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
+		Page<OrderVO> result = orderRepo.findAll(pre, paging);
+		System.out.println(new PageMaker<>(result));
+		model.addAttribute("orders", new PageMaker<>(result));
+		model.addAttribute("pageVO",pageVO);
+		
+//
+//		model.addAttribute("orders", orders);
+	
+		
+		return "user/mypage/updateorders";
 	}
 
 }

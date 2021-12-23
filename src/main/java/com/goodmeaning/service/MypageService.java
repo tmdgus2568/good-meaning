@@ -26,7 +26,7 @@ public class MypageService {
 	@Autowired
 	OrderDetailRepository orderDetailRepo;
 
-	public void update(UserVO user) {
+	public void updateUser(UserVO user) {
 		userRepo.save(user);
 		
 	}
@@ -37,6 +37,11 @@ public class MypageService {
 	
 	public Optional<OrderVO> findOrderById(long oid){
 		return orderRepo.findById(oid);
+	}
+	
+	// order 업데이트를 위한 save 
+	public void updateOrder(OrderVO order) {
+		orderRepo.save(order);
 	}
 	
 	
