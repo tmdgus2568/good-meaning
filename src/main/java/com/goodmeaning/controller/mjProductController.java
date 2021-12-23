@@ -32,7 +32,7 @@ public class mjProductController {
 
 	@RequestMapping("/productlist")
 	public String selectAll(Model model, PageVO pageVO, HttpSession session, HttpServletRequest request, Category category) {
-
+	
 		Predicate p = prepo.makePredicate(pageVO.getType(), pageVO.getKeyword()); // pvo변수로 받아온 값으로 주기
 		// Pageable pageable = PageRequest.of(0, 3);
 		Pageable pageable = pageVO.makePaging(pageVO.getPage(), "productNum"); // bno 기준으로 desc정렬
