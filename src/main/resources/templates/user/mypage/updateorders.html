@@ -14,6 +14,15 @@
 <section class="panel panel-default" layout:fragment="content" align="center">
 	<h2 align="left">구매내역</h2>
 	<br>
+	<form action="/mypage/updateorders" method="get" id="filter_form">
+		<div align="left">
+			<label><input type="radio" id="all_radio" value="전체" name="filter"> 전체</label>
+			<label><input type="radio" id="cancel_radio" value="구매취소" name="filter"> 구매취소</label>
+   			<label><input type="radio" id="return_radio" value="반품" name="filter"> 반품</label>
+    		<label><input type="radio" id="change_radio" value="교환" name="filter"> 교환</label>
+		</div>
+	</form>
+
 
 	<table class="table table-striped table-bordered table-hover">
 		<tr>
@@ -62,13 +71,14 @@
 	     </ul>
 	   </div>
 	  </nav>
-	  <form id="f1" th:action="@{/mypage/orders}" method="get">
-	    <input type="hidden" name="page" th:value="${orders.currentPageNum}">
-	    <input type="hidden" name="size" th:value="${orders.currentPage.pageSize}">
-<!-- 	    <input type="hidden" name="type" th:value="${pageVO.type}">
-	    <input type="hidden" name="keyword" th:value="${pageVO.keyword}"> -->
+	  <form id="f1" th:action="@{/mypage/updateorders}" method="get">
+	    <input name="page" th:value="${orders.currentPageNum}" hidden="true">
+	    <input name="size" th:value="${orders.currentPage.pageSize}" hidden="true">
+	    <input name="type" th:value="${pageVO.type[1]}" hidden="true">
+	    <input name="keyword" th:value="${pageVO.keyword[1]}" hidden="true">
 	    
 	 </form>
+	 <input type="text" th:value="${param.filter}" id="param_filter" hidden="true">
 
 </section>
 
@@ -83,19 +93,39 @@ $(function() {
 		alert('구매취소에 실패하였습니다. 다시 진행해 주세요.');
 	}
 	
+	// filter에 따라 radio check
+	switch($("#param_filter").val()){
+		case "구매취소":
+			$("#cancel_radio").attr("checked","checked");
+			break;
+		case "반품":
+			$("#return_radio").attr("checked","checked");
+			break;
+		case "교환":
+			$("#change_radio").attr("checked","checked");
+			break;
+		case "전체":
+		case "":
+			$("#all_radio").attr("checked","checked");
+			break;
+	}
+	
+	
 	var formObj = $("#f1"); //폼을 가져온다.
 	$(".pagination a").click(function(e) {
 		e.preventDefault(); //본래의 event(기능)을 취소(link 취소)
 		formObj.find("[name='page']").val($(this).attr("href"));
 		formObj.submit();
 	});
-	
-	$(".order_cancel").submit(function() {
-		if(confirm('정말 구매를 취소하시겠습니까?') == true){
-			return true;
-		}
-		return false;
+	$("input[name=filter]").click(function(){
+		$("#filter_form").submit();
+		
 	});
+	
+	
+	
+	
+
 });
 
 
