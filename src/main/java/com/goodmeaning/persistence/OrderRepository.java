@@ -31,11 +31,9 @@ public interface OrderRepository extends CrudRepository<OrderVO, Long> ,Querydsl
 		// where usePhone=? 조건문 사용 
 		
 		builder.and(order.userPhone.eq((UserVO)keyword[0]));
-//		if(type.length > 1) {
-//			for(int i=1;i<type.length;i++) {
-//				builder.and(order.orderStatus.in((String)keyword[i]));
-//			}
-//		}
+		if(type.length > 1 && !keyword[1].equals("전체")) {
+			builder.and(order.orderStatus.eq((String)keyword[1]));
+		}
 		return builder;
 	}
 }
