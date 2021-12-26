@@ -26,7 +26,11 @@
 			<th>리뷰확인</th>
 		
 		</tr>
+		<tr th:if="${#lists.size(reviews.result.content)}==0">
+			<td colspan="8">등록된 리뷰가 없습니다.</td>
+		</tr>
 		<tr th:each="review:${reviews.result.content}">
+			
 			<td th:text="${review.reviewNum}"></td> <!-- 주문번호 -->  
 			<td> <!-- 이미지 -->  
 				<img th:src="${review.orderDetail.productNum.productMainimg1}" width="80" height="80">

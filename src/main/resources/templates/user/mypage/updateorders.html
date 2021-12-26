@@ -34,6 +34,9 @@
 			<th>구매날짜</th>
 			<th>변경날짜</th>
 		</tr>
+		<tr th:if="${#lists.size(orders.result.content)}==0">
+			<td colspan="7">주문목록이 없습니다.</td>
+		</tr>
 		<tr th:each="order:${orders.result.content}">
 			<td th:text="${order.orderNum}"></td> <!-- 주문번호 -->  
 			<td> <!-- 이미지 -->  
