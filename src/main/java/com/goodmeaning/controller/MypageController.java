@@ -25,12 +25,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.goodmeaning.persistence.OrderRepository;
+import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.service.MypageService;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.PageMaker;
 import com.goodmeaning.vo.PageVO;
 import com.goodmeaning.vo.ProductVO;
+import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserVO;
 import com.querydsl.core.types.Predicate;
 
@@ -40,6 +42,8 @@ public class MypageController {
 	MypageService mypageService;
 	@Autowired
 	OrderRepository orderRepo;
+	@Autowired
+	ReviewRepository reviewRepo;
 
 	
 	// 회원수정 
@@ -68,29 +72,7 @@ public class MypageController {
 		String[] types = {"userPhone","orderStatus"};
 		Object[] keywords = {user,"전체"};
 
-		// RedirectAttributes를 통해서 받기
-		PageVO pageVO2 = null;
-		 
-		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-		if (flashMap != null) {
-			String resultmsg = (String) flashMap.get("resultmsg");
-			model.addAttribute("msg", resultmsg);
-	
-			pageVO2 = (PageVO) flashMap.get("pageVO");
-			if(pageVO2!=null) {
-				pageVO = pageVO2;
-			} 
-		}
-
-		
-		System.out.println(pageVO);
-		
-		
-		// 아무것도 없을 때 
-		if(pageVO.getType() == null) {
-			pageVO = PageVO.builder().page(pageVO.getPage()).size(5).type(types).keyword(keywords).build();
-	
-		}
+		pageVO = makePage(types, keywords, pageVO, model, request);
 
 		
 		Pageable paging = pageVO.makePaging(0, "orderNum"); // sort Direction, sort할 칼럼
@@ -130,6 +112,8 @@ public class MypageController {
 		return "redirect:/mypage/orders";
 	}
 	
+
+	
 	
 	// 구매취소 항목 확인 
 	// 파라미터 이름이 똑같다면 어노테이션 달지 않아도 된다. 
@@ -138,7 +122,7 @@ public class MypageController {
 		UserVO user = (UserVO)session.getAttribute("user");
 
 		String[] types = {"userPhone","orderStatus"};
-		Object[] keywords = {user,"전체"};
+		Object[] keywords = {user,"전체"}; // default
 		
 		System.out.println(filter);
 		
@@ -146,6 +130,47 @@ public class MypageController {
 			keywords[1] = filter;
 		}
 
+	    pageVO = makePage(types, keywords, pageVO, model, request);
+
+		
+		Pageable paging = pageVO.makePaging(0, "orderNum"); // sort Direction, sort할 칼럼
+		Predicate pre = orderRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
+		Page<OrderVO> result = orderRepo.findAll(pre, paging);
+		System.out.println(new PageMaker<>(result));
+		model.addAttribute("orders", new PageMaker<>(result));
+		model.addAttribute("pageVO",pageVO);
+	
+		
+		return "user/mypage/updateorders";
+	}
+	
+	
+	// 리뷰 내역 있는것만 불러오기 
+	// 
+	@RequestMapping(value = "/mypage/reviews", method = RequestMethod.GET)
+	public String reviews(Model model, HttpSession session, PageVO pageVO, HttpServletRequest request) {
+		
+		
+		UserVO user = (UserVO)session.getAttribute("user");
+
+		String[] types = {"userPhone"};
+		Object[] keywords = {user};
+
+		pageVO = makePage(types, keywords, pageVO, model, request);
+		
+		Pageable paging = pageVO.makePaging(0, "reviewNum"); // sort Direction, sort할 칼럼
+		Predicate pre = reviewRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
+		Page<ReviewVO> result = reviewRepo.findAll(pre, paging);
+		System.out.println(new PageMaker<>(result));
+		model.addAttribute("reviews", new PageMaker<>(result));
+		model.addAttribute("pageVO",pageVO);
+	
+		
+		return "user/mypage/reviews";
+	}
+	
+	
+	public PageVO makePage(String[] types, Object[] keywords, PageVO pageVO, Model model, HttpServletRequest request) {
 		// RedirectAttributes를 통해서 받기
 		PageVO pageVO2 = null;
 		 
@@ -178,62 +203,8 @@ public class MypageController {
 			pageVO = PageVO.builder().page(pageVO.getPage()).size(5).type(types).keyword(keywords).build();
 	
 		}
-
 		
-		Pageable paging = pageVO.makePaging(0, "orderNum"); // sort Direction, sort할 칼럼
-		Predicate pre = orderRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
-		Page<OrderVO> result = orderRepo.findAll(pre, paging);
-		System.out.println(new PageMaker<>(result));
-		model.addAttribute("orders", new PageMaker<>(result));
-		model.addAttribute("pageVO",pageVO);
-	
-		
-		return "user/mypage/updateorders";
-	}
-	
-	
-	// radio 체크 (ajax)
-	@RequestMapping("/mypage/updateorders/filter")
-	@ResponseBody
-	public Map<String, Object> orderStatusFilter(String event, HttpSession session, PageVO pageVO, HttpServletRequest request){
-		Map<String, Object> map = new HashMap<>();
-		
-		UserVO user = (UserVO)session.getAttribute("user");
-
-		String[] types = {"userPhone","orderStatus"};
-		Object[] keywords = {user, event};
-
-		// RedirectAttributes를 통해서 받기
-		PageVO pageVO2 = null;
-		 
-		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-		if (flashMap != null) {
-			String resultmsg = (String) flashMap.get("resultmsg");
-			map.put("msg", resultmsg);
-			pageVO2 = (PageVO) flashMap.get("pageVO");
-			if(pageVO2!=null) {
-				pageVO = pageVO2;
-			} 
-		}
-
-		
-		System.out.println(pageVO);
-		
-		if(pageVO == null) pageVO = PageVO.builder().page(1).size(5).type(types).keyword(keywords).build();
-		
-		// 무슨일이 있어도 user는 적용되어야함 
-		pageVO.setKeyword(keywords);
-		pageVO.setType(types);
-		
-		Pageable paging = pageVO.makePaging(0, "orderNum"); // sort Direction, sort할 칼럼
-		Predicate pre = orderRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
-		Page<OrderVO> result = orderRepo.findAll(pre, paging);
-		System.out.println(new PageMaker<>(result));
-		map.put("orders", new PageMaker<>(result));
-		map.put("pageVO",pageVO);
-		
-		return map;
-		
+		return pageVO;
 	}
 	
 

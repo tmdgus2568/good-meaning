@@ -11,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.ProductRepository;
+import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.service.LoginService;
 import com.goodmeaning.service.MypageService;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.ProductVO;
+import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserRole;
 import com.goodmeaning.vo.UserVO;
 
@@ -39,6 +41,10 @@ public class ShTest {
 	
 	@Autowired
 	MypageService mservice;
+	
+	@Autowired
+	ReviewRepository rrepo;
+	
 	
 	
 	
@@ -76,7 +82,7 @@ public class ShTest {
 		urepo.deleteById("[object Object][object Object][object Object]");
 	}
 	
-	@Test
+	//@Test
 	public void orderInsert() {
 		Optional<ProductVO> product1 = prepo.findById(820L);
 		Optional<ProductVO> product2 = prepo.findById(810L);
@@ -134,5 +140,19 @@ public class ShTest {
 			System.out.println(order.get());
 		
 	}
-
+	
+	@Test
+	public void insertReview() {
+		Optional<OrderDetailVO> product2 = odrepo.findById(897L);
+		Optional<UserVO> user = urepo.findById("01011111111");
+		ReviewVO review = ReviewVO.builder()
+							.reviewTitle("test")
+							.reviewContent("testtest")
+							.orderDetail(product2.get())
+							.userPhone(user.get())
+							.build();
+		
+		rrepo.save(review);
+	}
+	
 }
