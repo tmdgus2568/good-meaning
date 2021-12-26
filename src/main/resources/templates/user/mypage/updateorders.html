@@ -34,6 +34,9 @@
 			<th>구매날짜</th>
 			<th>변경날짜</th>
 		</tr>
+		<tr th:if="${#lists.size(orders.result.content)}==0">
+			<td colspan="7">주문목록이 없습니다.</td>
+		</tr>
 		<tr th:each="order:${orders.result.content}">
 			<td th:text="${order.orderNum}"></td> <!-- 주문번호 -->  
 			<td> <!-- 이미지 -->  
@@ -86,12 +89,6 @@
 <th:block layout:fragment="script">
 <script>
 $(function() {
-	if($("#iscancel").val() == 'success'){
-		alert('구매취소를 완료하였습니다.');
-	}
-	if($("#iscancel").val() == 'failed'){
-		alert('구매취소에 실패하였습니다. 다시 진행해 주세요.');
-	}
 	
 	// filter에 따라 radio check
 	switch($("#param_filter").val()){

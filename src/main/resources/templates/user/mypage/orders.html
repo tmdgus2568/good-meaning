@@ -28,6 +28,9 @@
 			<th>운송장번호</th>
 			<th>취소가능여부</th>
 		</tr>
+		<tr th:if="${#lists.size(orders.result.content)}==0">
+			<td colspan="8">주문목록이 없습니다.</td>
+		</tr>
 		<tr th:each="order:${orders.result.content}">
 			<td th:text="${order.orderNum}"></td> <!-- 주문번호 -->  
 			<td> <!-- 이미지 -->  
