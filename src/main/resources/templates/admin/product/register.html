@@ -22,19 +22,13 @@
 				<tr>
 					<th>상품명</th>
 					<td>
-						<input type="text" class="form-control form-control-plaintext" id="productName" name="productName" placeholder="(click)상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='(click)상품명 입력'" required />
+						<input type="text" class="form-control-plaintext" id="productName" name="productName" placeholder="상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품명 입력'" required />
 					</td>
 				</tr>
 				<tr>
 					<th>판매가</th>
 					<td>
-						<div class="d-flex align-items-end">
-							<div class="col-2">
-								<input type="text" pattern="[0-9]+" class="form-control" id="productPrice" name="productPrice" required />
-							</div>
-							<div id="keyupPrice">
-							</div>
-						</div>
+						<input type="text" pattern="[0-9]+" class="form-control-plaintext" id="productPrice" name="productPrice" placeholder="판매가 입력" onfocus="this.placeholder=''" onblur="this.placeholder='판매가 입력'" required />
 					</td>
 				</tr>
 				<tr>
@@ -71,15 +65,14 @@
 								</div>
 							</div>
 							<div class="form-group d-flex justify-content-start align-items-end" id="option2">
-								<div class="col-3">
+								<div class="col-3" >
 									<label class="optLable" for="optionName"><b>옵션명</b></label>
 									<input class="form-control" id="optionName" name="optionName" type="text" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'" />
 								</div>
 								<div class="col-3">
 									<label class="optLable"for="optionPrice"><b>추가금액</b></label>
-									<input class="form-control" pattern="[0-9]+" id="optionPrice" name="optionPrice" type="text" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'"/>
-								</div>
-								<div id="keyupOptionPrice">
+									<input class="optionPrice form-control" pattern="[0-9]+" id="optionPrice" name="optionPrice" type="text" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'"
+										onkeyup="onKeyup(this);" />
 								</div>
 								<div class="col-1">
 									<input type="button" id="addOptionBtn" value="add_to_photos" class="btn form-control material-icons">
@@ -97,21 +90,13 @@
 					<td>
 						<div class="d-flex justify-content-around mb-2" th:each="num : ${#numbers.sequence(1,4)}">
 							<div class="custom-file">
-								<input type="file" class="custom-file-input" th:id="|productMainimg${num}|" name="uploadFile" 
-									 > <!-- th:placeholder="|Choose File${num}|" onfocus="this.placeholder=''" th:onblur="this.placeholder='|Choose File${num}|'" -->
+								<input type="file" class="custom-file-input" th:id="|productMainimg${num}|" name="uploadFile" accept="image/*">
 								<label class="custom-file-label" th:for="|productMainimg${num}|" >Choose File[[${num}]]</label>
 							</div>
 							<div class="col-1">
-								<input type="button" value="delete" class="btn form-control btnDelete material-icons">
-									<!-- th:id="|editDeleteBtn${num}|"  -->
+								<input type="button" th:id="|editDeleteBtn${num}|" value="delete" class="btn form-control btnDelete material-icons">
 							</div>
 						</div>
-						<!-- a미리보기 나중에 -->
-<!-- 						<div class="images d-flex justify-content-around" th:each="num : ${#numbers.sequence(1,4)}">
-							<div class="preview" th:id="|preview${num}|">
-							</div>
-						</div> -->
-
 					</td>
 				</tr>
 				<tr>
@@ -119,11 +104,11 @@
 					<td>
 						<div class="d-flex justify-content-around">
 							<div class="custom-file">
-								<input type="file" class="custom-file-input" id="productDetailimg" name="uploadFile" required>
+								<input type="file" class="custom-file-input" id="productDetailimg" name="uploadFile" accept="image/*" required>
 								<label class="custom-file-label" for="productDetailimg">Choose File</label>
 							</div>
 							<div class="col-1">
-								<button id="deleteBtn5" class="btn form-control btnDelete" hidden="true">삭제</button>
+								<button class="btn form-control btnDelete" hidden="true">삭제</button>
 							</div>
 						</div>
 					</td>
@@ -131,91 +116,14 @@
 				
 			</table>
 			<input type="hidden" name="postingState" value="게시중">
-			<button type="submit" id="registerBtn" class="btn btn-default float-right" onClick="alert('상품을 등록하시겠습니까?')">등록</button>
+			<button type="submit" id="registerBtn" class="btn btn-default float-right" onClick="checkInputData();">등록</button>
 		</form>
 	</div>
 	
 	<!-- JavaScript -->
 	<th:block layout:fragment="script">
-		<script>
-		
-		    
-		
-			// 옵션 사용/사용안함 선택
-			$('#optionNo').click(function(){
-				$('#demo').css("display", "none") //data-toggle="collapse" data-target="#demo"
-			});
-			$("#optionYes").click(function(){
-				$("#demo").css("display", "block");
-			});
-			
-			// 옵션 중 other 선택 시..
-			$("select[name='optionCategory']").change(function(){ //#optionCategory
-				var optionVal = $(this).val();
-				if(optionVal == "Other") {
-					$("#writeOther").attr("type", "text");
-				} else {
-					$("#writeOther").attr("type", "hidden");
-				}
-			});
-			
-			// 파일 삭제
-			$(".btnDelete").click(function () {
-				$(this).parent().parent().find("input[type='file']").val('');
-				var a = $(this).parent().parent().find("label").html('Choose File[[${num}]]');
-				console.log(a);
-			});
-			
-			//대표이미지 파일1 requried 
-			$("#productMainimg1").attr("required", true);
-					
-	 		//첨부파일 이름 보이기
-			$(".custom-file-input").on("change", function() {
-				var fileName = $(this).val().split("\\").pop();
-				$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-			});
-			
-			//카테고리 checkbox 선택시 required 해제
-			var tmp = document.getElementsByName('productCategory');
-			console.log(tmp);
-			$(".productCategory").change(function(){
-				for(var i = 0; i < tmp.length; i++) {
-					console.log(tmp[i].checked);
-					if(tmp[i].checked == true){
-						$(".productCategory").attr("required", false);
-						break;
-					} else if(i == tmp.length-1){
-						$(".productCategory").attr("required", true);
-					}
-				}
-			});
-			
-			//옵션추가 클릭시 옵션명/추가금액 추가
-			$(".deleteBtn").css("display", "none");
-			$("#addOptionBtn").click(function(){
-		 		 $("#option2").clone(true).appendTo("#addOptions");	 
-		 		 $(".deleteBtn").css("display", "block");
-		 		 $(".deleteBtn").first().css("display", "none");
-		 		 $(".optLable").css("display", "none");
-		 		 $(".optLable").slice(0, 2).css("display", "block");
-				 $('.deleteBtn').on('click', function () { 
-	                    $(this).parent().parent().remove ();
-	             });
-			});
-			
-		    //금액 keyup(판매가)
- 		    $("#productPrice").keyup(function(){
-				$("#keyupPrice").text($("#productPrice").val().replace(/[^0-9]/g,"").toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").concat("원"));
-			});
-		    
- 		    //금액 keyup(추가금액-총금액)
- 		    $("#optionPrice").keyup(function(){
- 		    	var totalPrice = Number($("#productPrice").val()) + Number($("#optionPrice").val());
-				$("#keyupOptionPrice").text(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").concat("원")).toString();
-			
-			});
+		<script type="text/javascript" src="/js/productRegister.js">
 		</script>
 	</th:block>
-	
 </body>
 </html>
