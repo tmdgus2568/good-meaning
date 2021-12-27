@@ -49,9 +49,14 @@ public class MypageService {
 		orderRepo.save(order);
 	}
 	
-	// review 가져오기
+	// reviews 가져오기
 	public List<ReviewVO> reviews(UserVO user){
 		return reviewRepo.findByUserPhone(user);
+	}
+	
+	// review 가져오기
+	public Optional<ReviewVO> review(long no){
+		return reviewRepo.findById(no);
 	}
 	
 

@@ -143,11 +143,11 @@ public class ShTest {
 	
 	@Test
 	public void insertReview() {
-		Optional<OrderDetailVO> product2 = odrepo.findById(897L);
+		Optional<OrderDetailVO> product2 = odrepo.findById(899L);
 		Optional<UserVO> user = urepo.findById("01011111111");
 		ReviewVO review = ReviewVO.builder()
-							.reviewTitle("test")
-							.reviewContent("testtest")
+							.reviewTitle("test222")
+							.reviewContent("testtest222")
 							.orderDetail(product2.get())
 							.userPhone(user.get())
 							.build();
