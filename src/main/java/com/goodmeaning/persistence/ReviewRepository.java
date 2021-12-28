@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 
-
+import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.QReviewVO;
 import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserVO;
