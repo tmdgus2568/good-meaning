@@ -32,6 +32,7 @@ public class ReviewController {
 
 		Long pno = Long.parseLong((String) param.get("pno"));
 		ProductVO product = prepo.findById(pno).orElse(null);
+		
 		List<ReviewVO> rlist = rrepo.findByProductNum(product);
 		model.addAttribute("rlist", rlist);
 		

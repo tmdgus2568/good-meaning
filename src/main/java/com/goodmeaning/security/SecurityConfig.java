@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	protected void configure(HttpSecurity http) throws Exception {
 		log.info("!!!!!!security config..........");
-		//http.csrf().disable();
+		http.csrf().disable();
 	
 		// antMatchers url 패턴에 대한 접근허용
 		// permitAll: 모든사용자가 접근가능하다는 의미

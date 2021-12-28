@@ -62,7 +62,6 @@ public class ReviewVO {
 	@Column(nullable = false)
 	@ColumnDefault("0")
 	private int reviewLike;
-	
 
 	@JoinColumn(name="orderDetail")
 	@OneToOne
@@ -71,10 +70,10 @@ public class ReviewVO {
 	@JoinColumn(name="userPhone")
 	@ManyToOne
 	UserVO userPhone;
-//	
-//	@JoinColumn(name="productNum")
-//	@ManyToOne
-//	ProductVO productNum;
+	
+	@JoinColumn(name="productNum")
+	@ManyToOne
+	ProductVO productNum;
 	
 //	@JoinColumn(name="orderDetailNum")
 //	@ManyToOne
