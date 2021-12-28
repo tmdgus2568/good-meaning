@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 
-
+import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.QReviewVO;
 import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserVO;
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Predicate;
 
 public interface ReviewRepository extends CrudRepository<ReviewVO, Long>,QuerydslPredicateExecutor<ReviewVO>{
 
-	List<ReviewVO> findByProductNum(ProductVO product);
+	List<ReviewVO> findByProduct(ProductVO product);
 	List<ReviewVO> findByUserPhone(UserVO userPhone);
 	List<ReviewVO> findAll(Sort s);
 	
