@@ -21,17 +21,17 @@ public interface ProductRepository extends CrudRepository<ProductVO, Long>, Quer
 	// 3.JPQL: @Query, nativeQuery=true
 	// 4.Querydsl 동적 SQL 문장 생성 가능
 
-	public default Predicate makePredicate(String type, String keyword) {
+	public default Predicate makePredicate(String[] type, Object[] keyword) {
 		BooleanBuilder builder = new BooleanBuilder();
 		QProductVO product = QProductVO.productVO;
-		builder.and(product.productNum.gt(0)); // 
+		builder.and(product.productNum.gt(0));
 		// 검색조건처리
-		if (type == null)
+		if (type == null || keyword.length == 0)
 			return builder;
-		switch (type) {
+		switch (type[0]) {
 		// and title like '%??%'
 		case "name":
-			builder.and(product.productName.like("%" + keyword + "%"));
+			builder.and(product.productName.like("%" + (String)keyword[0] + "%"));
 			break;
 		default:
 			break;

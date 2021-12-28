@@ -19,16 +19,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.goodmeaning.persistence.OrderRepository;
+import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.service.MypageService;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.PageMaker;
 import com.goodmeaning.vo.PageVO;
 import com.goodmeaning.vo.ProductVO;
+import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserVO;
 import com.querydsl.core.types.Predicate;
 
@@ -38,6 +42,8 @@ public class MypageController {
 	MypageService mypageService;
 	@Autowired
 	OrderRepository orderRepo;
+	@Autowired
+	ReviewRepository reviewRepo;
 
 	
 	// 회원수정 
@@ -51,7 +57,7 @@ public class MypageController {
 	@RequestMapping(value = "/mypage/user", method = RequestMethod.POST)
 	public String updateUser(UserVO user) {
 		System.out.println(user);
-		mypageService.update(user);
+		mypageService.updateUser(user);
 		return "user/mypage/update";
 	}
 
@@ -63,30 +69,11 @@ public class MypageController {
 		
 		UserVO user = (UserVO)session.getAttribute("user");
 
-		String[] types = {"userPhone"};
-		Object[] keywords = {user};
+		String[] types = {"userPhone","orderStatus"};
+		Object[] keywords = {user,"전체"};
 
-		// RedirectAttributes를 통해서 받기
-		PageVO pageVO2 = null;
-		 
-		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-		if (flashMap != null) {
-			String resultmsg = (String) flashMap.get("resultmsg");
-			model.addAttribute("msg", resultmsg);
-			pageVO2 = (PageVO) flashMap.get("pageVO");
-			if(pageVO2!=null) {
-				pageVO = pageVO2;
-			} 
-		}
+		pageVO = makePage(types, keywords, pageVO, model, request);
 
-		
-		System.out.println(pageVO);
-		
-		if(pageVO == null) pageVO = PageVO.builder().page(1).size(5).type(types).keyword(keywords).build();
-		
-		// 무슨일이 있어도 user는 적용되어야함 
-		pageVO.setKeyword(keywords);
-		pageVO.setType(types);
 		
 		Pageable paging = pageVO.makePaging(0, "orderNum"); // sort Direction, sort할 칼럼
 		Predicate pre = orderRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
@@ -94,15 +81,13 @@ public class MypageController {
 		System.out.println(new PageMaker<>(result));
 		model.addAttribute("orders", new PageMaker<>(result));
 		model.addAttribute("pageVO",pageVO);
-		
-//
-//		model.addAttribute("orders", orders);
 	
 		
 		return "user/mypage/orders";
 	}
 	
-	@GetMapping("/mypage/orders/{oid}")
+	// 주문 상세 정보 확인 
+	@RequestMapping(value = "/mypage/orders/{oid}", method = RequestMethod.GET)
 	public String orderDetails(@PathVariable long oid, Model model) {
 		Optional<OrderVO> order = mypageService.findOrderById(oid);
 		int sum = 0;
@@ -113,5 +98,114 @@ public class MypageController {
 		}
 		return "/user/mypage/orderdetail";
 	}
+	
+	// 구매취소 누르기
+	@RequestMapping(value = "/mypage/orders/{oid}", method = RequestMethod.POST)
+	public String orderCancel(@PathVariable long oid, RedirectAttributes rattrs) {
+		Optional<OrderVO> order = mypageService.findOrderById(oid);
+		if(order.isPresent()) {
+			order.get().setOrderStatus("구매취소");
+			mypageService.updateOrder(order.get());
+			rattrs.addFlashAttribute("result","success");
+		}
+		else rattrs.addFlashAttribute("result","failed");
+		return "redirect:/mypage/orders";
+	}
+	
+
+	
+	
+	// 구매취소 항목 확인 
+	// 파라미터 이름이 똑같다면 어노테이션 달지 않아도 된다. 
+	@RequestMapping(value = "/mypage/updateorders", method = RequestMethod.GET)
+	public String updateorders(Model model, HttpSession session, PageVO pageVO, HttpServletRequest request, String filter) {
+		UserVO user = (UserVO)session.getAttribute("user");
+
+		String[] types = {"userPhone","orderStatus"};
+		Object[] keywords = {user,"전체"}; // default
+		
+		System.out.println(filter);
+		
+		if(filter != null) {
+			keywords[1] = filter;
+		}
+
+	    pageVO = makePage(types, keywords, pageVO, model, request);
+
+		
+		Pageable paging = pageVO.makePaging(0, "orderNum"); // sort Direction, sort할 칼럼
+		Predicate pre = orderRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
+		Page<OrderVO> result = orderRepo.findAll(pre, paging);
+		System.out.println(new PageMaker<>(result));
+		model.addAttribute("orders", new PageMaker<>(result));
+		model.addAttribute("pageVO",pageVO);
+	
+		
+		return "user/mypage/updateorders";
+	}
+	
+	
+	// 리뷰 내역 있는것만 불러오기 
+	// 
+	@RequestMapping(value = "/mypage/reviews", method = RequestMethod.GET)
+	public String reviews(Model model, HttpSession session, PageVO pageVO, HttpServletRequest request) {
+		
+		
+		UserVO user = (UserVO)session.getAttribute("user");
+
+		String[] types = {"userPhone"};
+		Object[] keywords = {user};
+
+		pageVO = makePage(types, keywords, pageVO, model, request);
+		
+		Pageable paging = pageVO.makePaging(0, "reviewNum"); // sort Direction, sort할 칼럼
+		Predicate pre = reviewRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
+		Page<ReviewVO> result = reviewRepo.findAll(pre, paging);
+		System.out.println(new PageMaker<>(result));
+		model.addAttribute("reviews", new PageMaker<>(result));
+		model.addAttribute("pageVO",pageVO);
+	
+		
+		return "user/mypage/reviews";
+	}
+	
+	
+	public PageVO makePage(String[] types, Object[] keywords, PageVO pageVO, Model model, HttpServletRequest request) {
+		// RedirectAttributes를 통해서 받기
+		PageVO pageVO2 = null;
+		 
+		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+		if (flashMap != null) {
+			String resultmsg = (String) flashMap.get("resultmsg");
+			model.addAttribute("msg", resultmsg);
+	
+			pageVO2 = (PageVO) flashMap.get("pageVO");
+			if(pageVO2!=null) {
+				pageVO = pageVO2;
+			} 
+		}
+
+		
+		System.out.println(pageVO);
+		
+		
+		// 아무것도 없을 때 
+		if(pageVO.getType() == null) {
+			pageVO = PageVO.builder().page(pageVO.getPage()).size(5).type(types).keyword(keywords).build();
+	
+		}
+		
+		// filter 들어왔을 때 -> user는 넘어오지 않으므로 
+		else{
+//			types[1] = pageVO.getType()[0];
+			keywords[1] = pageVO.getKeyword()[0];
+			
+			pageVO = PageVO.builder().page(pageVO.getPage()).size(5).type(types).keyword(keywords).build();
+	
+		}
+		
+		return pageVO;
+	}
+	
 
 }

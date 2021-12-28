@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
+import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
+import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserVO;
 import com.querydsl.core.types.Predicate;
 
@@ -26,7 +28,10 @@ public class MypageService {
 	@Autowired
 	OrderDetailRepository orderDetailRepo;
 
-	public void update(UserVO user) {
+	@Autowired
+	ReviewRepository reviewRepo;
+	
+	public void updateUser(UserVO user) {
 		userRepo.save(user);
 		
 	}
@@ -39,8 +44,15 @@ public class MypageService {
 		return orderRepo.findById(oid);
 	}
 	
+	// order 업데이트를 위한 save 
+	public void updateOrder(OrderVO order) {
+		orderRepo.save(order);
+	}
 	
-	
+	// review 가져오기
+	public List<ReviewVO> reviews(UserVO user){
+		return reviewRepo.findByUserPhone(user);
+	}
 	
 
 }
