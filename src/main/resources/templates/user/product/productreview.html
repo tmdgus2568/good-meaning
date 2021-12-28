@@ -1,10 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script>
+	function test(a) {
+		
+		status = $("#detailcontent"+a).css("display")
+		if (status == "none") {
+			$("#detailcontent"+a).css("display", "");
+		} else {
+			$("#detailcontent"+a).css("display", "none");
+		}
+	}
+</script>
+ 
 </head>
 <body>
-
+	<table>
+		<tbody th:each="review, status:${rlist}" 
+		  
+			th:onclick="|test(${status.count})|" >
+			<tr>
+				<td hidden="" th:text="${review.reviewNum}"></td>
+				<td th:text="${review.reviewLike}"></td>
+			</tr>
+			<tr>
+				<td th:text="${review.productNum.productName}"></td>
+				<!-- <td th:text="${review.orderDetailNum}"></td> 옵션 -->
+			</tr>
+			<tr>
+				<td
+					th:text="${review.userPhone.userId} +' ' + ${#dates.format(review.reviewCreatedate, 'yyyy-MM-dd HH:mm')}"></td>
+			</tr>
+			<tr>
+				<td th:text="${review.reviewTitle}"></td>
+			</tr>
+			<tr>
+				<td th:text="${review.reviewContent}" style="display: none"
+					th:id="|detailcontent${status.count}|"></td>
+			</tr>
+			<tr>
+			    <td>
+					<table class="here">
+					   <tr><td>aaa</td></tr>
+					    <tr><td>bbbb</td></tr>
+					    <tr><td>cccccc</td></tr>
+					</table>
+				</td>
+			</tr> 
+			<tr> 
+			 <td> 
+			      <textarea rows="5" cols="50"></textarea>
+			      <button>등록하기</button>
+			      <hr>
+			 </td>
+			</tr>
+			
+			<!-- <td th:text="${review.reviewContent}"></td> 열리게 하기-->
+		</tbody>
+	</table>
+	
+	<a>리뷰쓰기</a>
 </body>
 </html>

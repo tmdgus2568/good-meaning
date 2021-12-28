@@ -9,6 +9,6 @@ import com.goodmeaning.vo.ReviewVO;
 
 public interface ReviewRepository extends CrudRepository<ReviewVO, Long>{
 
-	//List<ReviewVO> findByProduct(ProductVO product);
+	List<ReviewVO> findByProductNum(ProductVO product);
 	
 }
