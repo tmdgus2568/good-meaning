@@ -15,7 +15,7 @@ import com.querydsl.core.types.Predicate;
 
 public interface ReviewRepository extends CrudRepository<ReviewVO, Long>,QuerydslPredicateExecutor<ReviewVO>{
 
-	//List<ReviewVO> findByProduct(ProductVO product);
+	List<ReviewVO> findByProductNum(ProductVO product);
 	List<ReviewVO> findByUserPhone(UserVO userPhone);
 	List<ReviewVO> findAll(Sort s);
 	

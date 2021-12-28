@@ -17,13 +17,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.ProductOptionRepository;
 import com.goodmeaning.persistence.ProductRepository;
+import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.vo.Category;
+import com.goodmeaning.vo.OrderDetailVO;
+import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
+import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserRole;
 import com.goodmeaning.vo.UserVO;
 
@@ -32,6 +37,9 @@ public class mjTest {
 
 	@Autowired
 	OrderRepository orepo;
+	
+	@Autowired
+	OrderDetailRepository odrepo;
 
 	@Autowired
 	UserRepository urepo;
@@ -41,7 +49,12 @@ public class mjTest {
 
 	@Autowired
 	ProductOptionRepository oprepo;
+	
 
+	@Autowired
+	ReviewRepository rrepo;
+	
+	
 	private static String URL = "https://thepicker.net";
 
 	// @Test
@@ -390,7 +403,7 @@ public class mjTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void selectAll() {
 		prepo.findAll().forEach(a -> {
 			System.out.println(a.toString());
@@ -479,5 +492,25 @@ public class mjTest {
 		ProductOptionVO op = ProductOptionVO.builder().optionName("브라운+웨일블루").optionStock(50).productNum(pro).build();
 
 		oprepo.save(op);
+	}
+	
+	@Test
+	public void insertReview() {
+
+		ProductVO pro = prepo.findById(810L).get();
+		UserVO user = urepo.findById("01011111111").get();
+		System.out.println(user);
+		OrderDetailVO orderdetail = odrepo.findById(898L).get();
+
+		ReviewVO r = ReviewVO.builder()
+				.reviewTitle("최고에유")
+				.reviewContent("튼튼해요^^")
+				.reviewLike(1)
+				.userPhone(user)
+				.productNum(pro)
+				.orderDetailNum(orderdetail)
+				.build();
+		
+		rrepo.save(r);			
 	}
 }

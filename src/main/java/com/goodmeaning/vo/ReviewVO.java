@@ -76,6 +76,10 @@ public class ReviewVO {
 //	@ManyToOne
 //	ProductVO productNum;
 	
+	@JoinColumn(name="orderDetailNum")
+	@ManyToOne
+	OrderDetailVO orderDetailNum;
+	
 //	@BatchSize(size=100)
 //	@JsonIgnore
 //	@OneToMany(mappedBy = "review_num",

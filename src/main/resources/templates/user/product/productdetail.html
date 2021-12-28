@@ -44,7 +44,18 @@ window.onload = function() {
 	}
 	
 	function call2(){
-		here.innerHTML = "";
+		$.ajax({
+			url : "productreview",
+			type : "POST",
+			data : {
+				pno : "[[${product.productNum}]]"
+			},
+			dataType: "html",
+			type : "post",
+			success : function(responseData) { //responseData는 들어오는 값
+			$("#here").html(responseData);
+			}
+		});
 	}
 	
 	function call3(){

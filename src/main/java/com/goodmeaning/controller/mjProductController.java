@@ -16,13 +16,11 @@ import org.springframework.data.domain.Pageable;
 import com.querydsl.core.types.Predicate;
 import com.goodmeaning.persistence.ProductOptionRepository;
 import com.goodmeaning.persistence.ProductRepository;
-import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.vo.Category;
 import com.goodmeaning.vo.PageMaker;
 import com.goodmeaning.vo.PageVO;
 import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
-import com.goodmeaning.vo.ReviewVO;
 
 @Controller
 public class mjProductController {
@@ -34,7 +32,7 @@ public class mjProductController {
 	ProductOptionRepository porepo;
 
 	@RequestMapping("/productlist")
-	public String selectAll(Model model, PageVO pageVO, HttpSession session, HttpServletRequest request,
+	public String selectAll(Model model, PageVO pageVO, HttpServletRequest request,
 			Category category) {
 
 		Predicate p = prepo.makePredicate(pageVO.getType(), pageVO.getKeyword()); // pvo변수로 받아온 값으로 주기
