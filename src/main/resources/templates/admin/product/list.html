@@ -8,95 +8,402 @@
 <title>상품목록</title>
 <!-- <th:block layout:fragment="style">
 	<style>
-		div {border:1px solid gray;}
+
 	</style>
 </th:block> -->
 
 </head>
 <body>
 
-	<div class="panel panel-default" layout:fragment="content">
-		<a th:href="@{/admin/register}">게시판쓰기</a>
-		<p>[[${msg}]]</p>
-		
-		<div class="pull-left">
-			<select id="searchType">
-				<option>전체</option>
-				<option value="productNum" th:selected="${pageVO.type=='productNum'}">상품번호</option>
-				<option value="productName" th:selected="${pageVO.type=='productName'}">상품이름</option>
-			</select> <input type="text" id="searchKeyword" th:value="${pageVO.keyword}">
-			<button id="searchBtn">조건검색</button>
-			<img alt="이미지" th:src="@{/images/coffee-blue.jpg}" width="50px"
-				height="50px">
+	<div layout:fragment="content">
+		<h4>상품검색</h4>
+		<hr>
+		<div id="searchBox" class="mt-4">
+			<div class="input-group mb-3">
+				<div class="input-group-prepend">
+					<span class="input-group-text">검색어</span>
+				</div>
+				<input type="text" id="searchKeyword1" class="form-control" th:value="${pageVO.keyword!=null?pageVO.keyword[0]:''}" placeholder="상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품명 입력'">
+				<input type="text" id="searchKeyword2" class="form-control" th:value="${pageVO.keyword!=null?pageVO.keyword[1]:''}" placeholder="상품번호 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품번호 입력'">
+			</div>
+			<label for="selectPeriod">기간선택</label>
+			<div class="form-row" id="selectPeriod">
+				<!-- <span >From</span> -->
+			    <div class="col input-group mb-3">
+			        <div class="input-group-prepend">
+			          <span class="input-group-text"><i class="material-icons">date_range</i></span>
+			        </div>
+			        <input type="text" class="form-control datepicker" id="datepicker1" placeholder="날짜선택" name="datepicker"
+			        	th:value="${pageVO.keyword!=null?pageVO.keyword[2]:''}">
+			    </div>
+			    <div class="mt-2 ml-3 mr-3">
+			    	<span class="input-group-addon"><i class="material-icons">play_arrow</i></span>
+			    </div>
+			    <div class="col input-group mb-3">
+			        <div class="input-group-prepend">
+			          <span class="input-group-text"><i class="material-icons">date_range</i></span>
+			        </div>
+			        <input type="text" class="form-control datepicker"  id="datepicker2" placeholder="날짜선택" name="datepicker"
+			        	th:value="${pageVO.keyword!=null?pageVO.keyword[3]:''}">
+			    </div>
+			</div>
+			<label for="statePosting">게시상태</label>
+			<div id="statePosting">
+				<div class="form-check-inline">
+					<label class="form-check-label"><input type="radio" class="form-check-input" id="all" name="postingState" value="전체" 
+					th:checked="${pageVO.keyword==null || pageVO.keyword[4]=='전체'}">전체</label>
+				</div>
+				<div class="form-check-inline">
+					<label class="form-check-label"><input type="radio" class="form-check-input" value="게시중" name="postingState" th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='게시중'}">게시중</label>
+				</div>
+				<div class="form-check-inline">
+					<label class="form-check-label"><input type="radio" class="form-check-input" value="일시중단" name="postingState" th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='일시중단'}">일시중단</label>
+				</div>
+				<div class="form-check-inline">
+					<label class="form-check-label"><input type="radio" class="form-check-input" value="게시종료" name="postingState" th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='게시종료'}">게시종료</label>
+				</div>
+			</div>
+			<div class="d-flex justify-content-center mt-3">
+				<div>
+					<button class="btn btn-info mr-4" id="searchBtn"><i class="material-icons">&nbsp;&nbsp;search&nbsp;&nbsp;</i></button>
+				</div>
+				<div>
+					<button class="btn btn-danger" id="resetBtn"><i class="material-icons">&nbsp;&nbsp;cached&nbsp;&nbsp;</i></button>
+				</div>
+			</div>
 		</div>
-
-		<table class="table table-striped table-bordered table-hover">
-			<tr>
-				<th>상품번호</th>
-				<th>상품명</th>
-				<th>가격</th>
-				<th>재고</th>
-			</tr>
-			<tr th:each="product:${productList.result.content}">
-				<td th:text="${product.productNum}"></td>
-				<td th:text="${product.productName}"></td>
-				<td th:text="${product.productPrice}"></td>
-				<td th:text="${product.productStock}"></td>
-			</tr>
-		</table>
-
+        
+		<!-- 			<img alt="이미지" th:src="@{/images/coffee-blue.jpg}" width="50px"
+				height="50px"> -->
+		<div class="p-3 ">
+			<hr>
+		</div>
+		<div class="d-flex justify-content-between">
+			<div>
+				<p th:text="'총 ' + ${totalCount} + '건'"></p>
+			</div>
+			<div class="form-group" style="float:right; width:190px;">
+				<select id = "sortColumn" class="form-control"> <!-- asc desc 가져가는 방법 찾기 -->
+					<option value="productCreatedate0" th:selected="${sortColumn=='productCreatedate0'}">최신순</option>
+					<option value="productCreatedate1" th:selected="${sortColumn=='productCreatedate1'}">과거순</option>
+					<option value="productName1" th:selected="${sortColumn=='productName1'}">상품명(ㄱ~ㅎ)</option>
+					<option value="productName0" th:selected="${sortColumn=='productName0'}">상품명(ㅎ~ㄱ)</option>
+					<option value="productNum1" th:selected="${sortColumn=='productNum1'}">상품번호(오름차순)</option>
+					<option value="productNum0" th:selected="${sortColumn=='productNum0'}">상품번호(내림차순)</option>
+				</select>
+			</div>
+		</div>
+		<div>
+			<table id="prdlist"class="table table-bordered table-striped table-hover">
+				<thead>
+					<tr class="table-warning" > <!-- -->
+						<th>No.</th>
+						<th>상품번호 <i class="material-icons" style="font-size:15px">unfold_more</i></th>
+						<th>상품명<i class="material-icons" style="font-size:15px">unfold_more</i></th>
+						<th>등록일<i class="material-icons" style="font-size:15px">unfold_more</i></th>
+						<th>게시상태<i class="material-icons" style="font-size:15px">unfold_more</i></th>
+						<th>홈페이지</th>
+					</tr>
+				</thead>
+				<tbody id="myTable">
+					<tr th:each="product, pstate:${productPaging.result.content}" > <!-- 객체, status(반복상태변수)  -->
+						<td th:text="${pstate.count + (productPaging.currentPageNum-1) * productPaging.currentPage.pageSize}"></td>
+						<td th:text="${product.productNum}"></td>
+						<td th:text="${product.productName}">
+							<!-- <a class="boardLink" th:href="${product.productNum}" th:text="${product.productName}"></a> -->
+						</td>
+						<td th:text="${#dates.format(product.productCreatedate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${product.postingState}"></td>
+						<td>
+							<a th:href="@{/oreder/details(id=${product.productNum})}" target='_blank'>바로가기</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>	
 		<!-- paging -->
 		<nav>
+		<!--  페이지 없을때(previous, next) .disabled 추가 -->
 			<div>
-				<ul class="pagination">
-					<li class="page-item" th:if="${productList.prevPage}"><a
-						th:href="${productList.prevPage.pageNumber}+1">PREV
-							[[${productList.prevPage.pageNumber}+1]]</a></li>
-					<li class="page-item"
-						th:classappend="${p.pageNumber==productList.currentPageNum-1}?active:''"
-						th:each="p:${productList.pageList}"><a
-						th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a></li>
-					<li class="page-item" th:if="${productList.nextPage}"><a
-						th:href="${productList.nextPage.pageNumber}+1">NEXT
-							[[${productList.nextPage.pageNumber}+1]]</a></li>
+				<ul class="pagination justify-content-center">
+					<li class="page-item" th:if="${productPaging.prevPage}">
+						<a class="page-link" th:href="${productPaging.prevPage.pageNumber}+1">PREV</a>
+					</li>
+					<li class="page-item" th:classappend="${p.pageNumber==productPaging.currentPageNum-1}?active:''"
+						th:each="p:${productPaging.pageList}">
+						<a class="page-link" th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a>
+					</li>
+					<li class="page-item" th:if="${productPaging.nextPage}">
+						<a class="page-link" th:href="${productPaging.nextPage.pageNumber}+1">NEXT</a>
+					</li>
 				</ul>
 			</div>
 		</nav>
-		<form id="f1" th:action="@{list}" method="get">
-			<input type="text" name="page"
-				th:value="${productList.currentPageNum}"> <input type="text"
-				name="size" th:value="${productList.currentPage.pageSize}">
-			<input type="text" name="type" th:value="${pageVO.type}"> <input
-				type="text" name="keyword" th:value="${pageVO.keyword}">
+		//추후 hidden으로 변경
+		<form id="f1" th:action="@{list}" method="get" >
+			<input type="text" name="page" th:value="${productPaging.currentPageNum}"> 
+			<input type="text" name="size" th:value="${productPaging.currentPage.pageSize}">
+			<div th:each="num : ${#numbers.sequence(0,4)}">
+				<input type="text" name="type" value=""> 
+				<input type="text" name="keyword" value="">
+			</div>
+			<input type="text" id="sort" name="colmnName" th:value="${sortColumn}">
 		</form>
+		<div th:insert="~{admin/product/detailsModal :: modifyModal}"></div>
 	</div>
 
 	<th:block layout:fragment="script">
-		<script>
+		<script th:inline="javascript">
+			//jQuery는 ready를 여러번 쓸 수 있음. js는 불가능
+			
+			$(function() {
+				
+				//modal 띄우기
+				$("#myTable").on("click", "tr", function(){
+				    
+					var tds = $(this).find("td"); //여러개
+			    	var rno = tds[1].innerHTML;
+					alert(rno);
+					//일반컨트롤러에서 url 뒤에 / + 값 X (레스트컨트롤러에서만줌/값. 일반?키=값)
+					$.ajax({
+			            url:"/admin/detail?productNum=" + rno,
+			            success:function(responseData){
+			            	//console.log(responseData.optionPrice);
+			                  //JSON을 가져오기 {"키":"값 ", , , , , , ,}
+			          
+			                  //modal에 setting 
+			                //alert(responseData);
+			                //console.log(responseData);
+			               // var key = Object.keys(responseData);
+			                //var strobj = JSON.stringify(responseData); //$.each 불가
+			                //console.log(responseData.gets("optionCategory"));
+			                //console.log(responseData.name("optionNum"));
+			                //console.log(responseData.name("optionNum").value());
+			                
+			                 
+			                
+			               	
+			               
+			                
+			                
+			                //console.log(responseData.productNum.productNum); //'질감'
+							
+			                //$.each(responseData, function(name, value){
+				                //var str = "";
+			                	//str = "<p>" + name + "</p>";
+			                	//str += "<p>" + value + "</p>";
+			                	//console.log(name + " : " + value);
+			                	
+			                	//if($()){}
+			                	
+			                	//$(".modal-header").append(str);
+			                //});
+							$("#myModal").modal("show");
+							putDataList(responseData);
+			            }
+			        });
+	 				
+				});
+				
+				function putDataList(responseData){
+					//{"product":{}, "productOption":{}}
+					var product = responseData.product; 
+					var option = responseData.productOption;
+					
+					$("input[name='productNum']").val(product.productNum);
+	                $("input[name='productName']").val(product.productName);
+	                $("input[name='productPrice']").val(product.productPrice);
+	                $("input[name='productPrice']").val(product.productPrice);
+	                $("input[name='productCreatedate']").val(product.productCreatedate);
+	                $("input[name='productUpdatedate']").val(product.productUpdatedate);
+					$("#label1").text(product.productMainimg1);
+					$("#label2").text(product.productMainimg2);
+					$("#label3").text(product.productMainimg3);
+					$("#label4").text(product.productMainimg4);
+					$("#label5").text(product.productDetailimg);
+	                
+	                //체크박스확인필요
+	                console.log(product.productCategory); 
+	                 
+	                $('input:checkbox[name=productCategory]').each(function(index, item){
+	                	 
+	                	 
+	                	//console.log( $.inArray($(item).val(), product.productCategory)  );
+	                	//console.log($(item).attr("checked"));
+	                	//console.log(item);
+	                	if($.inArray($(item).val(), product.productCategory) == 0 ){
+	                		alert($(item).val());
+	                		$(item).attr("checked");
+	                	}
+	                });
+	                
+	             	if(option == null) {
+	             		//지우기 
+		             	$("input[name='optionName']").val("");
+		                $("input[name='optionPrice']").val("");
+	             		return;
+	             	}
+	                //옵션
+					$("#optionYes").attr("checked", "true");
+					$("#demo").css("display", "block");
+	                $("input[name='optionName']").val(option.optionName);
+	                $("input[name='optionPrice']").val(option.extraprice);
+	                
+	                var categories = $('#optionCategory').find('option').map(function() {return $(this).val();}).get();
+	                var checkCategory = categories.includes(option.optionCategory);
+	                if(checkCategory == false){
+	                	$('#optionCategory').val('Other').prop("selected",true);
+	                	$("#writeOther").attr("type", "text");
+	                	$("#writeOther").val(option.optionCategory);
+	                } else {
+	                	$('#optionCategory').val(option.optionCategory).prop("selected",true);
+	                }
+				}
+				
+				
+				//resetBtn 누를때
+				$("#resetBtn").click(function(){
+					var val = $("#searchBox").children('input');
+					
+					$('input').each(function(index, item){
+						console.log(index + " : " + $(item).val());
+						if(index < 4) {
+							$(item).val(''); 
+							$("input:radio[name ='postingState']:input[value='전체']").attr("checked", true);
+							$("#searchBtn").click();
+						}
+					});
+				});
+				
+				//datepicker 사용
+				$('.datepicker').datepicker({
+			    	  weekStart: 0,
+			    	  clearBtn: true,
+			    	  language: "ko",
+			    	  orientation: "auto right",
+			          keyboardNavigation: false,
+			          forceParse: false,
+			    	  autoclose: true,
+			    	  todayHighlight: true
+			      });
+			});
+			
+		
 			$(function() {
 				var formObj = $("#f1");
-
+				
+/* 				// 게시글 제목 클릭시 값 넘어가기
+				$(".boardLink").click(function(event){ //타이틀을 누르면
+					alert("링크누름")
+		    		event.preventDefault(); //a태그의 본래기능은 취소 
+		    		var bno = $(this).attr("href");
+		    		formObj.attr("action", "[[@{detail}]]") //디테일로가기
+		    		formObj.find($("input[name='bno']")).remove();
+		    		formObj.append("<input type='text' name='bno' value='" + bno + "'>" ); //form에다 추가 내용보고싶다면 text로 변경
+		    		alert("링크누름")
+		    		formObj.submit();
+		    		formObj.attr("action", "[[@{list}]]"); //다시 원상복귀
+		    	}); */
+		    	//저장하고 난 후 input에 정보남2
+		    	var columnName = ["productName", "productNum", "from", "to", "postingState"];
+		    	var columnValue = [[${pageVO.keyword}]]; //배열
+		    	
+		    	for(var idx = 0; columnValue!=null && idx < columnName.length; idx++){
+		    		formObj.find("input[name='type']").eq(idx).val(columnName[idx]);
+		    		formObj.find("input[name='keyword']").eq(idx).val(columnValue[idx]);
+		    	}
+				 
+		    	//for(var idx = 0; idx < columnName.length; idx++){
+		    	//}
+				
+		    	//check한 값 넣기
+		    	//formObj.find("input[name='keyword']").eq(4).val(pageVO.keyword[4]);
+				
+				if(formObj.find("[name='page']").val()==''){
+					formObj.find("[name='page']").val(1);
+				}
+				
 				//조건 검색시
+				 
 				$("#searchBtn").click(function() {
-					var typeStr = $("#searchType").find(":selected").val();// = $("#searchType").val(), 조건
-					var keywordStr = $("#searchKeyword").val(); //검색내용
-					formObj.find("[name='type']").val(typeStr); //type에 저장
-					formObj.find("[name='keyword']").val(keywordStr); //keyword에 저장
-					formObj.find("[name='page']").val(1); //첫번째 페이지 얻은 것
-					alert(typeStr + ":" + keywordStr);
+					
+					formObj.find("input[name='type']").eq(0).val("productName");
+					formObj.find("input[name='type']").eq(1).val("productNum");
+					formObj.find("input[name='type']").eq(2).val("from");
+					formObj.find("input[name='type']").eq(3).val("to");
+					formObj.find("input[name='type']").eq(4).val("postingState");
+					 
+					formObj.find("input[name='keyword']").eq(0).val($("#searchKeyword1").val());
+					formObj.find("input[name='keyword']").eq(1).val($("#searchKeyword2").val());
+					alert($("#searchKeyword2").val());
+					formObj.find("input[name='keyword']").eq(2).val($("#datepicker1").val());
+					formObj.find("input[name='keyword']").eq(3).val($("#datepicker2").val());
+					formObj.find("input[name='keyword']").eq(4).val($("input:radio[name='postingState']:checked").val());
+					
+					if(formObj.find("[name='page']").val()==''){
+						formObj.find("[name='page']").val(1);
+					}
+					//formObj.find("[name='page']").val(); //첫번째 페이지 얻은 것
+					//alert(typeStr + ":" + keywordStr);
 					formObj.submit();
 				});
-
+				
+				
+				$("#searchBox input").change(function(){ //값이 바껴서 커서가 바껴야함.(change)
+					formObj.find("[name='page']").val(1);
+				});
+				
+				//전체 sort시
+				$("#sortColumn").change(function(){
+					alert($(this).val());
+					formObj.find("#sort").val($(this).val());
+					$("#searchBtn").click();
+				});
+				
 				//페이지 클릭시
 				$(".pagination a").click(function(e) { //클래스 pagination 자식중 a 클릭시 
 					alert($(this).attr('href'));
 					e.preventDefault(); //링크취소
 					formObj.find("[name='page']").val($(this).attr('href'));
+					 
+					$("#searchBtn").click(); //페이지만달라지고 다시 조회
+					
 					//다시 그 폼에서 이름이 page인걸 찾아서 href가 가지고 있는 숫자를 page(this) 값으로 넣어줌
-					formObj.submit(); //그리고 나서 submit > list로 다시 감. 그때 pageVO로 넘어가는 것
+					//formObj.submit(); //그리고 나서 submit > list로 다시 감. 그때 pageVO로 넘어가는 것
 					//(controller에서 pagevo가 들어가는 것!)
 				});
 			});
+			
+			//table sort(columnName 클릭시 sort)
+			$(document).ready(function(){ 
+				$('#prdlist th').each(function (column) { 
+					$(this).click(function() { 
+						if($(this).is('.asc')) { 
+							$(this).removeClass('asc'); 
+							$(this).addClass('desc'); 
+							sortdir=-1; 
+						} else { 
+							$(this).addClass('asc'); 
+							$(this).removeClass('desc'); 
+							sortdir=1; 
+						} 
+						
+						$(this).siblings().removeClass('asc'); 
+						$(this).siblings().removeClass('desc'); 
+						var rec = $('#prdlist').find('tbody>tr').get(); 
+						
+						rec.sort(function (a, b) { 
+							var val1 = $(a).children('td').eq(column).text().toUpperCase(); 
+							var val2 = $(b).children('td').eq(column).text().toUpperCase(); 
+							return (val1 < val2)?-sortdir:(val1>val2)?sortdir:0; 
+						}); 
+						$.each(rec, function(index, row) { 
+							$('#prdlist tbody').append(row);
+							}); 
+						}); 
+					}); 
+				});
+
 		</script>
 	</th:block>
 </body>

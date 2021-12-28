@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="admin/layout/layout1">
+<head>
+<meta charset="UTF-8">
+<title>상품등록</title>
+<th:block layout:fragment="style">
+	<style>
+		.modal{
+		  position: fixed;
+		  top: 50%;
+		  left: 50%;
+		  transform: translate(-50%, -50%);
+		}
+		div {
+		  background-color: gray;
+		}
+		button{
+		  float: right;
+		}
+	</style>
+</th:block>
+</head>
+<body>
+	<div th:fragment="modifyModal">
+		<!-- script도 fragment div 안에 넣어줘야 작동됨!  <th:block layout:fragment="script"> 아니야!! -->
+		<!-- The Modal -->
+		<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content" style="width: 1000px; height: 100%; justify-content: center; ">
+				
+ 					Modal Header
+					<div class="modal-header">
+						<h3 class="modal-title">상품 수정</h3>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+
+					Modal body
+					<div class="modal-body" id="my">Modal body..
+  						<form action="productUpdate" method="post" enctype="multipart/form-data">
+							<table class="table table-bordered">
+								<tr>
+									<th>상품번호</th>
+									<td>
+										<input type="text" class="form-control form-control-plaintext" id="productNum" name="productNum" readonly />
+									</td>
+								</tr>
+								<tr>
+									<th>상품명</th>
+									<td>
+										<input type="text" class="form-control form-control-plaintext" id="productName" name="productName" placeholder="(click)상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='(click)상품명 입력'" required />
+									</td>
+								</tr>
+								<tr>
+									<th>판매가</th>
+									<td>
+										<div class="d-flex align-items-end">
+											<div class="col-2">
+												<input type="text" pattern="[0-9]+" class="form-control" id="productPrice" name="productPrice" required />
+											</div>
+											<div id="keyupPrice">
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>카테고리</th>
+									<td>
+										<div class="form-check-inline" >
+											<label th:each="category:${T(com.goodmeaning.vo.Category).values()}" class="form-check-label" >
+											<input type="checkbox"  name="productCategory"  class="form-check-input productCategory" 	 
+											th:value="${category.name()}" required   />&nbsp;[[${category.name()}]]&nbsp;&nbsp;&nbsp;&nbsp;</label>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>옵션</th>
+									<td>
+										<div class="form-group" id="useOption">
+											<label class="radio-inline"><input type="radio" id="optionNo" name="options" checked />&nbsp;사용하지 않음&nbsp;&nbsp;&nbsp;&nbsp;</label>
+											<label class="radio-inline"><input type="radio" id="optionYes" name="options"/>&nbsp;사용함</label>
+										</div>
+										<div id="demo" class="collapse">
+											<div class="form-group d-flex justify-content-start align-items-end" id="option1">
+												<div class="col-3">
+													<label for="optionName"><b>옵션분류</b></label>
+													<select class="form-control" id="optionCategory" name="optionCategory" required>
+														<option>선택</option>
+														<option value="Type">Type</option>
+														<option value="Size">Size</option>
+														<option value="Color">Color</option>
+														<option value="Other">Other</option>
+													</select>
+												</div>
+												<div class="col-3">
+													<input class="form-control" id="writeOther" type="hidden" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'" required/>
+												</div>
+											</div>
+											<div class="form-group d-flex justify-content-start align-items-end" id="option2">
+												<div class="col-3">
+													<label class="optLable" for="optionName"><b>옵션명</b></label>
+													<input class="form-control" id="optionName" name="optionName" type="text" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'" />
+												</div>
+												<div class="col-3">
+													<label class="optLable"for="optionPrice"><b>추가금액</b></label>
+													<input class="form-control" pattern="[0-9]+" id="optionPrice" name="optionPrice" type="text" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'"/>
+												</div>
+												<div id="keyupOptionPrice">
+												</div>
+												<div class="col-1">
+													<input type="button" id="addOptionBtn" value="add_to_photos" class="btn form-control material-icons">
+												</div>
+												<div class="col-1" id="deleteOption">
+													<input type="button" value="delete" class="btn deleteBtn form-control material-icons"> 
+												</div>
+											</div>
+											<div id="addOptions"></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>대표이미지</th>
+									<td>
+										<div class="d-flex justify-content-around mb-2" th:each="num : ${#numbers.sequence(1,4)}">
+											<div class="custom-file">
+												<input type="file" class="custom-file-input" th:id="|productMainimg${num}|" name="uploadFile" 
+													 > 
+												<label th:id="|label${num}|" class="custom-file-label" th:for="|productMainimg${num}|" >Choose File[[${num}]]</label>
+											</div>
+											<div class="col-1">
+												<input type="button" value="delete" class="btn form-control btnDelete material-icons">
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>상세페이지</th>
+									<td>
+										<div class="d-flex justify-content-around">
+											<div class="custom-file">
+												<input type="file" class="custom-file-input" id="productDetailimg" name="uploadFile" required>
+												<label id="label5" class="custom-file-label" for="productDetailimg">Choose File</label>
+											</div>
+											<div class="col-1">
+												<button id="deleteBtn5" class="btn form-control btnDelete" hidden="true">삭제</button>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>등록일</th>
+									<td>
+										<input type="text" class="form-control form-control-plaintext" id="productCreatedate" name="productCreatedate" readonly />
+									</td>
+								</tr>
+								<tr>
+									<th>수정일</th>
+									<td>
+										<input type="text" class="form-control form-control-plaintext" id="productUpdatedate" name="productUpdatedate" readonly />
+									</td>
+								</tr>
+								
+							</table>
+							<input type="hidden" name="postingState" value="게시중">
+							<div class="float-right ">
+								<button type="submit" class="btn btn-secondary" onClick="alert('상품 정보를 수정하시겠습니까?')">수정</button>
+								<button type="submit" class="btn btn-danger" onClick="alert('상품을 삭제하시겠습니까?')">삭제</button>
+							</div>
+						</form>
+ 					</div>
+					
+
+				</div>
+ 			</div>
+		</div>
+
+		<script>
+			// 옵션 사용/사용안함 선택
+			$('#optionNo').click(function(){
+				$('#demo').css("display", "none") //data-toggle="collapse" data-target="#demo"
+			});
+			$("#optionYes").click(function(){
+				$("#demo").css("display", "block");
+			});
+			
+			// 옵션 중 other 선택 시..
+			$("select[name='optionCategory']").change(function(){ //#optionCategory
+				var optionVal = $(this).val();
+				if(optionVal == "Other") {
+					$("#writeOther").attr("type", "text");
+					optionVal = $("#writeOther").val();
+					
+				} else {
+					$("#writeOther").attr("type", "hidden");
+				}
+			});
+			
+			// 파일 삭제
+			$(".btnDelete").click(function () {
+				$(this).parent().parent().find("input[type='file']").val('');
+				var a = $(this).parent().parent().find("label").html('Choose File[[${num}]]');
+				console.log(a);
+			});
+			
+			//대표이미지 파일1 requried 
+			$("#productMainimg1").attr("required", true);
+					
+	 		//첨부파일 이름 보이기
+			$(".custom-file-input").on("change", function() {
+				var fileName = $(this).val().split("\\").pop();
+				$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+			});
+			
+			//카테고리 checkbox 선택시 required 해제
+ 			var tmp = document.getElementsByName('productCategory');
+			console.log(tmp);
+			$(".productCategory").change(function(){
+				for(var i = 0; i < tmp.length; i++) {
+					console.log(tmp[i].checked);
+					if(tmp[i].checked == true){
+						$(".productCategory").attr("required", false);
+						break;
+					} else if(i == tmp.length-1){
+						$(".productCategory").attr("required", true);
+					}
+				}
+			});
+		
+			//옵션추가 클릭시 옵션명/추가금액 추가
+			$(".deleteBtn").css("display", "none");
+			$("#addOptionBtn").click(function(){
+		 		 $("#option2").clone(true).appendTo("#addOptions");	 
+		 		 $(".deleteBtn").css("display", "block");
+		 		 $(".deleteBtn").first().css("display", "none");
+		 		 $(".optLable").css("display", "none");
+		 		 $(".optLable").slice(0, 2).css("display", "block");
+				 $('.deleteBtn').on('click', function () { 
+	                    $(this).parent().parent().remove ();
+	             });
+			});
+			
+		    //금액 keyup(판매가)
+			    $("#productPrice").keyup(function(){
+				$("#keyupPrice").text($("#productPrice").val().replace(/[^0-9]/g,"").toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").concat("원"));
+			});
+		    
+			    //금액 keyup(추가금액-총금액)
+			    $("#optionPrice").keyup(function(){
+			    	var totalPrice = Number($("#productPrice").val()) + Number($("#optionPrice").val());
+				$("#keyupOptionPrice").text(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").concat("원")).toString();
+			
+			});
+		</script>
+	</div>
+</body>
+</html>
