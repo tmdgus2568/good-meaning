@@ -507,8 +507,7 @@ public class mjTest {
 				.reviewContent("튼튼해요^^")
 				.reviewLike(1)
 				.userPhone(user)
-				.productNum(pro)
-				.orderDetailNum(orderdetail)
+				.orderDetail(orderdetail)
 				.build();
 		
 		rrepo.save(r);			
