@@ -60,7 +60,7 @@
 			</td>
 			<td th:text="${detail.productNum.productName}"></td>
 			<td th:text="${detail.orderDetailQuantity}"></td>
-			<td th:text="${detail.orderDetailPrice}"></td>
+			<td th:text="|${#numbers.formatInteger(detail.orderDetailPrice, 0, 'COMMA')}원|"></td>
 		</tr>
 		
 	</table> 

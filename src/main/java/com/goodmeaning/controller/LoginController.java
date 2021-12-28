@@ -18,6 +18,11 @@ import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.goodmeaning.security.UserService;
 import com.goodmeaning.service.LoginService;
 import com.goodmeaning.vo.UserVO;
 import com.google.gson.JsonElement;
@@ -54,6 +60,8 @@ public class LoginController {
 	
 	@Autowired
 	LoginService loginService;
+	@Autowired
+	UserService userService;
 	
 	@RequestMapping(value = "/auth/loginNaver", method = RequestMethod.GET)
 	public String loginNaver(@RequestParam(value = "code", required = false) String code,
@@ -78,7 +86,11 @@ public class LoginController {
        
 //        JSONObject kakaoInfo =  new JSONObject(userInfo);
 //        model.addAttribute("kakaoInfo", kakaoInfo);
-        session.setAttribute("user", (UserVO)user.get());
+//        session.setAttribute("user", (UserVO)user.get());
+        UserDetails userDetails = userService.loadUserByUsername(user.get().getUserId());
+        
+        // 강제 로그인 
+        securityLogin(userDetails, session);
 
         return "redirect:/";
 	}
@@ -106,7 +118,12 @@ public class LoginController {
        
 //        JSONObject kakaoInfo =  new JSONObject(userInfo);
 //        model.addAttribute("kakaoInfo", kakaoInfo);
-        session.setAttribute("user", (UserVO)user.get());
+//        session.setAttribute("user", (UserVO)user.get());
+        
+        UserDetails userDetails = userService.loadUserByUsername(user.get().getUserId());
+        
+        // 강제 로그인 
+        securityLogin(userDetails, session);
 
         return "redirect:/";
 	}
@@ -308,6 +325,15 @@ public class LoginController {
         }
 
         return userInfo;
+    }
+    
+    // 강제 시큐리티 로그인
+    public void securityLogin(UserDetails userDetails, HttpSession session) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
     }
  
 }

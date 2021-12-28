@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="admin/layout/layout2">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+<!-- <th:block layout:fragment="style">
+	<style>
+		div {border:1px solid gray;}
+	</style>
+</th:block> -->
+
+</head>
+<body>
+	<div class="panel panel-default" layout:fragment="content">
+		<div class="bg-dark" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;"> 
+			<form action="" method="post">
+				<div class="input-group justify-content-center mb-4 text-white">
+					<h1>GoodMeaning</h1>
+				</div>
+				<div class="input-group justify-content-center mb-3 text-secondary">
+					<h3>&nbsp;관리자로그인&nbsp;</h3>
+				</div>
+				<hr>
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<div class="input-group-text">
+							<i class="material-icons" style="font-size:36px">assignment_ind</i>
+						</div>
+					</div>
+					<input type="text" class="form-control" placeholder="아이디" onfocus="this.placeholder=''" onblur="this.placeholder='아이디'">
+				</div>
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<div class="input-group-text">
+							<i class="material-icons" style="font-size:36px">vpn_key</i>
+						</div>
+					</div>
+					<input type="text" class="form-control" placeholder="비밀번호" onfocus="this.placeholder=''" onblur="this.placeholder='비밀번호'">
+				</div>
+				<div class="input-group mb-3 d-flex justify-content-between">
+					<button type="submit" class="btn btn-info mr-1" style="width: 220px;">Login</button>
+					<button type="button" class="btn btn-outline-info" style="width: 220px;">Find Password</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<th:block layout:fragment="script">
+		<script>
+		</script>
+	</th:block>
+</body>
+</html>

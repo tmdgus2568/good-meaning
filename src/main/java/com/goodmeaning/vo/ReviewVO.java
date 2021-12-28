@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
@@ -62,13 +63,18 @@ public class ReviewVO {
 	@ColumnDefault("0")
 	private int reviewLike;
 	
+
+	@JoinColumn(name="orderDetail")
+	@OneToOne
+	OrderDetailVO orderDetail;
+	
 	@JoinColumn(name="userPhone")
 	@ManyToOne
 	UserVO userPhone;
-	
-	@JoinColumn(name="productNum")
-	@ManyToOne
-	ProductVO productNum;
+//	
+//	@JoinColumn(name="productNum")
+//	@ManyToOne
+//	ProductVO productNum;
 	
 	@JoinColumn(name="orderDetailNum")
 	@ManyToOne

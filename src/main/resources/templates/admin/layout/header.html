@@ -1,13 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="admin/layout/layout1">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>header</title>
 </head>
 <body>
 	<div th:fragment="header"> 
-		<h1>Header</h1>
-		<hr>
+		<nav class="navbar navbar-expand bg-dark navbar-dark fixed-top"> <!-- fixed-top -->
+		    <div class="container-fluid">
+		    	<div class="navbar-header">
+		        	<a class="navbar-brand" href="http://localhost:8888/admin/list">GoodMeaning</a>
+		        </div>
+			    <ul class="nav nav-pills nav-justified navbar-nav "> <!--  navbar-nav navbar-right -->
+			        <li class="nav-item ml-2"><a class="nav-link" href="http://localhost:8888/admin/list"><i class="material-icons">home</i></a></li> <!-- MyPage -->
+			        <li class="nav-item ml-2"><a class="nav-link" href="#"><i class="material-icons">account_box</i></a></li> <!-- MyPage -->
+			        <li class="nav-item ml-2"><a class="nav-link" href="#"><i class="material-icons">exit_to_app</i></a></li> <!-- Logout -->
+			    </ul>
+		    </div>
+		</nav>
 	</div>
 </body>
-</html>
+</html>	
