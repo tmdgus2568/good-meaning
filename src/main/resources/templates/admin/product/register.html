@@ -1,37 +1,129 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="~{/layout/layout1}">
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="admin/layout/layout1">
 <head>
 <meta charset="UTF-8">
-<title>web board Insert</title>
-<th:block layout:fragment="style1">
+<title>상품등록</title>
+<th:block layout:fragment="style">
 	<style>
-	 .myform { width:70%;   margin: 0 auto;  }
+
 	</style>
 </th:block>
 </head>
 <body>
- <div class="myform panel panel-default" layout:fragment="content1">
-    <form action="insert" method="post">
-     
-    <div class="form-group">
-      <label for="title">title:</label>
-      <input type="text" class="form-control" id="title" name="title"  >
-    </div>
-    <div class="form-group">
-      <label for="writer">writer:</label>
-      <input type="text" class="form-control" id="writer" name="writer" 
-                         th:value="${session.loginUser}">
-    </div>
-    <div class="form-group">
-      <label for="content">content:</label>
-      <input type="text" class="form-control" id="content" name="content" >     
-    </div>
-     
-    <button type="submit" class="btn btn-default">입력하기</button>
-  </form>
- </div>
+	<div layout:fragment="content">
+		<h3>상품등록</h3>
+		<p>상품등록시, 사용자에게 화면이 보여집니다!</p>
+		<form action="productregister" method="post" enctype="multipart/form-data">
+
+			<table class="table table-bordered">
+				<tr>
+					<th>상품명</th>
+					<td>
+						<input type="text" class="form-control-plaintext" id="productName" name="productName" placeholder="상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품명 입력'" required />
+					</td>
+				</tr>
+				<tr>
+					<th>판매가</th>
+					<td>
+						<input type="text" pattern="[0-9]+" class="form-control-plaintext" id="productPrice" name="productPrice" placeholder="판매가 입력" onfocus="this.placeholder=''" onblur="this.placeholder='판매가 입력'" required />
+					</td>
+				</tr>
+				<tr>
+					<th>카테고리</th>
+					<td>
+						<div class="form-check-inline" >
+							<label th:each="category:${T(com.goodmeaning.vo.Category).values()}" class="form-check-label" >
+							<input type="checkbox"  name="productCategory"  class="form-check-input productCategory" 	 
+							th:value="${category.name()}" required />&nbsp;[[${category.name()}]]&nbsp;&nbsp;&nbsp;&nbsp;</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>옵션</th>
+					<td>
+						<div class="form-group" id="useOption">
+							<label class="radio-inline"><input type="radio" id="optionNo" name="options" checked />&nbsp;사용하지 않음&nbsp;&nbsp;&nbsp;&nbsp;</label>
+							<label class="radio-inline"><input type="radio" id="optionYes" name="options"/>&nbsp;사용함</label>
+						</div>
+						<div id="demo" class="collapse">
+							<div class="form-group d-flex justify-content-start align-items-end" id="option1">
+								<div class="col-3">
+									<label for="optionName"><b>옵션분류</b></label>
+									<select class="form-control" id="optionCategory" name="optionCategory" required>
+										<option>선택</option>
+										<option value="Type">Type</option>
+										<option value="Size">Size</option>
+										<option value="Color">Color</option>
+										<option value="Other">Other</option>
+									</select>
+								</div>
+								<div class="col-3">
+									<input class="form-control" id="writeOther" type="hidden" name="optionCategory2"  placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'" required/>
+								</div>
+							</div>
+							<div class="form-group d-flex justify-content-start align-items-end" id="option2">
+								<div class="col-3" >
+									<label class="optLable" for="optionName"><b>옵션명</b></label>
+									<input class="form-control" id="optionName" name="optionName" type="text" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'" />
+								</div>
+								<div class="col-3">
+									<label class="optLable"for="optionPrice"><b>추가금액</b></label>
+									<input class="optionPrice form-control" pattern="[0-9]+" id="optionPrice" name="optionPrice" type="text" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'"
+										onkeyup="onKeyup(this);" />
+								</div>
+								<div class="col-1">
+									<input type="button" id="addOptionBtn" value="add_to_photos" class="btn form-control material-icons">
+								</div>
+								<div class="col-1" id="deleteOption">
+									<input type="button" value="delete" class="btn deleteBtn form-control material-icons">
+								</div>
+							</div>
+							<div id="addOptions"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>대표이미지</th>
+					<td>
+						<div class="d-flex justify-content-around mb-2" th:each="num : ${#numbers.sequence(1,4)}">
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" th:id="|productMainimg${num}|" name="uploadFile" accept="image/*">
+								<label class="custom-file-label" th:for="|productMainimg${num}|" >Choose File[[${num}]]</label>
+							</div>
+							<div class="col-1">
+								<input type="button" th:id="|editDeleteBtn${num}|" value="delete" class="btn form-control btnDelete material-icons">
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>상세페이지</th>
+					<td>
+						<div class="d-flex justify-content-around">
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" id="productDetailimg" name="uploadFile" accept="image/*" required>
+								<label class="custom-file-label" for="productDetailimg">Choose File</label>
+							</div>
+							<div class="col-1">
+								<button class="btn form-control btnDelete" hidden="true">삭제</button>
+							</div>
+						</div>
+					</td>
+				</tr>
+				
+			</table>
+			<input type="hidden" name="postingState" value="게시중">
+			<button type="submit" id="registerBtn" class="btn btn-default float-right" onClick="checkInputData();">등록</button>
+		</form>
+	</div>
+	
+	<!-- JavaScript -->
+	<th:block layout:fragment="script">
+		<script type="text/javascript" src="/js/productRegister.js">
+		</script>
+	</th:block>
 </body>
 </html>
