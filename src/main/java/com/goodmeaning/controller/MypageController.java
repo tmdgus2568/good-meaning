@@ -169,6 +169,16 @@ public class MypageController {
 		return "user/mypage/reviews";
 	}
 	
+	// 리뷰확인 눌렀을 때 modal 띄우기 
+	@RequestMapping("/mypage/review")
+	@ResponseBody
+	public ReviewVO review(long no) {
+		Optional<ReviewVO> review = mypageService.review(no);
+		if(review.isPresent()) return review.get();
+		return null;
+		
+	}
+	
 	
 	public PageVO makePage(String[] types, Object[] keywords, PageVO pageVO, Model model, HttpServletRequest request) {
 		// RedirectAttributes를 통해서 받기
@@ -206,6 +216,7 @@ public class MypageController {
 		
 		return pageVO;
 	}
+	
 	
 
 }
