@@ -32,11 +32,17 @@
 			
 			<tr id="tr_userPw">
 				<th>비밀번호</th>
-				<td><input type="password" name="userPw" id="userPw" required="required"></td>
+				<td>
+					<input type="password" name="userPw" id="userPw" required="required">
+					<span id="check_userPw">영문 또는 숫자조합으로 8~12자</span>
+				</td>
 			</tr>
 			<tr id="tr_userPw_confirm">
 				<th>비밀번호확인</th>
-				<td><input type="password"></td>
+				<td>
+					<input type="password" id="userPw_confirm">
+					<span id="check_userPw_confirm"></span>
+				</td>
 			</tr>
 			<tr>
 				<th>휴대폰번호</th>
@@ -257,6 +263,26 @@ $(function () {
 		    $('#datepicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)  
 		}          
 	});
+	
+	$("#userPw").on('input',function(){
+		
+		if(/^[a-zA-Z0-9]{8,20}$/.test($(this).val())){
+			$("#check_userPw").text("올바른 형식입니다");
+		}
+		else{
+			$("#check_userPw").text("영문 또는 숫자조합으로 8~12자");
+		}
+	});
+	
+	$("#userPw_confirm").on('input',function(){
+		if($("#userPw").val()==$(this).val()){
+			$("#check_userPw_confirm").text("비밀번호가 일치합니다");
+		}
+		else{
+			$("#check_userPw_confirm").text("");
+		}
+	})
+	
 });
 
 
