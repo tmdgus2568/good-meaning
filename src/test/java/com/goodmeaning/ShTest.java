@@ -141,7 +141,7 @@ public class ShTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void insertReview() {
 		Optional<OrderDetailVO> product2 = odrepo.findById(899L);
 		Optional<UserVO> user = urepo.findById("01011111111");

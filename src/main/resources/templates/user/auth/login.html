@@ -35,5 +35,18 @@
 
 
 </body>
+<th:block layout:fragment="script">
+<script>
+$(function(){
+	console.log($(location).attr('href'));
+	console.log($(location).attr('href').indexOf('?error'));
+
+	if($(location).attr('href').indexOf('?error')!=-1){
+		alert('로그인에 실패하였습니다.')
+	}
+});
+</script>
+
+</th:block>
 
 </html>

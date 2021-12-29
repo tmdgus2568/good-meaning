@@ -25,15 +25,16 @@
 			<th>지불금액</th>
 			<th>현황</th>
 			<th>구매날짜</th>
-			<th>운송장번호</th>
 			<th>취소가능여부</th>
+			<th>리뷰작성</th>
 		</tr>
 		<tr th:if="${#lists.size(orders.result.content)}==0">
 			<td colspan="8">주문목록이 없습니다.</td>
 		</tr>
 		<tr th:each="order:${orders.result.content}">
 			<td th:text="${order.orderNum}"></td> <!-- 주문번호 -->  
-			<td> <!-- 이미지 -->  
+
+ 			<td>
 				<img th:src="${order.details[0].productNum.productMainimg1}" width="80" height="80">
 			</td>
 			<td>
@@ -43,9 +44,9 @@
 			<td th:text="|${#numbers.formatInteger(order.orderTotalPrice, 0, 'COMMA')}원|"></td>
 			<td th:text="${order.orderStatus}"></td>
 			<td th:text="${order.orderDate}"></td>
-			<td>
+		<!-- 	<td>
 				<a href="" th:text="${order.orderWaybill}"></a>
-			</td>
+			</td> -->
 	
 			<td>
 				<form th:action="@{/mypage/orders/{oid}(oid=${order.orderNum})}" method="post" class="order_cancel" th:if="${order.orderStatus eq '입금완료'}" >
@@ -53,6 +54,16 @@
 				</form>
 				
 			
+			</td>
+			<td>
+				<button data-toggle="modal" data-target=".bs-example-modal-lg" class="show_review" th:if="${order.orderStatus eq '배송완료'}">리뷰작성</button>
+			</td>
+			
+			<!-- hidden -->
+			<td th:each="detail:${order.details}" hidden="true" class="td_products">
+				<input type="text" th:value="${detail.productNum.productNum}" class="productNums">
+				<input type="text" th:value="${detail.productNum.productName}" class="productNames">
+				<input type="text" th:value="${detail.productOption==null?'':detail.productOption.optionName}" class="productOptions">
 			</td>
 		
 		</tr>
@@ -83,6 +94,36 @@
 	    <input type="hidden" name="keyword" th:value="${pageVO.keyword}"> -->
 	    
 	 </form>
+	 
+	 <!-- Modal -->
+	<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="review_modal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+			    	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel" align="left">리뷰 작성</h4>
+			    </div>
+			    <div class="modal-body">
+			 
+			      	<form>
+			      		<div class="form-group">		
+		           			<label for="modal_product" class="control-label">상품명</label>
+		           			<select id="select_product_name">
+		           				
+		           			</select>
+		            	<!-- 	<input type="text" class="form-control" id="modal_product" readOnly></input> -->
+		          		</div>
+
+		        	</form>
+			    </div>
+			    <div class="modal-footer">
+			   		<button type="button" class="btn btn-primary" id="create_review" onclick="location.href='/'">작성하기</button>
+			        <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+			       <!--  <button type="button" class="btn btn-primary">Save changes</button> -->
+			    </div>
+			</div>
+		</div>
+	</div>	 
 
 </section>
 
@@ -110,6 +151,22 @@ $(function() {
 		}
 		return false;
 	});
+	
+	
+ 	$(".show_review").on('click',function(){
+ 		var names = $(this).parent().parent().find(".productNames");
+ 		var nums = $(this).parent().parent().find(".productNums");
+ 		var options = $(this).parent().parent().find(".productOptions");
+ 		$(names).each(function (index, item) {
+ 		     var name = $(item).val();
+ 		     var num = $($(nums)[index]).val();
+ 		     var option = $($(options)[index]).val();
+ 		     
+  		     $("#select_product_name").html($("#select_product_name").html()+"<option "+"value="+"'"+num+"'"+">"+name+" "+option+"</option>") 
+ 		});
+		
+
+	}) 
 });
 
 

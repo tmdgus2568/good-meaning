@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -63,6 +64,8 @@ public class UserVO {
 	private Date userBirth;
 	@CreationTimestamp
 	private Timestamp userJoindate;
+	@UpdateTimestamp
+	private Timestamp userUpdate;
 	@NonNull
 	@Column(nullable = false)
 	private String joinPlatform;
