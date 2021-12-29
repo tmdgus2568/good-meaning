@@ -1,5 +1,6 @@
 package com.goodmeaning.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,16 @@ public class MypageController {
 	
 	// 회원수정 
 	@RequestMapping(value = "/mypage/user", method = RequestMethod.GET)
-	public String updateUserForm() {
+	public String updateUserForm(Model model, HttpSession session) {
+		UserVO user = (UserVO) session.getAttribute("user");
 		
+		Optional<UserVO> userInfo = mypageService.findUser(user.getUserPhone());
+		
+		if(userInfo.isPresent()) {
+			model.addAttribute("user",userInfo.get());
+			System.out.println("userInfo: " + userInfo.get());
+		}
+	
 		return "user/mypage/update";
 	}
 
@@ -58,11 +67,12 @@ public class MypageController {
 	public String updateUser(UserVO user) {
 		System.out.println(user);
 		mypageService.updateUser(user);
-		return "user/mypage/update";
+		return "redirect:/mypage/user";
 	}
 
 	
 	// 주문 내역 확인
+	// 입금완료 / 배송준비중 / 배송완료 
 	@RequestMapping(value = "/mypage/orders", method = RequestMethod.GET)
 	public String orders(Model model, HttpSession session, PageVO pageVO, HttpServletRequest request) {
 		
@@ -70,7 +80,8 @@ public class MypageController {
 		UserVO user = (UserVO)session.getAttribute("user");
 
 		String[] types = {"userPhone","orderStatus"};
-		Object[] keywords = {user,"전체"};
+				
+		Object[] keywords = {user,"orders"};
 
 		pageVO = makePage(types, keywords, pageVO, model, request);
 
@@ -78,7 +89,7 @@ public class MypageController {
 		Pageable paging = pageVO.makePaging(0, "orderNum"); // sort Direction, sort할 칼럼
 		Predicate pre = orderRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
 		Page<OrderVO> result = orderRepo.findAll(pre, paging);
-		System.out.println(new PageMaker<>(result));
+		System.out.println(new PageMaker<>(result).getResult().getContent());
 		model.addAttribute("orders", new PageMaker<>(result));
 		model.addAttribute("pageVO",pageVO);
 	
@@ -117,16 +128,19 @@ public class MypageController {
 	
 	// 구매취소 항목 확인 
 	// 파라미터 이름이 똑같다면 어노테이션 달지 않아도 된다. 
+	// 구매취소 / 반품 / 교환 
 	@RequestMapping(value = "/mypage/updateorders", method = RequestMethod.GET)
 	public String updateorders(Model model, HttpSession session, PageVO pageVO, HttpServletRequest request, String filter) {
 		UserVO user = (UserVO)session.getAttribute("user");
 
 		String[] types = {"userPhone","orderStatus"};
-		Object[] keywords = {user,"전체"}; // default
+		
+		Object[] keywords = {user,"updateorders"}; // default
 		
 		System.out.println(filter);
 		
 		if(filter != null) {
+
 			keywords[1] = filter;
 		}
 
@@ -207,7 +221,6 @@ public class MypageController {
 		
 		// filter 들어왔을 때 -> user는 넘어오지 않으므로 
 		else{
-//			types[1] = pageVO.getType()[0];
 			keywords[1] = pageVO.getKeyword()[0];
 			
 			pageVO = PageVO.builder().page(pageVO.getPage()).size(5).type(types).keyword(keywords).build();

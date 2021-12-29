@@ -50,16 +50,21 @@
 	<table id=order_info class="table table-striped table-bordered table-hover">
 		<tr>
 			<th>상품이미지</th>
-			<th>상품이름</th>
-			<th>수량</th>
+			<th>상품정보</th>
+<!-- 			<th>수량</th> -->
 			<th>개당가격</th>
 		</tr>
 		<tr th:each="detail:${order.details}">
 			<td>
 				<img th:src="${detail.productNum.productMainimg1}" width="80">
 			</td>
-			<td th:text="${detail.productNum.productName}"></td>
-			<td th:text="${detail.orderDetailQuantity}"></td>
+			<td align="left">
+				<h4 th:text="${detail.productNum.productName}"></h4>
+				<span th:text="|수량: ${detail.orderDetailQuantity}|" style="color:grey;"></span><br>
+				<span th:text="|옵션: ${detail.productOption==null?'[없음]':detail.productOption}|" style="color:grey;"></span>
+				
+			</td>
+		<!-- 	<td th:text="${detail.orderDetailQuantity}"></td> -->
 			<td th:text="|${#numbers.formatInteger(detail.orderDetailPrice, 0, 'COMMA')}원|"></td>
 		</tr>
 		

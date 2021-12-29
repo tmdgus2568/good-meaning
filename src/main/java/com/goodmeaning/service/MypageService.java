@@ -3,15 +3,19 @@ package com.goodmeaning.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
+import com.goodmeaning.persistence.ProductRepository;
 import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
+import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserVO;
 import com.querydsl.core.types.Predicate;
@@ -26,10 +30,17 @@ public class MypageService {
 	OrderRepository orderRepo;
 	
 	@Autowired
+	ProductRepository productRepo;
+	
+	@Autowired
 	OrderDetailRepository orderDetailRepo;
 
 	@Autowired
 	ReviewRepository reviewRepo;
+	
+	public Optional<UserVO> findUser(String userPhone) {
+		return userRepo.findById(userPhone);
+	}
 	
 	public void updateUser(UserVO user) {
 		userRepo.save(user);
@@ -44,9 +55,19 @@ public class MypageService {
 		return orderRepo.findById(oid);
 	}
 	
-	// order 업데이트를 위한 save 
+	// 구매취소
+	@Transactional
 	public void updateOrder(OrderVO order) {
 		orderRepo.save(order);
+		for(OrderDetailVO detail:order.getDetails()) {
+			// productNum의 정보를 가져온 뒤, stock+1 후 다시 저장 
+			Optional<ProductVO> detailInfo = productRepo.findById(detail.getProductNum().getProductNum());
+			if(detailInfo.isPresent()) {
+				detailInfo.get().setProductStock(detailInfo.get().getProductStock()+1);
+				productRepo.save(detailInfo.get());
+			}
+		}
+		
 	}
 	
 	// reviews 가져오기
