@@ -41,6 +41,7 @@ public interface OrderRepository extends CrudRepository<OrderVO, Long> ,Querydsl
 					break;
 					
 				// 구매취소 / 반품 / 교환 
+				case "전체":
 				case "updateorders":
 					builder.and(order.orderStatus.in("구매취소","반품","교환"));
 					break;
