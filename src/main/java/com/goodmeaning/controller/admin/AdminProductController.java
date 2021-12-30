@@ -1,12 +1,12 @@
-package com.goodmeaning.controller;
+package com.goodmeaning.controller.admin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,21 +23,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.goodmeaning.service.AdminService;
-import com.goodmeaning.service.LoginService;
 import com.goodmeaning.service.ProductService;
 import com.goodmeaning.util.UpLoadFileUtils;
 import com.goodmeaning.vo.PageMaker;
 import com.goodmeaning.vo.PageVO;
 import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
-import com.goodmeaning.vo.UserVO;
 
 @Controller
 @RequestMapping("/admin/")
-public class AdminController {
+public class AdminProductController {
 	
 	//브라우저 해석 : static //서버해석 : templates
 	
@@ -48,48 +47,11 @@ public class AdminController {
 	AdminService adminService;
 	
 	@Autowired
-	LoginService loginService;
-	
-	@Autowired
 	ProductService productService;
-
-	/*
-	 * 
-	 * 로그인 
-	 * 
-	 */
-	
-	//로그인 페이지 
-	@GetMapping ("/") //주소창에서 들어오는것! 
-	public String getLoginPage() {
-		return "admin/auth/login";
-	}
-	
-	//요청방식이 다르기때문에 맵핑주소 같아도 됨
-	//로그인 실행 ****************************관리자 로그인 service 만들기!!!!!!!!!
-	@PostMapping("/")
-	public String login(String userId, String userPw, HttpSession session) {
-		// 로그인 성공시 
-		Optional<UserVO> user = loginService.checkLogin(userId, userPw);
-		System.out.println(user);
-		if(user.isPresent()) {
-			session.setAttribute("user", (UserVO)user.get());
-			return "redirect:/";
-		}
-		return "redirect:list";
-	}
-	
-	
-	/*
-	 * 
-	 * 상품
-	 * 
-	 */
 	
 	// 상품목록 보여주기
 	@GetMapping("/list") //리스트할때부터 온애(VO 2개있음)
-	public String getProductListPage(PageVO pageVO, Model model, HttpSession session, HttpServletRequest request
-			,  String colmnName) { //, ProductOptionVO prdOptVO
+	public String getProductListPage(PageVO pageVO, Model model, HttpSession session, HttpServletRequest request,  String colmnName) { //, ProductOptionVO prdOptVO
 		System.out.println(colmnName);
 		String sortColumn = colmnName;
 		//sessions 넣기
@@ -119,10 +81,7 @@ public class AdminController {
 		model.addAttribute("productPaging", new PageMaker<>(result));
 		model.addAttribute("pageVO", pageVO);
 		model.addAttribute("sortColumn", sortColumn);
-		model.addAttribute("totalCount", result.getNumberOfElements());
-		 
-		
-		//model.addAttribute("productOptionVO",prdOptVO);
+		model.addAttribute("totalCount", adminService.selectAll(pageVO));
          
 		return "admin/product/list";
 	}
@@ -136,8 +95,8 @@ public class AdminController {
 	
 	// 상품등록
 	@PostMapping("/productregister") //들어올때의 값들 
-	public String insertProduct(ProductVO product, String[] optionName, int[] optionPrice,
-			String optionCategory, String optionCategory2 , HttpServletRequest request) {
+	public String insertProduct(ProductVO product, String[] optionName, int[] optionPrice, String optionCategory, String optionCategory2) { //, HttpServletRequest request
+		
 		System.out.println("optionCategory2" + optionCategory2);
 		if(optionCategory.equals("Other")) optionCategory = optionCategory2;
 		
@@ -154,11 +113,13 @@ public class AdminController {
 		String ymdPath = UpLoadFileUtils.calcPath(uploadPath);
 		
 		
-		for(MultipartFile uploadfile:uploadfiles){
+		for(MultipartFile uploadfile:uploadfiles){ // 업로드 다녀온 후 vo값세팅
 			String fileName = null;
 			if(uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
 				try {
 					fileName = UpLoadFileUtils.fileUpload(uploadPath, uploadfile.getOriginalFilename(), uploadfile.getBytes(), ymdPath);
+					fileName = "upload" + ymdPath + File.separator + fileName;
+					System.out.println("fileName=" + fileName);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -197,7 +158,7 @@ public class AdminController {
 		Map<String, Object> map = new HashMap<>();
 		System.out.println(productNum);
 		ProductVO product = productService.selectById(productNum);
-		ProductOptionVO productOption = adminService.findByProductNum(product); //레파지토리 호출
+		List<ProductOptionVO> productOption = adminService.findByProductNum(product); //레파지토리 호출
 		map.put("product", product);
 		map.put("productOption", productOption);
 		
@@ -207,83 +168,105 @@ public class AdminController {
 		 //컬럼값으로 옴.productNum is present > optional > get으로 받아옴
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	} 
+	
+	//상품수정
+	@PostMapping("/updateProduct")
+	public String updateProduct(ProductVO product, String[] file, String[] optionName, Integer[] optionPrice,
+			String optionCategory, String writeOther, Long[] optionNum, int options, PageVO pageVO,
+			RedirectAttributes reAttr) throws IOException, Exception {
+		System.out.println(Arrays.toString(product.getUploadFile()) );
+		System.out.println("update pvo : " + product);
+		System.out.println("update optionName : " + Arrays.toString(optionName));
+		System.out.println("update optionName length : " + optionName.length);
+		System.out.println("update optionPrice : " + Arrays.toString(optionPrice));
+		System.out.println("update optionNum : " + Arrays.toString(optionNum));
+		System.out.println("update optionNum length : " + optionNum.length);
+		System.out.println("update optionCategory : " + optionCategory);
+		System.out.println("update optionCategory2 : " + writeOther);
+		
+		//product = adminService.findById(product.getProductNum());
+		//product.set
+		if (optionCategory.equals("Other"))
+			optionCategory = writeOther;
+		
+		System.out.println("options: " + options);
 
-	/*
-	 * 
-	 * 재고
-	 * 
-	 */
-	
-	// 재고list
-	
-	@GetMapping("/stock") //리스트할때부터 온애(VO 2개있음)
-	public String getStockPage() {
-//			PageVO pageVO, Model model, HttpSession session, HttpServletRequest request
-//			,  String colmnName) { //, ProductOptionVO prdOptVO
-//		System.out.println(colmnName);
-//		String sortColumn = colmnName;
-//		//sessions 넣기
-//		System.out.println("pagevo: " + pageVO);
-//		int direction = 0;
-//		if(colmnName =="" || colmnName == null) {
-//			colmnName = "productCreatedate0";
-//		}
-//
-//		direction = Integer.parseInt(colmnName.substring(colmnName.length()-1, colmnName.length()));
-//		colmnName = colmnName.substring(0, colmnName.length()-1);
-//		System.out.println(direction + " " + colmnName);
-//		
-//		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-//
-//		if (flashMap != null) {
-//			PageVO pageVO2 = (PageVO) flashMap.get("pageVO");
-//			if (pageVO2 != null) {
-//				pageVO = pageVO2;
-//			}
-//		}
-//
-//		if (pageVO == null) //맨 처음 null일때 
-//			pageVO = PageVO.builder().page(1).size(12).type(null).keyword(null).build();
-//
-//		Page<Object[]> result = adminService.stockList(pageVO, direction, colmnName);
-//		model.addAttribute("productPaging", new PageMaker<>(result));
-//		model.addAttribute("pageVO", pageVO);
-//		model.addAttribute("sortColumn", sortColumn);
-//		//model.addAttribute("productOptionVO",prdOptVO);
-         
-		return "admin/product/stock";
+		//locationPath
+		
+		MultipartFile[] multiFile = product.getUploadFile();
+		System.out.println(Arrays.toString(file));
+ 
+		for (int i = 0; multiFile != null && i < multiFile.length; i++) {
+
+			String imgUploadPath = locationPath + File.separator + "upload";
+			String ymdPath = UpLoadFileUtils.calcPath(imgUploadPath); // 위의 폴더를 기준으로 연월일 폴더를 생성
+			String fileName = null;
+			String originalName = multiFile[i].getOriginalFilename();
+			System.out.println("'" + originalName + "'");
+
+			if (originalName != null && !originalName.equals("")) {
+				// upload하기
+				fileName = UpLoadFileUtils.fileUpload(imgUploadPath, originalName, multiFile[i].getBytes(), ymdPath);
+				fileName = "upload" + ymdPath + File.separator + fileName;
+				columnSetting(i, fileName, product);
+				//현재 게시판에 존재하는 파일객체를 만듬 
+				//File file = new File(path + "\\" + "저장된 파일 이름"); 
+				//if(file.exists()) { // 파일이 존재하면 
+				//	file.delete(); // 파일 삭제 }
+				//}
+
+				
+			} else {
+				if (!(file[i].equals("")))
+					columnSetting(i, file[i], product);
+				
+			} 
+		}
+		System.out.println("수정후 프로덕트 + " + product);
+		adminService.updateProduct(product, optionName, optionPrice, optionCategory, optionNum, options);
+		reAttr.addFlashAttribute("pageVO", pageVO);
+		return "redirect:list";
+		
 	}
 	
-	/*
-	 * 
-	 * 주문
-	 * 
-	 */
+	private void columnSetting(int i, String fileName, ProductVO product) {
+		switch (i) {
+		case 0:
+			product.setProductMainimg1(fileName);
+			break;
+		case 1:
+			product.setProductMainimg2(fileName);
+			break;
+		case 2:
+			product.setProductMainimg3(fileName);
+			break;
+		case 3:
+			product.setProductMainimg4(fileName);
+			break;
+		case 4:
+			product.setProductDetailimg(fileName);
+			break;
+
+		}
+
+	}
 	
-	/*
-	 * 
-	 * QnA
-	 * 
-	 */
+	// 상품 삭제
+	@GetMapping("/deleteProduct")
+	public String deleteProduct(Long productNum, RedirectAttributes reAttr, Model model, PageVO pageVO) {
+		System.out.println("delete:" + pageVO);
+		System.out.println("productNum:" + productNum);
+		adminService.deleteByProductNum(productNum);
+		model.addAttribute("pageVO", pageVO);
+		reAttr.addFlashAttribute("pageVO", pageVO);
+		return "redirect:list";
+	}
 	
-	/*
-	 * 
-	 * 리뷰
-	 * 
-	 */
 	
 	// CRUD
 	
 
-//	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-//	public String delete(Long bno, RedirectAttributes re_attr) {
-//
-//		webRepo.deleteById(bno);
-//		re_attr.addFlashAttribute("resultmsg", "삭제후 재조회함");
-//
-//		return "redirect:/list";
-//	}
-//	
+
 
 //	@RequestMapping(value = "/update", method = RequestMethod.POST)
 //	public String update(WebBoard board, RedirectAttributes re_attr, PageVO pageVO) {

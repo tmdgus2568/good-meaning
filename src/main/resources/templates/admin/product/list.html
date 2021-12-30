@@ -6,11 +6,44 @@
 <head>
 <meta charset="UTF-8">
 <title>상품목록</title>
-<!-- <th:block layout:fragment="style">
+<th:block layout:fragment="style">
 	<style>
-
+		
+		.fileBox .fileName {
+			display: inline-block;
+			width: 300px;
+			height: 30px;
+			padding-left: 10px;
+			margin-right: 5px;
+			line-height: 30px;
+			border: 1px solid #aaa;
+			background-color: #fff;
+			vertical-align: middle
+		}
+		
+		.fileBox .btn_file {
+			display: inline-block;
+			border: 1px solid #000;
+			width: 100px;
+			height: 30px;
+			font-size: 0.8em;
+			line-height: 30px;
+			text-align: center;
+			vertical-align: middle
+		}
+		
+		.fileBox input[type="file"] {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			border: 0
+		}
 	</style>
-</th:block> -->
+</th:block>
 
 </head>
 <body>
@@ -96,7 +129,7 @@
 		<div>
 			<table id="prdlist"class="table table-bordered table-striped table-hover">
 				<thead>
-					<tr class="table-warning" > <!-- -->
+					<tr class="table-warning" >
 						<th>No.</th>
 						<th>상품번호 <i class="material-icons" style="font-size:15px">unfold_more</i></th>
 						<th>상품명<i class="material-icons" style="font-size:15px">unfold_more</i></th>
@@ -109,9 +142,7 @@
 					<tr th:each="product, pstate:${productPaging.result.content}" > <!-- 객체, status(반복상태변수)  -->
 						<td th:text="${pstate.count + (productPaging.currentPageNum-1) * productPaging.currentPage.pageSize}"></td>
 						<td th:text="${product.productNum}"></td>
-						<td th:text="${product.productName}">
-							<!-- <a class="boardLink" th:href="${product.productNum}" th:text="${product.productName}"></a> -->
-						</td>
+						<td th:text="${product.productName}"></td>
 						<td th:text="${#dates.format(product.productCreatedate, 'yyyy-MM-dd')}"></td>
 						<td th:text="${product.postingState}"></td>
 						<td>
@@ -149,7 +180,7 @@
 			</div>
 			<input type="text" id="sort" name="colmnName" th:value="${sortColumn}">
 		</form>
-		<div th:insert="~{admin/product/detailsModal :: modifyModal}"></div>
+		<div th:insert="~{admin/product/detailModal :: detailModal}"></div>
 	</div>
 
 	<th:block layout:fragment="script">
@@ -168,38 +199,14 @@
 					$.ajax({
 			            url:"/admin/detail?productNum=" + rno,
 			            success:function(responseData){
-			            	//console.log(responseData.optionPrice);
-			                  //JSON을 가져오기 {"키":"값 ", , , , , , ,}
-			          
-			                  //modal에 setting 
-			                //alert(responseData);
-			                //console.log(responseData);
-			               // var key = Object.keys(responseData);
-			                //var strobj = JSON.stringify(responseData); //$.each 불가
-			                //console.log(responseData.gets("optionCategory"));
-			                //console.log(responseData.name("optionNum"));
-			                //console.log(responseData.name("optionNum").value());
-			                
-			                 
-			                
-			               	
-			               
-			                
-			                
-			                //console.log(responseData.productNum.productNum); //'질감'
-							
-			                //$.each(responseData, function(name, value){
-				                //var str = "";
-			                	//str = "<p>" + name + "</p>";
-			                	//str += "<p>" + value + "</p>";
-			                	//console.log(name + " : " + value);
-			                	
-			                	//if($()){}
-			                	
-			                	//$(".modal-header").append(str);
-			                //});
-							$("#myModal").modal("show");
+							//모달열기 전에 옵션 지우기
+							$("#addOptions").empty();
+							$("#optionNum").val("");
+							$("#optionCategory option:eq(0)").prop("selected", true);
+			             	$("input[name='optionName']").val("");
+			                $("input[name='optionPrice']").val("");
 							putDataList(responseData);
+							$("#myModal").modal("show");
 			            }
 			        });
 	 				
@@ -209,55 +216,92 @@
 					//{"product":{}, "productOption":{}}
 					var product = responseData.product; 
 					var option = responseData.productOption;
-					
+					//console.log(option[0].optionNum + " " + option[0].optionCategory);
+					//console.log(option.length);
+					//console.log(option[0].optionNum);
 					$("input[name='productNum']").val(product.productNum);
 	                $("input[name='productName']").val(product.productName);
-	                $("input[name='productPrice']").val(product.productPrice);
-	                $("input[name='productPrice']").val(product.productPrice);
-	                $("input[name='productCreatedate']").val(product.productCreatedate);
-	                $("input[name='productUpdatedate']").val(product.productUpdatedate);
-					$("#label1").text(product.productMainimg1);
-					$("#label2").text(product.productMainimg2);
-					$("#label3").text(product.productMainimg3);
-					$("#label4").text(product.productMainimg4);
-					$("#label5").text(product.productDetailimg);
+	                $("input[name='productPrice']").val(Number(product.productPrice).toLocaleString('en').split(".")[0]);
+	                $("input[name='productCreatedate2']").val(product.productCreatedate);
+	                $("input[name='productUpdatedate2']").val(product.productUpdatedate);
+					
+					$("input[name='file']").eq(0).val(product.productMainimg1);
+					$("input[name='file']").eq(1).val(product.productMainimg2);
+					$("input[name='file']").eq(2).val(product.productMainimg3);
+					$("input[name='file']").eq(3).val(product.productMainimg4);
+					$("input[name='file']").eq(4).val(product.productDetailimg);
 	                
-	                //체크박스확인필요
+	                //체크박스 가져오기
 	                console.log(product.productCategory); 
 	                 
 	                $('input:checkbox[name=productCategory]').each(function(index, item){
 	                	 
-	                	 
-	                	//console.log( $.inArray($(item).val(), product.productCategory)  );
-	                	//console.log($(item).attr("checked"));
-	                	//console.log(item);
-	                	if($.inArray($(item).val(), product.productCategory) == 0 ){
-	                		alert($(item).val());
-	                		$(item).attr("checked");
+	                	console.log( $.inArray($(item).val(), product.productCategory)  );
+	                	if($.inArray($(item).val(), product.productCategory) >= 0 ){
+	                		console.log($(item).val())
+	                		$(item).prop("checked", true);
+	                	} else {
+	                		$(item).prop("checked", false);
 	                	}
 	                });
 	                
-	             	if(option == null) {
-	             		//지우기 
-		             	$("input[name='optionName']").val("");
-		                $("input[name='optionPrice']").val("");
-	             		return;
+	                //옵션관련
+	                //옵션 없을때
+	             	if(option == null || option == "") {
+	             		$('#optionNo').prop("checked",true);
+	             		$("#demo").css("display", "none");
+	             		
+	             	} else {
+		                //옵션 있을때
+		                
+		             	$('#optionYes').prop("checked",true);
+						$("#demo").css("display", "block");
+		                var categories = $('#optionCategory').find('option').map(function() {return $(this).val();}).get();
+		                var checkCategory = categories.includes(option[0].optionCategory);
+		                if(checkCategory == false){
+		                	$('#optionCategory').val('Other').prop("selected",true);
+		                	$("#writeOther").attr("type", "text");
+		                	$("#writeOther").val(option[0].optionCategory);
+		                } else {
+		                	$('#optionCategory').val(option[0].optionCategory).prop("selected",true);
+		                }
+		                $("input[name='optionName']").val(option[0].optionName);
+		                $("input[name='optionPrice']").val(Number(option[0].extraprice).toLocaleString('en').split(".")[0]);
+		                console.log($("input[name='optionNum']").val(option[0].optionNum));
+						
+		                
+						for(var idx = 1; idx < option.length; idx++){
+							var copyObj = $("#option2").clone(true);
+							copyObj.appendTo("#addOptions");
+							 $("input[name='optionName']").eq(idx).val(option[idx].optionName);
+				             $("input[name='optionPrice']").eq(idx).val(Number(option[idx].extraprice).toLocaleString('en').split(".")[0]);
+				             $("input[name='optionNum']").eq(idx).val(option[idx].optionNum);
+				             console.log($("input[name='optionNum']").eq(idx).val(option[idx].optionNum));
+						}
+
+						//삭제버튼 1번째 x 2번째부터 o
+						$(".deleteBtn").css("display", "block");
+						$(".deleteBtn").first().css("display", "none");
+						 //클론시 옵션라벨 보여주지 않기
+						$(".optLable").css("display", "none");
+						$(".optLable").slice(0, 2).css("display", "block");
+						 // optionNum 있을 때, 삭제시 value ""로 변경후 hidden
+						$('.deleteBtn').on('click', function () { 
+					        if($(this).parent().next().children().val() != null) { //옵션번호
+					        	console.log($(this).parent().next().children().val());
+					        	console.log($(this).parent().parent().find(".optionPrice").val());
+					        	console.log($(this).parent().parent().find("#optionName").val());
+					        	console.log($(this).parent().parent());
+					        	$(this).parent().parent().find(".optionPrice").val("").attr("hidden", true);
+					        	$(this).parent().parent().find("#optionName").val("").attr("hidden", true);
+					        	$(this).parent().parent().find("#addOptionBtn").attr("hidden", true);
+					        	$(this).parent().parent().find("#deleteOption").attr("hidden", true);
+					        	$(this).parent().parent().find("#optionNum").attr("hidden", true);
+					        	
+					        } 
+					     });
+
 	             	}
-	                //옵션
-					$("#optionYes").attr("checked", "true");
-					$("#demo").css("display", "block");
-	                $("input[name='optionName']").val(option.optionName);
-	                $("input[name='optionPrice']").val(option.extraprice);
-	                
-	                var categories = $('#optionCategory').find('option').map(function() {return $(this).val();}).get();
-	                var checkCategory = categories.includes(option.optionCategory);
-	                if(checkCategory == false){
-	                	$('#optionCategory').val('Other').prop("selected",true);
-	                	$("#writeOther").attr("type", "text");
-	                	$("#writeOther").val(option.optionCategory);
-	                } else {
-	                	$('#optionCategory').val(option.optionCategory).prop("selected",true);
-	                }
 				}
 				
 				
@@ -268,7 +312,7 @@
 					$('input').each(function(index, item){
 						console.log(index + " : " + $(item).val());
 						if(index < 4) {
-							$(item).val(''); 
+							$(item).val('');
 							$("input:radio[name ='postingState']:input[value='전체']").attr("checked", true);
 							$("#searchBtn").click();
 						}
@@ -292,19 +336,7 @@
 			$(function() {
 				var formObj = $("#f1");
 				
-/* 				// 게시글 제목 클릭시 값 넘어가기
-				$(".boardLink").click(function(event){ //타이틀을 누르면
-					alert("링크누름")
-		    		event.preventDefault(); //a태그의 본래기능은 취소 
-		    		var bno = $(this).attr("href");
-		    		formObj.attr("action", "[[@{detail}]]") //디테일로가기
-		    		formObj.find($("input[name='bno']")).remove();
-		    		formObj.append("<input type='text' name='bno' value='" + bno + "'>" ); //form에다 추가 내용보고싶다면 text로 변경
-		    		alert("링크누름")
-		    		formObj.submit();
-		    		formObj.attr("action", "[[@{list}]]"); //다시 원상복귀
-		    	}); */
-		    	//저장하고 난 후 input에 정보남2
+		    	//저장하고 난 후 input에 정보남기기
 		    	var columnName = ["productName", "productNum", "from", "to", "postingState"];
 		    	var columnValue = [[${pageVO.keyword}]]; //배열
 		    	
@@ -343,8 +375,6 @@
 					if(formObj.find("[name='page']").val()==''){
 						formObj.find("[name='page']").val(1);
 					}
-					//formObj.find("[name='page']").val(); //첫번째 페이지 얻은 것
-					//alert(typeStr + ":" + keywordStr);
 					formObj.submit();
 				});
 				
@@ -380,7 +410,8 @@
 					$(this).click(function() { 
 						if($(this).is('.asc')) { 
 							$(this).removeClass('asc'); 
-							$(this).addClass('desc'); 
+							$(this).addClass('desc');
+							//th.appendChild('<i class="material-icons">expand_less</i>');
 							sortdir=-1; 
 						} else { 
 							$(this).addClass('asc'); 
