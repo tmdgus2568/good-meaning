@@ -27,7 +27,15 @@ public interface CartRepository extends CrudRepository<CartVO, Long>{
 			+ " from tbl_user u, tbl_product p, tbl_cart c"
 			+ " where u.user_phone=c.user_phone and p.product_num=c.product_num"
 			+ " and c.user_phone=?1", nativeQuery = true)
-	/* + "	and c.cart_num=?2" */
 	public List<Object[]> findAllCartList(String userPhone);
+	
+	//order list로 가져가는
+	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, cart_count*product_price sumMoney, cart_num"
+			+ " from tbl_user u, tbl_product p, tbl_cart c"
+			+ " where u.user_phone=c.user_phone and p.product_num=c.product_num"
+			+ " and c.cart_num in ?1", nativeQuery = true)	 
+	public List<Object[]> findOrderList2(Long[] cartNum);
+	
+	
 
 }
