@@ -21,6 +21,7 @@ import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.ProductOptionRepository;
 import com.goodmeaning.persistence.ProductRepository;
+import com.goodmeaning.persistence.ReviewAnswerRepository;
 import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.vo.Category;
@@ -28,6 +29,7 @@ import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
+import com.goodmeaning.vo.ReviewAnswerVO;
 import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserRole;
 import com.goodmeaning.vo.UserVO;
@@ -53,6 +55,9 @@ public class mjTest {
 
 	@Autowired
 	ReviewRepository rrepo;
+	
+	@Autowired
+	ReviewAnswerRepository rarepo;
 	
 	
 	private static String URL = "https://thepicker.net";
@@ -494,7 +499,7 @@ public class mjTest {
 		oprepo.save(op);
 	}
 	
-	@Test
+	//@Test
 	public void insertReview() {
 
 		ProductVO pro = prepo.findById(810L).get();
@@ -512,4 +517,21 @@ public class mjTest {
 		
 		rrepo.save(r);			
 	}
+	
+	
+	@Test
+		public void insertReviewAnswer() {
+
+			UserVO user = urepo.findById("01011111111").get();
+			ReviewVO review = rrepo.findById(943L).get();
+
+			ReviewAnswerVO r = ReviewAnswerVO.builder()
+					.ranswerContent("멋져요")
+					.userPhone(user)
+					.reviewNum(review)
+					.build();
+			
+			
+			rarepo.save(r);			
+		}
 }

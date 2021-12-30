@@ -5,7 +5,6 @@
 <title>Insert title here</title>
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
-
 window.onload = function() {
 	btn1.onclick = call1;
 	btn2.onclick = call2;
@@ -45,7 +44,31 @@ window.onload = function() {
 	
 	function call2(){
 		$.ajax({
-			url : "productreview",
+			url : "productReview",
+			type : "POST",
+			async : false,
+			data : {
+				pno : "[[${product.productNum}]]"
+			},
+			dataType: "html",
+			type : "post",
+			success : function(responseData) { //responseData는 들어오는 값
+			$("#here").html(responseData);
+			here.innerHTML += "<button onclick='reviewWrite();'>리뷰작성</button>";
+			}
+		});
+	}
+	
+	function call3(){
+		here.innerHTML = "";
+	}
+	
+	function reviewWrite(){
+		
+		
+		
+		$.ajax({
+			url : "reviewWriteForm",
 			type : "POST",
 			data : {
 				pno : "[[${product.productNum}]]"
@@ -57,12 +80,6 @@ window.onload = function() {
 			}
 		});
 	}
-	
-	function call3(){
-		here.innerHTML = "";
-	}
-	
-
 </script>
 </head>
 <body>
