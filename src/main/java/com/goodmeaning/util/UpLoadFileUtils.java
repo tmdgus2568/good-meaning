@@ -7,19 +7,19 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 
 public class UpLoadFileUtils {
 	//썸네일 이미지 만드는 이유는..?
 //		static final int THUMB_WIDTH = 300;
 //		static final int THUMB_HEIGHT = 300;
-	    
+	
 		//파일 업로드
 		public static String fileUpload(String uploadPath, String fileName, byte[] fileData, String ymdPath) //byte[] fileData : 이미지 byte로 들어온다, 
 				throws Exception {
 			System.out.println("uploadpath : "+uploadPath);
 			System.out.println("filename : "+fileName);
-			//System.out.println("fileData : "+fileData);
 			System.out.println("ymdPath : " + ymdPath);
 			
 			// 고유식별 파일이름 생성
@@ -28,14 +28,14 @@ public class UpLoadFileUtils {
 			
 			//String fileName = uploadfile.getOriginalFilename();
 			String newFileName = makeUniqueFileName(fileName);
-			String imgPath = uploadPath + ymdPath;
+			String imgPath = uploadPath + File.separator + ymdPath;
 
 			File target = new File(imgPath, newFileName); //어디로~ 
 			
 			FileCopyUtils.copy(fileData, target);  //toFile과 같다.
 
 			//String thumbFileName = "s_" + newFileName;
-			File image = new File(imgPath + File.separator + newFileName);
+			//File image = new File(imgPath + File.separator + newFileName);
 			
 			
 			//File thumbnail = new File(imgPath + File.separator + "s" + File.separator + thumbFileName);
@@ -44,18 +44,16 @@ public class UpLoadFileUtils {
 			//	thumbnail.getParentFile().mkdirs();
 			//	Thumbnails.of(image).size(THUMB_WIDTH, THUMB_HEIGHT).toFile(thumbnail);
 			//}
-			return newFileName;
+			return  newFileName;
 		}
 		
 		// 고유 파일이름 생성
 		public static String makeUniqueFileName(String fileName) {
 			
-			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd_hhmmssSSSS");
-			SimpleDateFormat sdf2 = new SimpleDateFormat("hhmmssSSS");
+			SimpleDateFormat sdf = new SimpleDateFormat("MMdd_hhmmssSSSS");
 			
 			String ranStr = RandomStringUtils.randomAlphanumeric(6);
-			String date = sdf1.format(new Date());
-			//String time = sdf2.format(new Date());
+			String date = sdf.format(new Date());
 			
 			String uniqName = date + ranStr + "_" + fileName;
 			
