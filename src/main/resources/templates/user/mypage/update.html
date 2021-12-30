@@ -16,44 +16,56 @@
 
 	<form action="/mypage/user" method="post" id="updateForm">
 	<table>
-		<tr>
+		<tr id="tr_userId">
 			<th>아이디</th>
-			<td><input type="text" name="userId" readOnly th:value="${session.user.userId}"></td>
-		</tr>
-		<tr>
-			<th>비밀번호</th>
-			<td><input type="password" name="userPw"></td>
-		</tr>
-		<tr>
-			<th>비밀번호확인</th>
-			<td><input type="password" name="userPw"></td>
-		</tr>
+			<td><input type="text" name="userId" readOnly th:value="${user.userId}"></td>
+		</tr >
+<!-- 			<tr id="tr_before_userPw">
+				<th>이전 비밀번호</th>
+				<td>
+					<input type="password" id="before_userPw">
+				</td>
+			</tr>
+			<tr id="tr_new_userPw">
+				<th>비밀번호</th>
+				<td>
+					<input type="password" id="new_userPw">
+					<span id="check_new_userPw">영문 또는 숫자조합으로 8~12자</span>
+				</td>
+			</tr>
+			<tr id="tr_userPw_confirm">
+				<th>비밀번호확인</th>
+				<td>
+					<input type="password" id="userPw_confirm">
+					<span id="check_userPw_confirm"></span>
+				</td>
+			</tr> -->
 		<tr>
 			<th>휴대폰번호</th>
-			<td><input type="text" name="userPhone" id="userPhone" readOnly th:value="${session.user.userPhone}"></td>
+			<td><input type="text" name="userPhone" id="userPhone" readOnly th:value="${user.userPhone}"></td>
 		</tr>
 		<tr>
 			<th>이메일</th>
-			<td><input type="text" name="userEmail" id="userEmail" th:value="${session.user.userEmail}" readOnly></td>
+			<td><input type="text" name="userEmail" id="userEmail" th:value="${user.userEmail}" readOnly></td>
 		</tr>
 		<tr>
 			<th>이름</th>
-			<td><input type="text" name="userName" th:value="${session.user.userName}"></td>
+			<td><input type="text" name="userName" th:value="${user.userName}"></td>
 		</tr>
 		<tr>
 			<th>생년월일</th>
-			<td><input type="text" name="userBirth" id="userBirth" th:value=${session.user.userBirth}></td>
+			<td><input type="text" name="userBirth" id="userBirth" th:value=${user.userBirth}></td>
 		</tr>
 		<tr>
 			<th>주소</th>
 			<td>
-			<input type="text" name="userAddress" id="userAddress" readOnly th:value="${session.user.userAddress}" required="required">
-			<input type="text" name="userPostcode" id="userPostcode" th:value="${session.user.userPostcode}" readOnly required="required">
+			<input type="text" name="userAddress" id="userAddress" readOnly th:value="${user.userAddress}" required="required">
+			<input type="text" name="userPostcode" id="userPostcode" th:value="${user.userPostcode}" readOnly required="required">
 			</td>
 		</tr>
 		<tr>
 			<th>상세주소</th>
-			<td><input type="text" name="userAddressDetail" th:value="${session.user.userAddressDetail}"></td>
+			<td><input type="text" name="userAddressDetail" th:value="${user.userAddressDetail}"></td>
 		</tr>
 
 		
@@ -61,9 +73,10 @@
 
 	<!-- hidden -->
 
-	<input type="text" name="joinPlatform" hidden="true" th:value="${session.user.joinPlatform}">
-	<input type="text" th:value="${session.user.userRole}" name="userRole" hidden="true">
-	
+	<input type="text" name="joinPlatform" hidden="true" th:value="${user.joinPlatform}" id="joinPlatform">
+	<input type="text" th:value="${user.userRole}" name="userRole" hidden="true">
+	<input type="text" id="userPw" name="userPw" hidden="true" th:value="${user.userPw}">
+<!-- 	<input type="text" name="userJoindate" hidden="true" th:value="${user.userJoindate}"> -->
 	
 	<input type="submit" value="수정하기">
 	
@@ -78,6 +91,42 @@
 <script>
 
 $(function () {
+
+	if($("#joinPlatform").val()!='normal'){
+		$("#tr_userId").hide();
+		$("#tr_new_userPw").hide();
+		$("#tr_before_userPw").hide();
+		$("#tr_userPw_confirm").hide();
+	}
+	
+	// datepicker
+	$(function() {
+		/* if($("#param_method").val() != 'naver'){ */
+		       //input을 datepicker로 선언
+		$("#userBirth").datepicker({
+		    dateFormat: 'yy-mm-dd' //달력 날짜 형태
+		    ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+		    ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
+		    ,changeYear: true //option값 년 선택 가능
+		    ,changeMonth: true //option값  월 선택 가능                
+		    ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시  
+		    ,buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
+		    ,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
+		    ,buttonText: "선택" //버튼 호버 텍스트              
+		    ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
+	     	,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
+		    ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
+		    ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
+		    ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
+		    ,minDate: "-100Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+			,maxDate: "+1D" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)  
+		});                    
+		       
+		       //초기값을 오늘 날짜로 설정해줘야 합니다.
+		$('#datepicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)  
+	
+	});
+	
 	// 주소 api
 	$("#userAddress").click(function(){
 		
@@ -91,6 +140,38 @@ $(function () {
 		}).open();
 	});
 	
+	$("#new_userPw").on('input',function(){
+		
+		if(/^[a-zA-Z0-9]{8,20}$/.test($(this).val())){
+			$("#check_new_userPw").text("올바른 형식입니다");
+		}
+		else{
+			$("#check_new_userPw").text("영문 또는 숫자조합으로 8~12자");
+		}
+	});
+	
+	$("#userPw_confirm").on('input',function(){
+		if($("#new_userPw").val()==$(this).val()){
+			$("#check_userPw_confirm").text("비밀번호가 일치합니다");
+		}
+		else{
+			$("#check_userPw_confirm").text("");
+		}
+	});
+	
+	$("#updateForm").on('submit',function(){
+/* 		if($("#before_userPw").val()!=$("#userPw").val() && $("#before_userPw").val()!=''){
+			alert("비밀번호가 맞지 않습니다. 다시 입력해 주세요");
+			return false;
+		}
+		if($("#before_userPw").val()!=''){
+			$("#userPw").val($("#userPw_confirm").val());
+			$("#userPw_confirm").val("");
+			$("#new_userPw").val("");
+		} */
+		alert("수정이 완료되었습니다!")
+
+	});
 	
 
 

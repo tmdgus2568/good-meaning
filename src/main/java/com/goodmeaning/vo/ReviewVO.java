@@ -13,12 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -61,6 +63,11 @@ public class ReviewVO {
 	@Column(nullable = false)
 	@ColumnDefault("0")
 	private int reviewLike;
+
+
+	@JoinColumn(name="orderDetail")
+	@OneToOne
+	OrderDetailVO orderDetail;
 	
 	@JoinColumn(name="userPhone")
 	@ManyToOne
@@ -70,13 +77,14 @@ public class ReviewVO {
 	@ManyToOne
 	ProductVO productNum;
 	
-//	@BatchSize(size=100)
-//	@JsonIgnore
-//	@OneToMany(mappedBy = "review_num",
-//	cascade = CascadeType.ALL,
-//	fetch = FetchType.LAZY)
-//	List<ReviewAnswerVO> answers;
+//	@JoinColumn(name="orderDetailNum")
+//	@ManyToOne
+//	OrderDetailVO orderDetailNum;
 	
-	
+	@BatchSize(size=100)
+	@OneToMany(mappedBy = "reviewNum",
+	cascade = CascadeType.ALL,
+	fetch = FetchType.EAGER)
+	List<ReviewAnswerVO> answers;
 
 }

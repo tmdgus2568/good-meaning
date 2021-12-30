@@ -32,7 +32,13 @@ public class CartService {
     //장바구니 삭제    
     public void delete(Long cartNum) {
         crepo.deleteById(cartNum);
-    }   
+    }  
+    
+    //수량 수정@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    public void updateCartItemCount(Long cartNum, int count) {
+    	CartVO cart = crepo.findById(cartNum).orElse(null);
+		cart.setCartCount(count);
+	}
     
     //카트 조회
     public CartVO findById(Long cartNum) {
@@ -49,5 +55,7 @@ public class CartService {
 		// TODO Auto-generated method stub
 		return crepo.findAllCartList(userPhone);
 	}
+	
+	
 
 }

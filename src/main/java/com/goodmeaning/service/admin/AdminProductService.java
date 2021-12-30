@@ -1,4 +1,4 @@
-package com.goodmeaning.service;
+package com.goodmeaning.service.admin;
 
 import java.util.List;
 
@@ -8,39 +8,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.goodmeaning.persistence.HJRepository;
-import com.goodmeaning.persistence.ProductOptionRepository;
-import com.goodmeaning.persistence.ProductRepository;
+import com.goodmeaning.persistence.admin.AdminProductOptionRepository;
+import com.goodmeaning.persistence.admin.AdminProductRepository;
 import com.goodmeaning.vo.PageVO;
 import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
 import com.querydsl.core.types.Predicate;
 
 @Service
-public class AdminService {
+public class AdminProductService {
 
 	@Autowired
-	private HJRepository hjRepo;
+	private AdminProductRepository productRepo;
 
 	@Autowired
-	private ProductRepository productRepo;
-
-	@Autowired
-	private ProductOptionRepository productOptionRepo;
+	private AdminProductOptionRepository productOptionRepo;
 	
 //	@Autowired
-//	private HJRepositoryOrder orderRepo;
+//	private productRepositoryOrder orderRepo;
 
-//	// 재고리스트 보여주기
-//	public Page<ProductVO> stockList(PageVO pageVO) {
-//		
-//		Pageable paging = pageVO.makePaging(0, null); //전체 order
-//		
-//		Predicate pre = repo.makePredicate(pageVO.getType(), pageVO.getKeyword()); // 조건넣기
-//		Page<ProductVO> result = repo.findAll(pre, paging);
-//		
-//		return result; 
-//	}
+	public ProductVO selectById(Long pid) {//CartController참조
+		return productRepo.findById(pid).orElse(null);
+	}
 	///select count() from aaa where 절 
 
 	// 상품리스트 보여주기
@@ -48,8 +37,8 @@ public class AdminService {
 
 		Pageable paging = pageVO.makePaging(direction, colmnName); // 전체 order
 
-		Predicate pre = hjRepo.makePredicate(pageVO); // 조건넣기
-		Page<ProductVO> result = hjRepo.findAll(pre, paging);
+		Predicate pre = productRepo.makePredicate(pageVO); // 조건넣기
+		Page<ProductVO> result = productRepo.findAll(pre, paging);
 
 		return result;
 	}
@@ -57,7 +46,7 @@ public class AdminService {
 	 
 	// 상품등록
 	public ProductVO insertProduct(ProductVO product, String[] optionName, int[] optionPrice, String optionCategory) {
-		ProductVO newproduct = hjRepo.save(product); // 객체생성후 저장
+		ProductVO newproduct = productRepo.save(product); // 객체생성후 저장
 		System.out.println(newproduct);
 		for (int i = 0; i < optionName.length; i++) {
 			ProductOptionVO option = new ProductOptionVO(); // 객체 생성 후 저장
@@ -77,19 +66,9 @@ public class AdminService {
 		return productOptionRepo.findByProductNum(product);
 	}
 
-	// 재고 리스트 가져오기
-	public Page<Object[]> stockList(PageVO pageVO, int direction, String colmnName) {
-
-		Pageable paging = pageVO.makePaging(direction, colmnName); // 전체 order
-
-		Predicate pre = hjRepo.makePredicate(pageVO); // 조건넣기
-		Page<Object[]> result = hjRepo.findProductAll(paging); //pre, 
-
-		return result;
-	}
 
 	public Long selectAll(PageVO pageVO) {
-		Predicate pre = hjRepo.makePredicate(pageVO);
+		Predicate pre = productRepo.makePredicate(pageVO);
 		return productRepo.count(pre);
 	}
 
@@ -97,13 +76,13 @@ public class AdminService {
 	@Transactional
 	public void deleteByProductNum(Long productNum) {
 		productOptionRepo.deleteByProductNum(productNum);
-		hjRepo.deleteById(productNum); //지우는 순서 옵션 > 프로덕트
+		productRepo.deleteById(productNum); //지우는 순서 옵션 > 프로덕트
 	}
 
 	@Transactional
 	public ProductVO updateProduct(ProductVO product, String[] optionName, Integer[] optionPrice, String optionCategory,
 			Long[] optionNum, int options) {
-		ProductVO original = hjRepo.findById(product.getProductNum()).get();
+		ProductVO original = productRepo.findById(product.getProductNum()).get();
 		original.setProductCategory(product.getProductCategory());
 		original.setProductName(product.getProductName());
 		original.setProductPrice(product.getProductPrice());
@@ -114,7 +93,7 @@ public class AdminService {
 		original.setProductMainimg4(product.getProductMainimg4());
 		original.setUploadFile(product.getUploadFile());
 		
-		ProductVO updateProduct = hjRepo.save(original);
+		ProductVO updateProduct = productRepo.save(original);
 		 // 객체 생성 후 저장
 		
 		//옵션 사용함 > 사용하지 않음으로 수정 시
@@ -154,19 +133,7 @@ public class AdminService {
 
 	public ProductVO findById(Long productNum) {
 		// TODO Auto-generated method stub
-		return hjRepo.findById(productNum).get();
+		return productRepo.findById(productNum).get();
 	}
-
-
-	/*
-	 * public Page<OrderVO> orderList(PageVO pageVO, int direction, String
-	 * colmnName) { Pageable paging = pageVO.makePaging(direction, colmnName); // 전체
-	 * order
-	 * 
-	 * Predicate pre = orderRepo.makePredicate(pageVO); // 조건넣기 Page<OrderVO> result
-	 * = orderRepo.findOrderAll(paging); //pre,
-	 * 
-	 * return result; }
-	 */
 
 }

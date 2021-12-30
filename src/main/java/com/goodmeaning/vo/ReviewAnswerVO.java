@@ -26,7 +26,7 @@ import lombok.ToString;
 
 @Getter
 @Setter 
-@ToString 
+@ToString (exclude = "reviewNum")
 @Builder
 @AllArgsConstructor 
 @NoArgsConstructor
@@ -39,7 +39,7 @@ public class ReviewAnswerVO {
 	
 	@NonNull
 	@Column(nullable = false)
-	private String ranserContent;
+	private String ranswerContent;
 	
 	@CreationTimestamp
 	private Timestamp ranswerCreatedate;
@@ -51,9 +51,9 @@ public class ReviewAnswerVO {
 	@ManyToOne
 	UserVO userPhone;
 	
+	@JsonIgnore
 	@JoinColumn(name="reviewNum")
 	@ManyToOne
 	ReviewVO reviewNum;
-	
 	
 }

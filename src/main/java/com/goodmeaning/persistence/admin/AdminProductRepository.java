@@ -1,4 +1,4 @@
-package com.goodmeaning.persistence;
+package com.goodmeaning.persistence.admin;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import com.goodmeaning.vo.QProductVO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
-public interface HJRepository
+public interface AdminProductRepository
 		extends PagingAndSortingRepository<ProductVO, Long>, QuerydslPredicateExecutor<ProductVO> {
 
 	// 상품모두(옵션따로)가져오기

@@ -26,8 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import com.goodmeaning.service.AdminService;
-import com.goodmeaning.service.ProductService;
+import com.goodmeaning.service.admin.AdminProductService;
 import com.goodmeaning.util.UpLoadFileUtils;
 import com.goodmeaning.vo.PageMaker;
 import com.goodmeaning.vo.PageVO;
@@ -44,10 +43,7 @@ public class AdminProductController {
 	String locationPath;
 
 	@Autowired
-	AdminService adminService;
-	
-	@Autowired
-	ProductService productService;
+	AdminProductService adminService;
 	
 	// 상품목록 보여주기
 	@GetMapping("/list") //리스트할때부터 온애(VO 2개있음)
@@ -157,7 +153,7 @@ public class AdminProductController {
 	public ResponseEntity<Map<String, Object>> getDetail(Long productNum) {//html에서 받을때 @RequestBody(url, data)
 		Map<String, Object> map = new HashMap<>();
 		System.out.println(productNum);
-		ProductVO product = productService.selectById(productNum);
+		ProductVO product = adminService.selectById(productNum);
 		List<ProductOptionVO> productOption = adminService.findByProductNum(product); //레파지토리 호출
 		map.put("product", product);
 		map.put("productOption", productOption);

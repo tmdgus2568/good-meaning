@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -41,6 +42,10 @@ public class OrderVO {
 	
 	@CreationTimestamp
 	private Date orderDate;
+	
+	@UpdateTimestamp
+	private Date orderUpdate;
+	
 	@NonNull
 	@Column(nullable = false)
 	private String deliveryRecipient;

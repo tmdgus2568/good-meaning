@@ -4,13 +4,19 @@ package com.goodmeaning.controller;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.goodmeaning.persistence.CartRepository;
 import com.goodmeaning.persistence.UserRepository;
@@ -75,20 +81,16 @@ public class CartController {
             }
         return "redirect:/cartlist";
     }
-
-
-
-    //장바구니 삭제
-    @RequestMapping(value="/cart/delete", method = RequestMethod.GET)
-    public String delete(@RequestParam Long cartNum){
-    	System.out.println("cartNum:"+cartNum);
-        cartService.delete(cartNum);
-        return "redirect:/cartlist";
+    
+    //장바구니 수정@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @PatchMapping(value = "/cartlist/{cartNum}")
+    public @ResponseBody ResponseEntity<Long> updateCartItem(@PathVariable("cartNum") Long cartNum, int count){
+        cartService.updateCartItemCount(cartNum, count);
+        return new ResponseEntity<Long>(cartNum, HttpStatus.OK);
     }
     
-
     //장바구니 수정
-    @RequestMapping("update")
+    /*@RequestMapping(value="cart/update", method = RequestMethod.GET)
     public String update(Long[] cartNum,  int[] amount, HttpSession session) {
         // session의 id
     	UserVO user = UserVO.builder().userPhone("123").build();
@@ -101,7 +103,19 @@ public class CartController {
             cartService.insertOrUpdate(vo);
         }
         return "redirect:/cartlist";
+    }*/
+    
+    //장바구니 삭제
+    @RequestMapping(value="/cart/delete", method = RequestMethod.GET)
+    public String delete(@RequestParam Long cartNum){
+    	System.out.println("cartNum:"+cartNum);
+        cartService.delete(cartNum);
+        return "redirect:/cartlist";
     }
+    
+ 
+
+   
     
     
 }

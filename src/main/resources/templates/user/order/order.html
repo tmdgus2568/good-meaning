@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
+<head>
+<!-- jQuery  -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+<!-- iamport.payment.js -->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+
+<meta charset="UTF-8">
+<title>구매하기</title>
+</head>
+<body>
+<!-- 유저vo -->
+<div class="panel panel-default" layout:fragment="content" align="center">
+	<h1 id="title">구매정보</h1>
+	<br>
+	<!-- 구매 예정 상품 list  -->
+	
+	<div>
+    	<div id="list" th:each="item:${olist}">
+         	<div>
+            	<img th:src="${item[0]}" th:width="150">               
+                    <div>
+                    	<span id="productName" th:text="${item[1]}"></span>
+                    </div>
+                    <div>
+                        수량:<span id="cartCount" th:data-count="${item[2]}" th:text="${item[2]} +'개'"></span>
+                        /가격:<span id="price" th:data-price="${item[3]}" th:text="${item[3]}+'원'"></span>
+                    </div>
+                <input type="hidden" id="cartNum" th:value="${item[5]}" >                
+        	</div>
+        </div>
+        <h2 class="text-center">
+			총 주문 금액:<span id="orderTotalPrice" class="text-danger">0원</span>
+		</h2>       	
+	</div>
+	
+	
+	<!-- 주문form -->
+	<form action="/order" method="post" id="purchaseForm">
+		<table>
+			<tr>
+				<th>주문하시는 분</th>
+				<td><input type="text" name="userName" id="userName" th:value="${session.user.userName}" required="required"></td>
+			</tr>			
+						
+			<tr>
+				<th>휴대폰번호</th>
+				<td><input type="text" name="userPhone" id="userPhone" readOnly th:value="${session.user.userPhone}"></td>
+			</tr>
+			
+			<tr id="tr_userEmail">
+				<th>이메일</th>
+			<td><input type="text" name="userEmail" id="userEmail" th:value="${session.user.userEmail}" readOnly></td>
+			</tr>
+
+			<tr>
+			<th>주소</th>
+			<td>
+			<input type="text" name="userAddress" id="userAddress" readOnly th:value="${session.user.userAddress}" required="required">
+			<input type="text" name="userPostcode" id="userPostcode" th:value="${session.user.userPostcode}" readOnly required="required">
+			</td>
+		</tr>
+		<tr>
+			<th>상세주소</th>
+			<td><input type="text" id="userAddressDetail" name="userAddressDetail" th:value="${session.user.userAddressDetail}"></td>
+		</tr>
+	
+		</table>
+		
+		<input type="button" id="payNow" value="구매하기">
+
+
+	</form>
+<th:block layout:fragment="script">
+<script>
+
+	$(document).ready(function(){
+	  	//실행내용
+		getOrderTotalPrice();
+	});
+	
+	function getOrderTotalPrice(){
+		var orderTotalPrice = 0;
+		
+		$("#list").each(function(){
+			//var cartNum = $(this).val();
+	        var price = $("#price").attr("data-price");
+	        var count = $("#cartCount").attr("data-count");
+			
+		    console.log(price);
+		   	console.log(count);
+		   	
+			orderTotalPrice += price*count;
+		});
+			console.log(orderTotalPrice);
+			if(orderTotalPrice>=100000){
+				orderTotalPrice;
+				console.log(orderTotalPrice);
+			}else{
+				orderTotalPrice+=2500;
+				console.log(orderTotalPrice);
+			}	
+		$("#orderTotalPrice").html(orderTotalPrice+'원');
+	}
+
+	function importPay(){
+		var totalCount = document.getElementById('totalCount').value;//수량
+		var totalPrice = document.getElementById('orderTotalPrice').value;//결제금액
+		var userName = document.getElementById('userName').value;//주문자이름
+		var userPhone = document.getElementById('userPhone').value;//주문자번호
+		var userEmail = document.getElementById('userEmail').value;//주문자이메일
+		var userAddress = document.getElementById('userAddress').value;//주소
+		var userPostcode = document.getElementById('userPostcode').value;//우편번호
+		var userAddressDetail = document.getElementById('userAddressDetail').value;//상세주소
+		
+		IMP.init("{imp03054995}"); // 예: imp00000000
+		var msg;
+	}
+
+	//결제시 PG사의 결제 페이지가 열리는 예제
+	$("payNow").click(function(e) {
+    // IMP.request_pay(param, callback) 결제창 호출
+    IMP.request_pay({ // param
+        pg: "html5_inicis",
+        pay_method: "card",
+        merchant_uid: new Date().getTime(),
+        name: productName,//상품명
+        amount: totalCount,
+        buyer_email: userEmail,
+        buyer_name: userName,
+        buyer_tel: userPhone,
+        buyer_addr: userAddress+userAddressDetail,
+        buyer_postcode: userPostcode
+    }, function (rsp) { // callback
+    		console.log(rsp);
+        if (rsp.success) {
+            // 결제 성공 시 로직
+        	var msg = '결제가 완료되었습니다';
+        	console.log("결제성공 " + msg);
+        	msg += '고유ID : ' + rsp.imp_uid;
+	        msg += '상점 거래ID : ' + rsp.merchant_uid;
+	        msg += '결제 금액 : ' + rsp.paid_amount;
+	        msg += '카드 승인번호 : ' + rsp.apply_num;
+        	location.href="";//마이페이지 주문 확인으로 가기
+
+        } else {
+            // 결제 실패 시 로직
+        	msg = '결제에 실패하였습니다.\n';
+        	msg += '에러내용 : ' + rsp.error_msg;
+            //결제 실패시 이동할 페이지
+        	location.href="order/order";
+        }
+        alert(msg);
+    });
+  }); 
+</script>
+</th:block>
+</div>
+</body>
+</html>

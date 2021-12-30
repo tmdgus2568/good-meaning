@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.goodmeaning.security.UserService;
 import com.goodmeaning.service.RegisterService;
 import com.goodmeaning.vo.UserVO;
 
@@ -23,6 +24,8 @@ import com.goodmeaning.vo.UserVO;
 public class RegisterController {
 	@Autowired
 	RegisterService registerService;
+	@Autowired
+	UserService userService;
 	
 	// 회원가입 - 회원가입창 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -74,9 +77,9 @@ public class RegisterController {
 	// 회원가입 - 회원가입 완료
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String register(UserVO user) {
-		System.out.println(user);
-		registerService.register(user);
-		return "user/register/registerConfirm";
+		System.out.println("user : " + user);
+		userService.joinUser(user);
+		return "redirect:/auth/login";
 	}
 	
 	// 중복확인 (ajax)

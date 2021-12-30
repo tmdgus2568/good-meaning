@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_mypage">
+
+<head>
+
+<meta charset="UTF-8">
+<title>취소/반품/교환내역</title>
+</head>
+<body>
+
+<section class="panel panel-default" layout:fragment="content" align="center">
+	<h2 align="left">구매내역</h2>
+	<br>
+	<form action="/mypage/updateorders" method="get" id="filter_form">
+		<div align="left">
+			<label><input type="radio" id="all_radio" value="전체" name="filter"> 전체</label>
+			<label><input type="radio" id="cancel_radio" value="구매취소" name="filter"> 구매취소</label>
+   			<label><input type="radio" id="return_radio" value="반품" name="filter"> 반품</label>
+    		<label><input type="radio" id="change_radio" value="교환" name="filter"> 교환</label>
+		</div>
+	</form>
+
+
+	<table class="table table-striped table-bordered table-hover">
+		<tr>
+			<th>주문번호</th>
+			<th>상품이미지</th>
+			<th>상품이름</th>
+			<th>지불금액</th>
+			<th>현황</th>
+			<th>구매날짜</th>
+			<th>변경날짜</th>
+		</tr>
+		<tr th:if="${#lists.size(orders.result.content)}==0">
+			<td colspan="7">주문목록이 없습니다.</td>
+		</tr>
+		<tr th:each="order:${orders.result.content}">
+			<td th:text="${order.orderNum}"></td> <!-- 주문번호 -->  
+			<td> <!-- 이미지 -->  
+				<img th:src="${order.details[0].productNum.productMainimg1}" width="80" height="80">
+			</td>
+			<td>
+				<a th:href="@{/mypage/orders/{oid}(oid=${order.orderNum})}" th:text="|${order.details[0].productNum.productName}외 ${order.details.size-1}건|"></a>
+				
+			</td>
+			<td th:text="|${#numbers.formatInteger(order.orderTotalPrice, 0, 'COMMA')}원|"></td>
+			<td th:text="${order.orderStatus}"></td>
+			<td th:text="${order.orderDate}"></td>
+			<td th:text="${order.orderUpdate}"></td>
+	
+			
+		
+		</tr>
+		
+	</table>
+	
+	    <!-- paging -->
+	<nav>
+	   <div>
+	     <ul class="pagination">
+	       <li class="page-item" th:if="${orders.prevPage}">
+	         <a th:href="${orders.prevPage.pageNumber}+1">PREV [[${orders.prevPage.pageNumber}+1]]</a>
+	       </li>
+	        <li class="page-item" th:classappend="${p.pageNumber==orders.currentPageNum-1}?active:''" 
+	                             th:each="p:${orders.pageList}">
+	         <a th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a>
+	       </li>  
+	       <li class="page-item" th:if="${orders.nextPage}">
+	         <a th:href="${orders.nextPage.pageNumber}+1">NEXT [[${orders.nextPage.pageNumber}+1]]</a>
+	       </li>   
+	     </ul>
+	   </div>
+	  </nav>
+	  <form id="f1" th:action="@{/mypage/updateorders}" method="get">
+	    <input name="page" th:value="${orders.currentPageNum}" hidden="true">
+	    <input name="size" th:value="${orders.currentPage.pageSize}" hidden="true">
+	    <input name="type" th:value="${pageVO.type[1]}" hidden="true">
+	    <input name="keyword" th:value="${pageVO.keyword[1]}" hidden="true">
+	    
+	 </form>
+	 <input type="text" th:value="${param.filter}" id="param_filter" hidden="true">
+
+</section>
+
+</body>
+<th:block layout:fragment="script">
+<script>
+$(function() {
+	
+	// filter에 따라 radio check
+	switch($("#param_filter").val()){
+		case "구매취소":
+			$("#cancel_radio").attr("checked","checked");
+			break;
+		case "반품":
+			$("#return_radio").attr("checked","checked");
+			break;
+		case "교환":
+			$("#change_radio").attr("checked","checked");
+			break;
+		case "전체":
+		case "":
+			$("#all_radio").attr("checked","checked");
+			break;
+	}
+	
+	
+	var formObj = $("#f1"); //폼을 가져온다.
+	$(".pagination a").click(function(e) {
+		e.preventDefault(); //본래의 event(기능)을 취소(link 취소)
+		formObj.find("[name='page']").val($(this).attr("href"));
+		formObj.submit();
+	});
+	$("input[name=filter]").click(function(){
+		$("#filter_form").submit();
+		
+	});
+	
+	
+	
+	
+
+});
+
+
+
+
+</script>
+</th:block>
+</html>
