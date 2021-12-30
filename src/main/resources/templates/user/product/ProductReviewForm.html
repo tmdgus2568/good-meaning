@@ -5,7 +5,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form>
+	<form action="empinsert"  method="post">
 		<table>
 			<thead>
 				<tr>
@@ -14,33 +14,50 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>상품사진</td>
-					<td>상품정보</td>
+					<td><img th:src="${product.productMainimg1}" width="100px"></td>
+					<td>
+					상품명 : <a th:text="${product.productName}" style="font-weight: bold"></a><br>
+					상품가격 : <a th:text="${product.productPrice}"></a><br>
+					구매수량 : <a></a><br>
+					구매날짜 : <a></a>
+					</td>
 				</tr>
 				<tr>
 					<td>작성자</td>
-					<td><input type="text" name="text" size="20" style="width:100%;"></td>
+					<td><input type="text" id="writer" size="20" style="width: 100%;"></td>
 				</tr>
 				<tr>
 					<td>평가</td>
-					<td></td>
+					<td>
+						<input type="radio" id="score5" name="score" value="5"> 
+						<label for="score5">5</label> 
+						<input type="radio" id="score4" name="score" value="4">
+						<label for="score4">4</label>
+						<input type="radio" id="score3" name="score" value="3"> 
+						<label for="score3">3</label>
+						<input type="radio" id="score2" name="score" value="2"> 
+						<label for="score2">2</label>
+						<input type="radio" id="score1" name="score" value="1"> 
+						<label for="score1">1</label>
+					</td>
 				</tr>
 				<tr>
 					<td>제목</td>
-					<td></td>
+					<td><input type="text" id="title" size="20" style="width: 100%;"></td>
 				</tr>
 				<tr>
 					<td>내용</td>
-					<td></td>
+					<td><textarea id="contents"  rows="5" cols="50"></textarea></td>
 				</tr>
 				<tr>
 					<td>파일</td>
-					<td></td>
+					<td><input type="file" name="uploadFile"></td>
 				</tr>
 			</tbody>
 			<tfoot>
 			</tfoot>
 		</table>
+		<input type="submit" value="리뷰작성">
 	</form>
 </body>
 </html>
