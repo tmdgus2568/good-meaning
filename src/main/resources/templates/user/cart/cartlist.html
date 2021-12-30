@@ -19,6 +19,7 @@
 	            </th>		 
 				<th>이미지</th>
 				<th>상품명</th> 
+				<!-- <th>옵션</th> 옵션 추가 -->
 				<th>수량</th> 
 				<th>단가</th> 
 				<th>총금액</th> 
@@ -34,22 +35,18 @@
 				<img th:src="${cart[0]}" th:width="150">
 			</td>
 			<td th:text="${cart[1]}"></td>
+			<!-- <td th:text="${cart[6]}"></td> 옵션 추가 -->
 						
-			<td>
-				<!-- <input type='button' th:onclick='count("minus")' value='-'/> 
-				<span th:name="countName" th:id="count" th:text="${cart[2]}"></span>      		
-	       		<input type='button' th:onclick='count("plus")' value='+'/> -->
-	       		  		
+			<td>	       		  		
 	       		<input type="number" name="countName" th:id="'count' + ${cart[5]}"
 	       		 th:value="${cart[2]}" min="1" onchange="changeCount(this)"> 
-	       		<button type="button" class="btn btn-danger btndelete" 
-			       th:onclick="javascript:updateCount([[${cart[2]}]])">수정</button>     		      		
+	       		   		      		
        		</td>
        					
 			<td th:id="'price' + ${cart[5]}" th:data-price="${cart[3]}" th:text="${cart[3]}+ '원'"></td>
-			<!-- th:text="${#numbers.formatInteger(cart[3],0,'COMMA')}+'원'" -->
+			
 			<td th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName" th:text="${cart[4]}+ '원'"></td>			
-			<!-- th:text="${#numbers.formatInteger(cart[4],0,'COMMA')}+'원'" -->
+			
 			<td>
 			<button type="button" class="btn btn-danger btndelete" 
 			       th:onclick="javascript:deleteCart([[${cart[5]}]])">삭제</button> 
@@ -58,11 +55,10 @@
 		</tr>
 		</table>
 		<h2 class="text-center">
-			총 주문 금액:<span id="orderTotalPrice" class="text-danger">0원</span>
+			주문 예상 금액:<span id="orderTotalPrice" class="text-danger">0원</span>
 		</h2>
 		<!-- <button>전체상품주문</button>	 -->	
-		<button type="button" class="btn btn-primary btn-lg" onclick="goPurchase()">button주문</button>	
-		<input type="submit" class="btn btn-primary btn-lg" onclick="goPurchase()" value="input주문">	
+		<button type="button" class="btn btn-primary btn-lg" onclick="goOrders()">선택주문</button>	
 	</div>
 </form>
 <th:block layout:fragment="script">
@@ -72,10 +68,20 @@
 		location.href="cart/delete?cartNum=" + cartNo;		 
 	}
 	
-	function updateCount(cartNo, count){//수량변경
-		alert(cartNo);
-		location.href="cart/update?cartCount=" + count;		
-	}
+	function updateCartItemCount(cartNum, count){
+        var url = "/cartlist/" + cartNum+"?count=" + count;
+
+        $.ajax({
+            url      : url,
+            type     : "PATCH",
+            dataType : "json",
+            cache   : false, //캐쉬 막아서 현재 값 호출
+            success  : function(result, status){
+                console.log("cartNum count update success");
+            },
+        });
+    }
+
 	
 	$(document).ready(function(){//주문상품 체크하거나 해제할 경우 총 주문액
 		$("input[name='cartChkBox']").change(function(){
@@ -95,16 +101,18 @@
 			
 		    console.log(price);
 		   	console.log(count);
-
-		    orderTotalPrice += price*count;
-		    
-			if(orderTotalPrice>=100000){
-				console.log(orderTotalPrice);
-			}else{
-				orderTotalPrice+=2500;
-			}
+		   	
+			orderTotalPrice += price*count;			
 		     
 		});
+		
+		if(orderTotalPrice>=100000){
+			orderTotalPrice;
+			console.log(orderTotalPrice);
+		}else{
+			orderTotalPrice+=2500;
+			console.log(orderTotalPrice);
+		}
 		$("#orderTotalPrice").html(orderTotalPrice+'원');
 	}
 	
@@ -120,6 +128,8 @@
         console.log(totalPrice);
          		 
         $("#totalPrice" + cartNum).html(totalPrice+"원");
+        getOrderTotalPrice();
+        updateCartItemCount(cartNum, count);
 	}
 	
 	function checkAll(){//전체 체크하거나 해제
@@ -132,34 +142,31 @@
 	}
 	
 	/*체크박스에 체크한 상품(상품번호,주문수량)을 가지고 주문 폼 페이지로 이동*/
-	function goPurchase(){
-		//1. 장바구니에 담긴 상품이 없는 경우
-		var chk=$('input[name="cartChkBox"]');
-		if(chk.length==0){
-			return;
-		}
-		//2. 담긴 상품이 있다면 체크박스 갯수 만큼 반복문 돌면서 체크한 상품과 체크 안된 상품을 구분하여, 체크 안된 상품의 주문 수량은 서버쪽에 적송되지 않도록 disabled 처리한다.
-		var cnt =0;
-		$.each(chk,function(i,ch){
-			if($(ch).is(":checked")){
-				cnt++;
-				$('#oqty'+(i+1)).prop('disabled',false);//비활성화
-			}else{
-				//체크 안된 상품의 주문 수량 비활성화 
-				$('#oqty'+(i+1)).prop('disabled',true);//비활성화
-			}
-		});
+	function goOrders(){
+		 var url = "/order";
 
-		if(cnt==0){
-			alert('주문할 상품을 체크하세요');
-			$('input[name="oqty"]').prop('disabled',false);//비활성화
-			return;	
-		}
-		cartlistForm.submit();
-		console.log(cartlistForm.submit());
+         var dataList = new Array();
+         var paramData = new Object();
+         
+         var arr=[];
+         $("input[name='cartChkBox']:checked").each(function() {//체크된 장바구니 상품 아이디 전달하기 위해
+             var cartNum = $(this).val();		//datalist 배열에 장바구니 상품 아이디를 객체로 만들어서 저장
+             var data = new Object();
+             data["cartNum"] = cartNum;
+             dataList.push(data); //[{"cartNum":10}, {"cartNum":20}]
+             arr.push("cartNum=" + cartNum);
+         });
+
+         paramData['cartlist'] = dataList;//장바구니 상품 아이디를 저장하고 있는 datalist를 paramData객체에 추가
+        //var param = JSON.stringify(paramData);
+         
+         console.log(arr.join("&"));
+         alert(paramData['cartlist']);
+         location.href='order?' + arr.join("&") ;
+         
 	}
 
-	</script>
+</script>
 </th:block> 
 </body>
 </html>    

@@ -34,9 +34,10 @@ public class CartService {
         crepo.deleteById(cartNum);
     }  
     
-    //수량 수정
-    public CartVO updateCartItemCount(Long cartNum, int count) {
-		return crepo.findById(cartNum).orElse(null);
+    //수량 수정@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    public void updateCartItemCount(Long cartNum, int count) {
+    	CartVO cart = crepo.findById(cartNum).orElse(null);
+		cart.setCartCount(count);
 	}
     
     //카트 조회
