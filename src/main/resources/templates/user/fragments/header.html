@@ -2,6 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css"/>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ 
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <title>Insert title here</title>
 </head>
 <!-- 항상 따라야할것 :로고, 메뉴바, 로그인 정보, 로그아웃버튼, 마이페이지버튼  -->
@@ -14,7 +22,47 @@
 		<div align="right" th:if="${session.user eq null}">
 			<a href="/auth/login">로그인</a>
 		</div>
-		<h1 align="center">굿미닝</h1>
+		<div align="center" style="background:#78c2ad;"><img src="/img/goodmeaning_logo.jpeg" width="300"/></div>
+
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="background:#78c2ad;">
+		  <div class="container-fluid">
+		  
+		    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+		      <span class="navbar-toggler-icon"></span>
+		    </button>
+		
+		    <div class="collapse navbar-collapse" id="navbarColor01">
+		      <ul class="navbar-nav me-auto">
+		        <li class="nav-item">
+		          <a class="nav-link active" href="/">Home
+		          <!--   <span class="visually-hidden">(current)</span> -->
+		          </a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="#">Product</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/mypage/user">MyPage</a>
+		        </li>
+		        <!-- <li class="nav-item">
+		          <a class="nav-link" href="#">About</a>
+		        </li> -->
+		        <!-- <li class="nav-item dropdown">
+		          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+		          <div class="dropdown-menu">
+		            <a class="dropdown-item" href="#">Action</a>
+		            <a class="dropdown-item" href="#">Another action</a>
+		            <a class="dropdown-item" href="#">Something else here</a>
+		            <div class="dropdown-divider"></div>
+		            <a class="dropdown-item" href="#">Separated link</a>
+		          </div>
+		        </li> -->
+		      </ul>
+		
+		    </div>
+		  </div>
+		</nav>
+		
 		
 	</div>
 </body>
