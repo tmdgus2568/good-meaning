@@ -14,8 +14,8 @@
 <div class="panel panel-default" layout:fragment="content" align="center">
 	<h1 id="title">일반 회원가입</h1>
 	<br>
-	<input type="text" id="param_method" th:value="${param.method}" hidden="true">
-	<form action="/register" method="post" id="registerForm">
+	<input type="text" id="param_method" th:value="${param_method}" hidden="true">
+	<form action="/register/insert" method="post" id="registerForm">
 		<table>
 			<tr id="tr_userId">
 				<th>아이디</th>
@@ -64,7 +64,7 @@
 				<th></th>
 				<td>
 					<input type="text" name="auth_num" id="auth_num">
-					<input type="text" name="auth_num_data" id="auth_num_data">
+					<input type="text" name="auth_num_data" id="auth_num_data" hidden="true">
 					<input type="button" value="인증확인" id="btn_auth_check">
 				</td>
 			</tr>
@@ -168,7 +168,7 @@ $(function () {
 		$("#userEmail").prop('readonly', true);
 		$("#userName").prop('readonly', true);
 		$("#userBirth").prop('readonly', true);
-		$("#userPhone1").prop('readonly', true);
+	 	$("#userPhone1").prop('readonly', true);
 		$("#userPhone2").prop('readonly', true);
 		$("#userPhone3").prop('readonly', true);
 		$("#userPw").prop('required',false);

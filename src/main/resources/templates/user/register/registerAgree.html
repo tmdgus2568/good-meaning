@@ -41,7 +41,73 @@
    <br>
    <input type="checkbox" name="req"> 개인정보 수집 및 이용에 동의합니다.
    <br>
-   <button>다음으로</button>
+   <!-- <button>다음으로</button> -->
+   
+   
+	<form action="/register" method="post" id="registerForm">
+		<input type="text" id="param_method" name="param_method" th:value="${param.method}" hidden="true">
+		<table hidden="true">
+			<tr id="tr_userId">
+				<th>아이디</th>
+				<td>
+					<input type="text" name="userId" id="userId" th:value="${userId}">
+					
+				</td>
+			</tr>
+			<tr id="tr_userEmail">
+				<th>이메일</th>
+				<td><input type="text" name="userEmail" id="userEmail" th:value="${userEmail}" ></td>
+			</tr>
+			<tr>
+				<th>휴대폰번호</th>
+				<td>
+
+					<input type="text" id="userPhone1" name="userPhone1" th:value="${userPhone1}">
+					-
+					<input type="text" id="userPhone2" name="userPhone2" th:value="${userPhone2}">
+					-
+					<input type="text" id="userPhone3" name="userPhone3" th:value="${userPhone3}">
+				
+				
+				</td>
+			</tr>
+
+			<tr>
+				<th>이름</th>
+				<td><input type="text" name="userName" th:value="${userName}"></td>
+			</tr>
+			<tr>
+				<th>생년월일</th>
+				<td><input type="text" name="userBirth" id="userBirth" th:value="${userBirth}"></td>
+			</tr>
+			
+			<tr>
+				<th>주소</th>
+				<td>
+					<input type="text" name="userAddress" id="userAddress">
+					<input type="text" name="userPostcode" id="userPostcode">
+				</td>
+			</tr>
+			
+			<tr>
+				<th>상세주소</th>
+				<td><input type="text" name="userAddressDetail"></td>
+			</tr>
+	
+		</table>
+	
+		<!-- hidden -->
+		<!-- <input type="text" id="userPhone" name="userPhone" hidden="true"> -->
+		<input type="text" id="joinPlatform" name="joinPlatform" value="normal" hidden="true">
+		<input type="text" th:value="${T(com.goodmeaning.vo.UserRole).USER}" name="userRole" hidden="true">
+	
+	
+		<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
+		<input type="submit" value="다음으로">
+
+
+	</form>
+   
 </div>
 
 </body>

@@ -32,23 +32,30 @@ public class RegisterController {
 	
 	// 트윌리오 
 	public static final String ACCOUNT_SID = "AC771abf36be029f37c310af1af666fe92";
-	public static final String AUTH_TOKEN = "67bc21e9503278e09510dde176339286";
+	public static final String AUTH_TOKEN = "915e1eac4369c3403d0feeb954688d57";
 	
-	@RequestMapping(value = "/register/agree", method = RequestMethod.GET)
-	public String registerAgree() {
-		return "user/register/registerAgree";
-	}
-	
-	// 회원가입 - 회원가입창 
-	@RequestMapping(value = "/register", method = RequestMethod.GET)
-	public String registerForm() {
-	
+
+	// 회원가입 - 회원가입창 (이용동의를 넘어서 user를 가져와야하기 때문에 post로)
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public String registerForm(@RequestParam Map<String, Object> userInfo, Model model) {
+		
+		for(String key:userInfo.keySet()) {
+			if(userInfo.get(key)!="" && userInfo.get(key)!=null) {
+				model.addAttribute(key,userInfo.get(key));
+			}
+		}
 		return "user/register/register";
 	}
+	// 회원가입 - 동의사항 (일반회원)
+	@RequestMapping(value = "/register/agree")
+	public String registerAgreeNormal() {
+		return "user/register/registerAgree";
+	}
+
 	
-	// 회원가입 - 회원가입창 (카카오) 
-	@RequestMapping(value = "/register", method = RequestMethod.GET, params = "method=kakao")
-	public String registerKakaoForm(Model model, HttpServletRequest request) {
+	// 회원가입 - 동의사항 (카카오) 
+	@RequestMapping(value = "/register/agree", method = RequestMethod.GET, params = "method=kakao")
+	public String registerAgreeKakao(Model model, HttpServletRequest request) {
 		 Map<String, ?> flashMap =RequestContextUtils.getInputFlashMap(request);
 	        
 	     if(flashMap!=null) {
@@ -63,12 +70,12 @@ public class RegisterController {
 	     	 }
 	            
 	      }
-		return "user/register/register";
+		return "user/register/registerAgree";
 	}
 	
-	// 회원가입 - 회원가입창 (네이버) 
-	@RequestMapping(value = "/register", method = RequestMethod.GET, params = "method=naver")
-	public String registerNaverForm(Model model, HttpServletRequest request) {
+	// 회원가입 - 동의사항 (네이버) 
+	@RequestMapping(value = "/register/agree", method = RequestMethod.GET, params = "method=naver")
+	public String registerAgreeNaver(Model model, HttpServletRequest request) {
 		 Map<String, ?> flashMap =RequestContextUtils.getInputFlashMap(request);
 	        
 	     if(flashMap!=null) {
@@ -82,12 +89,12 @@ public class RegisterController {
 	     	 model.addAttribute("userBirth", userInfo.get("userBirth")).toString();
 	            
 	      }
-		return "user/register/register";
+		return "user/register/registerAgree";
 	}
 	
 	
 	// 회원가입 - 회원가입 완료
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@RequestMapping(value = "/register/insert", method = RequestMethod.POST)
 	public String register(UserVO user) {
 		System.out.println("user : " + user);
 		userService.joinUser(user);
