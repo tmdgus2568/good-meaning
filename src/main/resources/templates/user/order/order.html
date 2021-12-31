@@ -25,7 +25,9 @@
             	<img th:src="${item[0]}" th:width="150">               
                     <div>
                     	<span id="productName" th:text="${item[1]}"></span>
-                    	<span id="optionName" th:text="${item[7]}"></span>
+                    </div>
+                    <div>
+                    	옵션:<span class="optionName" id="optionName" th:data-poname="${item[7]}" th:text="${item[7]}"></span>
                     </div>
                     <div>
                         수량:<span class="cartCount" id="cartCount" th:data-count="${item[2]}" th:text="${item[2]} +'개'"></span>
@@ -33,6 +35,7 @@
                     </div>
                 <input type="hidden" id="cartNum" th:value="${item[5]}" >                
                 <input type="hidden" name="productNum" id="productNum" th:value="${item[6]}" >                
+                <input type="text" name="optionNum" id="optionNum" th:value="${item[8]==null?0:item[8]}" >                
         	</div>
         </div>
         <h2 class="text-center">
@@ -116,24 +119,37 @@
         		productNumArr.push($(item).val())
  			});
         	
-        	var productOptionArr = [];
+        	var productOptionArr = []
+        	$('input[name="optionNum"]').each(function(index, item){     		 
+        		productOptionArr.push($(item).val());
+ 			});
+        	
         	var orderInfo = 
-        	{"orderNum" : "1234",//merchant_uid,
+        	{"orderNum" : new Date().getTime(),
         	"deliveryRecipient":userName,		
-        	"deiveryPhone":userPhone,
+        	"deiveryPhone":customer_uid,
         	"postcode":userPostcode,
         	"address" :userAddress,
         	"addressDetail": $("#userAddressDetail").val(),
         	"orderTotalPrice":totalPrice,
         	"orderStatus" : "주문완료",
         	"orderWaybill":"",
+        	
         	"orderDetailQuantity":orderDetailQuantityArr,
         	"orderDetailPrice":orderDetailPriceArr,
         	"productNum":productNumArr,
-        	//"orderNum": merchant_uid  ,
         	"productOption":productOptionArr 
         	 };
-        	console.log(orderInfo);
+        	console.log(JSON.stringify(orderInfo));
+        	$.ajax({
+        		url: "orderSave",
+        		type: "post",
+        		data: orderInfo,
+        		success: function(responseData){
+        			alert(responseData);
+        			location.href="/mypage/orders";//마이페이지 주문 확인으로 가기
+        		}
+        	});
 		});
 		
 		//결제시 PG사의 결제 페이지가 열리는 예제

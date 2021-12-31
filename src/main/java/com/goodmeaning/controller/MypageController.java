@@ -1,8 +1,6 @@
 package com.goodmeaning.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -12,12 +10,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,13 +22,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
+import com.goodmeaning.persistence.ProductOptionRepository;
+import com.goodmeaning.persistence.ProductRepository;
 import com.goodmeaning.persistence.ReviewRepository;
+import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.service.MypageService;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.PageMaker;
 import com.goodmeaning.vo.PageVO;
+import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.ReviewVO;
 import com.goodmeaning.vo.UserVO;
@@ -47,6 +47,17 @@ public class MypageController {
 	OrderRepository orderRepo;
 	@Autowired
 	ReviewRepository reviewRepo;
+	@Autowired
+	UserRepository urepo;
+	
+	@Autowired
+	ProductRepository prepo;
+	
+	@Autowired
+	ProductOptionRepository porepo;
+	
+	@Autowired
+	OrderDetailRepository detailRepo;
 	
 	@Autowired
 	PasswordEncoder passwordEncoder; // security config에서 Bean생성
@@ -84,11 +95,41 @@ public class MypageController {
 	
 	@PostMapping("/orderSave")
 	@ResponseBody
-	public String orderSaveMethod(OrderVO orderVO, OrderDetailVO[] orderDetail) {
+	public String orderSaveMethod(OrderVO orderVO,  HttpSession session,
+		 @RequestParam(value = "orderDetailQuantity[]") String[] orderDetailQuantity,
+		 @RequestParam(value = "orderDetailPrice[]")  String[] orderDetailPrice,
+		 @RequestParam(value = "productNum[]") String[] productNum, 
+		 @RequestParam(value = "productOption[]") String[] productOption   ) {
 	    System.out.println(orderVO);
-	    System.out.println(orderDetail);
-		
-		return "주문성공";
+	    System.out.println(Arrays.toString(orderDetailQuantity));
+	    System.out.println(Arrays.toString(orderDetailPrice));
+	    System.out.println(Arrays.toString(productNum));
+	    System.out.println(Arrays.toString(productOption));
+		//OrderVo완성 
+	    //OrderDetailVO완성 (배열갯수만큼)
+	    UserVO user = urepo.findById("01011114444").get();
+    	session.setAttribute("user", user);
+	    //UserVO sessionUser = (UserVO) session.getAttribute("user");
+	    orderVO.setUserPhone(user);
+	    OrderVO newOrder =   orderRepo.save(orderVO);
+	    System.out.println("newOrder=" + newOrder);
+	    for(int i=0; i<productNum.length; i++) {
+	    	ProductVO product = prepo.findById(Long.valueOf(productNum[i])).get();
+	    	ProductOptionVO optionVO = porepo.findById(Long.valueOf(productOption[i])).orElse(null);
+	    	OrderDetailVO detailVO = OrderDetailVO.builder()
+	    			.orderDetailQuantity(Integer.valueOf(orderDetailQuantity[i]))
+	    			.orderDetailPrice(Integer.valueOf(orderDetailPrice[i]))
+	    			.productNum(product)
+	    			.productOption(optionVO)
+	    			.orderNum(newOrder)
+	    			.build();
+	    	System.out.println("detailVO=" + detailVO);
+	    	detailRepo.save(detailVO);
+	    }
+	    
+	    
+	    
+	    return "주문성공";
 	}
 	// 주문 내역 확인
 	// 입금완료 / 배송준비중 / 배송완료 
