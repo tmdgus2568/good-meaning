@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.goodmeaning.persistence.CartRepository;
+import com.goodmeaning.persistence.ProductOptionRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.service.CartService;
 import com.goodmeaning.service.ProductService;
@@ -37,7 +36,9 @@ public class CartController {
 	
 	@Autowired
 	UserRepository urepo;
-
+	
+	@Autowired
+	ProductOptionRepository porepo;
 	
 	@RequestMapping("/cartlist")//브라우저에서 요청하는 코드
 	public String selectAll(HttpSession session, Model model) {
@@ -57,15 +58,18 @@ public class CartController {
 	}
 	
     @PostMapping("/cart")
-    public String insert(CartVO vo, Long productNum, HttpSession session){
+    public String insert(CartVO vo, Long optionNum,  Long productNum, HttpSession session){
     	//로그인된 유저 확인
     	System.out.println("cartvo:" + vo);
     	UserVO user = urepo.findById("01011114444").get();
     	session.setAttribute("user", user );
     	//UserVO user = (UserVO)session.getAttribute("user");
         vo.setUserPhone(user);
-        ProductVO product = productService.selectById(productNum);
-        vo.setProductNum(product );
+        ProductVO product = productService.selectById(productNum);       
+        vo.setProductNum(product);
+        System.out.println("optionNum=" + optionNum);
+        if(optionNum!=null && optionNum!=0)
+             vo.setProductOption(porepo.findById(optionNum).get());
         // 장바구니에 기존 상품이 있는지 검사
         int count = cartService.countCart(productNum, user.getUserPhone());
        

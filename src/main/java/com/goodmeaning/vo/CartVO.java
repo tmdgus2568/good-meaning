@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -31,11 +32,11 @@ public class CartVO {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long cartNum;
 	
-	@NonNull
+	//@NonNull
 	@Column(nullable = false)
 	private int cartCount;
 	
-	@NonNull
+	//@NonNull
 	@Column(nullable = false)
 	private int cartPrice;
 	
@@ -46,6 +47,9 @@ public class CartVO {
 	@JoinColumn(name="userPhone")
 	@ManyToOne
 	UserVO userPhone;
-
+	
+	@JoinColumn(name="productOption")
+	@OneToOne
+	ProductOptionVO productOption;
 
 }
