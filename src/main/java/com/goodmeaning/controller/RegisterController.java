@@ -19,6 +19,9 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import com.goodmeaning.security.UserService;
 import com.goodmeaning.service.RegisterService;
 import com.goodmeaning.vo.UserVO;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 
 @Controller
 public class RegisterController {
@@ -26,6 +29,15 @@ public class RegisterController {
 	RegisterService registerService;
 	@Autowired
 	UserService userService;
+	
+	// 트윌리오 
+	public static final String ACCOUNT_SID = "AC771abf36be029f37c310af1af666fe92";
+	public static final String AUTH_TOKEN = "67bc21e9503278e09510dde176339286";
+	
+	@RequestMapping(value = "/register/agree", method = RequestMethod.GET)
+	public String registerAgree() {
+		return "user/register/registerAgree";
+	}
 	
 	// 회원가입 - 회원가입창 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -92,6 +104,50 @@ public class RegisterController {
 		return map;
 		
 	}
+	
+	// twillo 문자인증 
+	@RequestMapping(value="/register/authUserPhone", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> authUserPhone(String userPhone){
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("authNum",sendSMS("82",userPhone));
+		return map;
+		
+	}
+	 
+	  // SMS 전송
+	public static int sendSMS (String country, String phoneNum) {
+
+		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+	    
+	    // 휴대폰 인증번호 생성
+	    int authNum = randomRange(100000, 999999);
+	    
+	    
+	    // 전송대상 휴대폰 번호
+	    String sendTarget = "+"+ country + phoneNum;
+	    
+	    // 전송 메세지
+	    String authMsg = "굿미닝 휴대폰 인증번호: [" + authNum + "]" ;
+	    
+	    
+	    Message message = Message.creator(
+	    	// to
+	    	new PhoneNumber(sendTarget),
+	        // from
+	    	new PhoneNumber("+13027543133"), 
+	        // message
+	    	authMsg).create();
+	    
+			return authNum;
+		
+	  }
+	    
+	  // 인증번호 범위 지정
+	  public static int randomRange(int n1, int n2) {
+	    return (int) (Math.random() * (n2 - n1 + 1)) + n1;
+	  }
 
 	
 	

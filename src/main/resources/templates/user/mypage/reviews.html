@@ -19,7 +19,7 @@
 			<th>no</th>
 			<th>상품이미지</th>
 			<th>상품이름</th>
-			<th>수량</th>
+	<!-- 		<th>수량</th> -->
 			<th>금액</th>
 			<th>작성날짜</th>
 			<th>수정날짜</th>
@@ -36,10 +36,13 @@
 				<img th:src="${review.orderDetail.productNum.productMainimg1}" width="80" height="80">
 			</td>
 			<td class="td_product_name">
-				<a href="" th:text="${review.orderDetail.productNum.productName}" class="product_name"></a>
+				<a href="" th:text="${review.orderDetail.productNum.productName}" style="font-size:17px;" class="product_name"></a><br>
+				<span th:text="|수량: ${review.orderDetail.orderDetailQuantity}|" style="color:grey;"></span><br>
+				<span th:text="|옵션: ${review.orderDetail.productOption==null?'[없음]':detail.productOption}|" style="color:grey;"></span>
+<!-- 				<a href="" th:text="${review.orderDetail.productNum.productName}" class="product_name"></a> -->
 				
 			</td>
-			<td th:text="${review.orderDetail.orderDetailQuantity}"></td>
+		<!-- 	<td th:text="${review.orderDetail.orderDetailQuantity}"></td> -->
 			<td th:text="|${#numbers.formatInteger(review.orderDetail.orderDetailPrice, 0, 'COMMA')}원|"></td>
 			<td th:text="${review.reviewCreatedate}"></td>
 			<td th:text="${review.reviewUpdatedate}"></td>

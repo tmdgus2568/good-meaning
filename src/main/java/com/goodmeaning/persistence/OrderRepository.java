@@ -1,6 +1,5 @@
 package com.goodmeaning.persistence;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +29,8 @@ public interface OrderRepository extends CrudRepository<OrderVO, Long> ,Querydsl
 
 		// user가 order한 것들을 가져오기 때문에 
 		// where usePhone=? 조건문 사용 
-		
 		builder.and(order.userPhone.eq((UserVO)keyword[0]));
+<<<<<<< HEAD
 		
 		if(type.length > 1) {
 			switch((String)keyword[1]) {
@@ -55,6 +54,9 @@ public interface OrderRepository extends CrudRepository<OrderVO, Long> ,Querydsl
 //		if(type.length > 1 && !keyword[1].equals("전체")) {
 //			builder.and(order.orderStatus.eq((String)keyword[1]));
 //		}
+=======
+
+>>>>>>> 362eca289f5541111b1fb14f4e444903df509d4b
 		return builder;
 	}
 }

@@ -1,4 +1,4 @@
-package com.goodmeaning.persistence;
+package com.goodmeaning.persistence.admin;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
 
-public interface ProductOptionRepository extends CrudRepository<ProductOptionVO, Long> {
+public interface AdminProductOptionRepository extends CrudRepository<ProductOptionVO, Long> {
 
 	
 	public List<ProductOptionVO> findByProductNum(ProductVO product);
