@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.querydsl.core.types.Predicate;
-
+import com.goodmeaning.persistence.ProductOptionRepository;
 import com.goodmeaning.persistence.ProductRepository;
 import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.vo.Category;
 import com.goodmeaning.vo.PageMaker;
 import com.goodmeaning.vo.PageVO;
+import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.ReviewVO;
 
@@ -29,7 +30,9 @@ public class mjProductController {
 	@Autowired
 	ProductRepository prepo;
 
-
+	@Autowired
+	ProductOptionRepository porepo;
+	
 	@RequestMapping("/productlist")
 	public String selectAll(Model model, PageVO pageVO, HttpSession session, HttpServletRequest request, Category category) {
 
@@ -49,21 +52,14 @@ public class mjProductController {
 	@RequestMapping(value = "/productdetail", method = RequestMethod.GET)
 	public String selectById(Long pno, Model model, ProductVO productVO) {
 		ProductVO product = prepo.findById(pno).orElse(null);
+		
+		List<ProductOptionVO> options = porepo.findByProductNum(product);
+		
 		model.addAttribute("product", product);
 		model.addAttribute("productVO", productVO);
+		model.addAttribute("options", options);
 		
 		return "user/product/productdetail";
 	}
 
-	/*
-	 * @RequestMapping(value = "/productreview", method = RequestMethod.GET) public
-	 * String review(Long pno, Model model) { ProductVO product =
-	 * prepo.findById(pno).get();
-	 * 
-	 * List<ReviewVO> reviewlist = rvrepo.findByProduct(product);
-	 * 
-	 * model.addAttribute("reviewlist", reviewlist);
-	 * 
-	 * return "user/product/productdetail"; }
-	 */
 }

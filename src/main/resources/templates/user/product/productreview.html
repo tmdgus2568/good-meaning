@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -11,7 +14,6 @@
 			return;
 		}
 		
-
 		constatus = $("#detailcontent" + a).css("display")
 		revstatus = $("#replies" + a).css("display")
 		wristatus = $("#writing" + a).css("display")
@@ -55,53 +57,56 @@
 </script>
 </head>
 <body>
-	<table>
-		<tbody th:each="review, status:${rlist}"
-			th:onclick="|showReview(${status.count}, ${review.reviewNum}, this)|">
-			<tr class="open">
-				<td hidden="" th:text="${review.reviewNum}"></td>
-				<td th:text="${review.reviewLike}"></td>
-			</tr>
-			<tr class="open">
-				<td th:text="${review.productNum.productName}"></td>
-				<!-- <td th:text="${review.orderDetailNum}"></td> 옵션 -->
-			</tr>
-			<tr class="open">
-				<td
-					th:text="${review.userPhone.userId} +' ' + ${#dates.format(review.reviewCreatedate, 'yyyy-MM-dd HH:mm')}"></td>
-			</tr>
-			<tr class="open">
-				<td th:text="${review.reviewTitle}"></td>
-			</tr>
-			<tr>
-				<td th:text="${review.reviewContent}" style="display: none"
-					th:id="|detailcontent${status.count}|"></td>
-			</tr>
-			<tr>
-				<td th:id="|replies${status.count}|" style="display: none">
-					<table id="replytable">
-						<tr th:each="reply:${review.answers}">
-							<td th:text="${reply.userPhone.userId}"></td>
-							<td th:text="${reply.ranswerContent}"></td>
-							<td
-								th:text="${#dates.format(reply.ranswerCreatedate, 'yyyy-MM-dd HH:mm')}"></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td th:id="|writing${status.count}|" style="display: none">
-					<form>
-						<textarea rows="5" cols="50" id="replycontents"
-							name="replycontents"></textarea>
-						<input type="button" name="replybtn"
-							th:onclick="|writeReply(${review.reviewNum}, this, ${status.count})|"
-							value="댓글작성">
-					</form>
-					<hr>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="panel panel-default" layout:fragment="content"
+		align="center">
+		<table>
+			<tbody th:each="review, status:${rlist}"
+				th:onclick="|showReview(${status.count}, ${review.reviewNum}, this)|">
+				<tr class="open">
+					<td hidden="" th:text="${review.reviewNum}"></td>
+					<td th:text="${review.reviewLike}"></td>
+				</tr>
+				<tr>
+					<td th:text="${review.productNum.productName}"></td>
+					<!-- <td th:text="${review.orderDetailNum}"></td> 옵션 -->
+				</tr>
+				<tr>
+					<td
+						th:text="${review.userPhone.userId} +' ' + ${#dates.format(review.reviewCreatedate, 'yyyy-MM-dd HH:mm')}"></td>
+				</tr>
+				<tr>
+					<td th:text="${review.reviewTitle}"></td>
+				</tr>
+				<tr>
+					<td th:text="${review.reviewContent}" style="display: none"
+						th:id="|detailcontent${status.count}|"></td>
+				</tr>
+				<tr>
+					<td th:id="|replies${status.count}|" style="display: none">
+						<table id="replytable">
+							<tr th:each="reply:${review.answers}">
+								<td th:text="${reply.userPhone.userId}"></td>
+								<td th:text="${reply.ranswerContent}"></td>
+								<td
+									th:text="${#dates.format(reply.ranswerCreatedate, 'yyyy-MM-dd HH:mm')}"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td th:id="|writing${status.count}|" style="display: none">
+						<form>
+							<textarea rows="5" cols="50" id="replycontents"
+								name="replycontents"></textarea>
+							<input type="button" name="replybtn"
+								th:onclick="|writeReply(${review.reviewNum}, this, ${status.count})|"
+								value="댓글작성">
+						</form>
+						<hr>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>

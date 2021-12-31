@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
 <head>
-
 <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -16,7 +18,8 @@ a.productname {
 </style>
 </head>
 <body>
-
+<div class="panel panel-default" layout:fragment="content" align="center">
+	
 <a th:href="@{/productlist(category='LIVING')}">일상에서</a>
 <a th:href="@{/productlist(category='KITCHEN')}">부엌에서</a>
 <a th:href="@{/productlist(category='OFFICE')}">사무실에서</a>
@@ -69,6 +72,9 @@ a.productname {
 			</ul>
 		</div>
 	</nav>
+	</div>
+</body>
+	<th:block layout:fragment="script">
 	<script>
 		$(function() {
 			var formObj = $("#f1"); //폼을 가져온다.
@@ -90,6 +96,5 @@ a.productname {
 			});
 		});
 	</script>
-
-</body>
+</th:block>
 </html>
