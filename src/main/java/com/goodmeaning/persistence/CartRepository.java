@@ -23,16 +23,18 @@ public interface CartRepository extends CrudRepository<CartVO, Long>{
     public int countCart(Long productNum, String userPhone);
 	
 	//로그인한 회원의 장바구니 전부 조회
-	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, cart_count*product_price sumMoney, cart_num"
-			+ " from tbl_user u, tbl_product p, tbl_cart c"
-			+ " where u.user_phone=c.user_phone and p.product_num=c.product_num"
+	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, product_price*cart_count money, cart_num, p.product_num, option_name"
+			+ " from tbl_user u  join tbl_cart c on (u.user_phone=c.user_phone)"
+			+ " join tbl_product p  on (p.product_num=c.product_num)"
+			+ " left outer join tbl_product_option po on(p.product_num=po.product_num)"
 			+ " and c.user_phone=?1", nativeQuery = true)
 	public List<Object[]> findAllCartList(String userPhone);
 	
 	//order list로 가져가는
-	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, cart_count*product_price sumMoney, cart_num"
-			+ " from tbl_user u, tbl_product p, tbl_cart c"
-			+ " where u.user_phone=c.user_phone and p.product_num=c.product_num"
+	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, product_price*cart_count money, cart_num, p.product_num, option_name"
+			+ " from tbl_user u  join tbl_cart c on (u.user_phone=c.user_phone)"
+			+ " join tbl_product p  on (p.product_num=c.product_num)"
+			+ " left outer join tbl_product_option po on(p.product_num=po.product_num)"
 			+ " and c.cart_num in ?1", nativeQuery = true)	 
 	public List<Object[]> findOrderList2(Long[] cartNum);
 	

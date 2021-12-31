@@ -42,7 +42,7 @@ public class CartController {
 	@RequestMapping("/cartlist")//브라우저에서 요청하는 코드
 	public String selectAll(HttpSession session, Model model) {
 		 // session의 id
-		UserVO user = urepo.findById("123").get();
+		UserVO user = urepo.findById("01011114444").get();
     	session.setAttribute("user", user);
     	//UserVO user = (UserVO)session.getAttribute("user");    
     	
@@ -60,7 +60,7 @@ public class CartController {
     public String insert(CartVO vo, Long productNum, HttpSession session){
     	//로그인된 유저 확인
     	System.out.println("cartvo:" + vo);
-    	UserVO user = urepo.findById("123").get();
+    	UserVO user = urepo.findById("01011114444").get();
     	session.setAttribute("user", user );
     	//UserVO user = (UserVO)session.getAttribute("user");
         vo.setUserPhone(user);
@@ -93,7 +93,7 @@ public class CartController {
     /*@RequestMapping(value="cart/update", method = RequestMethod.GET)
     public String update(Long[] cartNum,  int[] amount, HttpSession session) {
         // session의 id
-    	UserVO user = UserVO.builder().userPhone("123").build();
+    	UserVO user = UserVO.builder().userPhone("01011114444").build();
     	session.setAttribute("user", user );
     	//UserVO user = (UserVO)session.getAttribute("user");
         // 레코드의 갯수 만큼 반복문 실행

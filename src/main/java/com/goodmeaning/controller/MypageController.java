@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,6 +72,14 @@ public class MypageController {
 	}
 
 	
+	@PostMapping("/orderSave")
+	@ResponseBody
+	public String orderSaveMethod(OrderVO orderVO, OrderDetailVO[] orderDetail) {
+	    System.out.println(orderVO);
+	    System.out.println(orderDetail);
+		
+		return "주문성공";
+	}
 	// 주문 내역 확인
 	// 입금완료 / 배송준비중 / 배송완료 
 	@RequestMapping(value = "/mypage/orders", method = RequestMethod.GET)
