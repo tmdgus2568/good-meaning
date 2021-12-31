@@ -42,9 +42,9 @@ public class CartController {
 	@RequestMapping("/cartlist")//브라우저에서 요청하는 코드
 	public String selectAll(HttpSession session, Model model) {
 		 // session의 id
-		UserVO user = urepo.findById("01011114444").get();
-    	session.setAttribute("user", user);
-    	//UserVO user = (UserVO)session.getAttribute("user");    
+//		UserVO user = urepo.findById("01011114444").get();
+//    	session.setAttribute("user", user);
+    	UserVO user = (UserVO)session.getAttribute("user");    
     	
 		model.addAttribute("clist", cartService.findAllCartList(user.getUserPhone()));		
 		return "user/cart/cartlist";		
@@ -60,9 +60,9 @@ public class CartController {
     public String insert(CartVO vo, Long productNum, HttpSession session){
     	//로그인된 유저 확인
     	System.out.println("cartvo:" + vo);
-    	UserVO user = urepo.findById("01011114444").get();
-    	session.setAttribute("user", user );
-    	//UserVO user = (UserVO)session.getAttribute("user");
+//    	UserVO user = urepo.findById("01011114444").get();
+//    	session.setAttribute("user", user );
+    	UserVO user = (UserVO)session.getAttribute("user");
         vo.setUserPhone(user);
         ProductVO product = productService.selectById(productNum);
         vo.setProductNum(product );
