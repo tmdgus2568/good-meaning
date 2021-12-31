@@ -17,7 +17,7 @@
 	<br>
 	<br>
 	<br>
-	<h5>이용약관</h5>
+	<h2>이용약관</h2>
 	<br>
    <textarea class="form-control" 
      rows="20" cols="150" style="width:600px;">가. 수집하는 개인정보의 항목첫째, 회사는 회원가 입, 원활한 고객상담, 각종 서비스의 제공을 위해 최초 회원가입 당시 아래와 같은 최소한의 개인정보를 필수항목으로 수집하고 있습니다.
@@ -129,13 +129,11 @@
 </body>
 <th:block layout:fragment="script">
 <script>
-console.log("hi");
 
 $(function () {
 	$("#registerForm").on('submit',function(){
-		alert("동의에 체크해 주세요.");
 		
-		if($("#check_agree").prop('checked',false)){
+		if(!$('#check_agree').is(':checked')){
 			alert("동의에 체크해 주세요.");
 			return false;
 		}

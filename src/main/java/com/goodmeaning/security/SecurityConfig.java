@@ -1,21 +1,34 @@
 package com.goodmeaning.security;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@AllArgsConstructor
 @Log
 @Configuration
 @EnableWebSecurity // security설정을 담당하는 Bean이다.
@@ -26,6 +39,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //	@Autowired
 //	CustomOAuth2UserService customOAuth2UserService;
 	
+	@Bean
+	public AuthenticationSuccessHandler successHandler() {
+	    return new CustomLoginSuccessHandler("/");
+	}
+
+	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(); // Spring Security에서 제공하는 비밀번호 암호화 객체
@@ -59,13 +79,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/mypage/**").hasRole("USER") // /admin으로 시작하는 경로는 ADMIN롤을 가진 사용자만 접근 가능(자동으로 ROLE_가 삽입)
 				.antMatchers("/manager/**").hasRole("MANAGER").antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.anyRequest().authenticated() // anyRequest() 나머지요청 , authenticated() : 인증된 사용자만 접근가능,
-												// anonymous():인증도지않은 사용자가 접근가능
+										// anonymous():인증도지않은 사용자가 접근가능
 				.and().formLogin() // form 기반으로 인증을 하도록 한다. 로그인 정보는 기본적으로 HttpSession을 이용
 				.loginPage("/auth/login") // auth/login로그인 페이지 링크 .... post의 이름이 같다면 loginProcessingUrl생략
 				//.loginProcessingUrl("/auth/login")//추가하면 controller에 인증구현 , 아니면 자동인증처리 ...지금은 username이 전달안됨 							// 스프링시큐리티가 해당주소로 오는 요청을 가로채서 대신한다.
 				//.usernameParameter("username") 
 				//.passwordParameter("password") 
+				
 				.defaultSuccessUrl("/") // 로그인 성공 후 리다이렉트 주소
+				.successHandler(successHandler())
 				.permitAll(); // 접근전부허용
 
 		http.logout() // 로그아웃에 관한 설정을 의미

@@ -25,15 +25,19 @@
 
 
 	<table class="table table-striped table-bordered table-hover">
-		<tr>
-			<th>주문번호</th>
-			<th>상품이미지</th>
-			<th>상품이름</th>
-			<th>지불금액</th>
-			<th>현황</th>
-			<th>구매날짜</th>
-			<th>변경날짜</th>
-		</tr>
+		<thead>
+			<tr>
+				<th>주문번호</th>
+				<th>상품이미지</th>
+				<th>상품이름</th>
+				<th>지불금액</th>
+				<th>현황</th>
+				<th>구매날짜</th>
+				<th>변경날짜</th>
+			</tr>
+		
+		</thead>
+		
 		<tr th:if="${#lists.size(orders.result.content)}==0">
 			<td colspan="7">주문목록이 없습니다.</td>
 		</tr>

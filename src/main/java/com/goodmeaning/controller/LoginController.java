@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +63,8 @@ public class LoginController {
 	LoginService loginService;
 	@Autowired
 	UserService userService;
+	@Autowired
+	PasswordEncoder passwordEncoder; // security config에서 Bean생성
 	
 	@RequestMapping(value = "/auth/loginNaver", method = RequestMethod.GET)
 	public String loginNaver(@RequestParam(value = "code", required = false) String code,
@@ -84,9 +87,7 @@ public class LoginController {
         	return "redirect:/register/agree?method=naver";
         }
        
-//        JSONObject kakaoInfo =  new JSONObject(userInfo);
-//        model.addAttribute("kakaoInfo", kakaoInfo);
-//        session.setAttribute("user", (UserVO)user.get());
+
         UserDetails userDetails = userService.loadUserByUsername(user.get().getUserId());
         
         // 강제 로그인 
@@ -113,12 +114,9 @@ public class LoginController {
         Optional<UserVO> user = loginService.checkSocialLogin(userInfo.get("id").toString());
         if(!user.isPresent()) {
         	rattrs.addFlashAttribute("userInfo",userInfo);
-        	return "redirect:/register?method=kakao";
+        	return "redirect:/register/agree?method=kakao";
         }
        
-//        JSONObject kakaoInfo =  new JSONObject(userInfo);
-//        model.addAttribute("kakaoInfo", kakaoInfo);
-//        session.setAttribute("user", (UserVO)user.get());
         
         UserDetails userDetails = userService.loadUserByUsername(user.get().getUserId());
         
@@ -158,9 +156,9 @@ public class LoginController {
 	
 	// 로그인 - 로그인 실행 
 	@RequestMapping(value = "/auth/login", method = RequestMethod.POST)
-	public String login(String userId, String userPw, HttpSession session) {
+	public String login(String username, String password, HttpSession session) {
 		// 로그인 성공시 
-		Optional<UserVO> user = loginService.checkLogin(userId, userPw);
+		Optional<UserVO> user = loginService.checkLogin(username, passwordEncoder.encode(password));
 		System.out.println(user);
 		if(user.isPresent()) {
 			session.setAttribute("user", (UserVO)user.get());
@@ -169,6 +167,7 @@ public class LoginController {
 		return "user/auth/login";
 		
 	}
+	
 	
     // 토큰 발급
 	public String getAccessToken (String authorize_code, String platform, String naverState) {
