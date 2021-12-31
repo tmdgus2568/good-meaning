@@ -19,7 +19,7 @@
 	            </th>		 
 				<th>이미지</th>
 				<th>상품명</th> 
-				<!-- <th>옵션</th> 옵션 추가 -->
+				<th>옵션</th>
 				<th>수량</th> 
 				<th>단가</th> 
 				<th>총금액</th> 
@@ -35,7 +35,7 @@
 				<img th:src="${cart[0]}" th:width="150">
 			</td>
 			<td th:text="${cart[1]}"></td>
-			<!-- <td th:text="${cart[6]}"></td> 옵션 추가 -->
+			<td th:text="${cart[7]}"></td>
 						
 			<td>	       		  		
 	       		<input type="number" name="countName" th:id="'count' + ${cart[5]}"
@@ -106,13 +106,9 @@
 		     
 		});
 		
-		if(orderTotalPrice>=100000){
-			orderTotalPrice;
+		if(orderTotalPrice<100000) orderTotalPrice+=2500;
 			console.log(orderTotalPrice);
-		}else{
-			orderTotalPrice+=2500;
-			console.log(orderTotalPrice);
-		}
+		
 		$("#orderTotalPrice").html(orderTotalPrice+'원');
 	}
 	
