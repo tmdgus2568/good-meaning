@@ -27,9 +27,9 @@ public class OrderController {
 		System.out.println( Arrays.toString(cartNum) );
 		
 		// session의 id
-		UserVO user = urepo.findById("01011114444").get();
-    	session.setAttribute("user", user);
-    	//UserVO user = (UserVO)session.getAttribute("user");    
+//		UserVO user = urepo.findById("01011114444").get();
+//    	session.setAttribute("user", user);
+    	UserVO user = (UserVO)session.getAttribute("user");    
     	
 		model.addAttribute("olist", orderService.findOrderList(cartNum));		
 		return "user/order/order";		
