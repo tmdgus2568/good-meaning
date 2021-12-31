@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-<script>
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script><script>
 window.onload = function() {
 	btn1.onclick = call1;
 	btn2.onclick = call2;
@@ -54,7 +53,11 @@ window.onload = function() {
 			type : "post",
 			success : function(responseData) { //responseData는 들어오는 값
 			$("#here").html(responseData);
-			here.innerHTML += "<button onclick='reviewWrite();'>리뷰작성</button>";
+			
+			var obj = "[[${review}]]";
+			console.log(obj);
+			
+			here.innerHTML += "<button onclick='reviewWrite()'>리뷰작성</button>";
 			}
 		});
 	}
@@ -65,7 +68,9 @@ window.onload = function() {
 	
 	function reviewWrite(){
 		
+		var obj = "[[${review}]]";
 		
+		console.log(obj);
 		
 		$.ajax({
 			url : "reviewWriteForm",
@@ -83,7 +88,6 @@ window.onload = function() {
 </script>
 </head>
 <body>
-
 
 	<img th:src="${product.productMainimg1}" th:width="100">
 	<a th:value=${product.productNum}>[[${product.productName}]]</a>

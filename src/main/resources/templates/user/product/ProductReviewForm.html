@@ -13,18 +13,19 @@
 				</tr>
 			</thead>
 			<tbody>
+			
 				<tr>
 					<td><img th:src="${product.productMainimg1}" width="100px"></td>
 					<td>
 					상품명 : <a th:text="${product.productName}" style="font-weight: bold"></a><br>
 					상품가격 : <a th:text="${product.productPrice}"></a><br>
-					구매수량 : <a></a><br>
+					구매수량 : <a th:text="${#maps.size(review)}"></a><br>
 					구매날짜 : <a></a>
 					</td>
 				</tr>
 				<tr>
 					<td>작성자</td>
-					<td><input type="text" id="writer" size="20" style="width: 100%;"></td>
+					<td><input type="text" id="writer" size="20" style="width: 100%;" th:value="${user.userId}" readonly="readonly"></td>
 				</tr>
 				<tr>
 					<td>평가</td>
