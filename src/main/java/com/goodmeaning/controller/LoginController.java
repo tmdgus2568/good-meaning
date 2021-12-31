@@ -81,7 +81,7 @@ public class LoginController {
         Optional<UserVO> user = loginService.checkSocialLogin(userInfo.get("userId").toString());
         if(!user.isPresent()) {
         	rattrs.addFlashAttribute("userInfo",userInfo);
-        	return "redirect:/register?method=naver";
+        	return "redirect:/register/agree?method=naver";
         }
        
 //        JSONObject kakaoInfo =  new JSONObject(userInfo);
