@@ -23,5 +23,9 @@ public class LoginService {
 		return userRepo.findByUserId(id);
 	}
 
+	// 로그인2
+	public Optional<UserVO> findByUserId(String id) {
+		return userRepo.findByUserId(id);
+	}
 
 }

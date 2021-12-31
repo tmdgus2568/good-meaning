@@ -4,16 +4,18 @@
 <meta charset="UTF-8">
 
 <title>Insert title here</title>
+
 </head>
 <!-- 항상 따라야할것 :로고, 메뉴바, 로그인 정보, 로그아웃버튼, 마이페이지버튼  -->
 <body>
-	<div th:fragment="header"> 
+	<div th:fragment="header" style="background:#78c2ad;"> 
+		<br>
  		<div align="right" th:if="!${session.user eq null}">
-			<span th:text="${session.user.userName}"></span>
-			<a href="/invalidate">로그아웃</a>
+			<h4 th:text="|${session.user.userName} 님|" style="color:#EEEAD0; display:inline;"></h4>
+			<a href="/invalidate" style="color:#ffffff; font-size:16px; padding-right: 20px;">로그아웃</a>
 		</div>
 		<div align="right" th:if="${session.user eq null}">
-			<a href="/auth/login">로그인</a>
+			<a href="/auth/login" style="color:#ffffff; font-size:16px; padding-right: 20px;">로그인</a>
 		</div>
 		<div align="center" style="background:#78c2ad;"><img src="/img/goodmeaning_logo.jpeg" width="300"/></div>
 

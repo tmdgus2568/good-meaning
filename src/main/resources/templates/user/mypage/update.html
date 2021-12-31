@@ -7,19 +7,31 @@
 <head>
 
 <meta charset="UTF-8">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css"/>
+
 <title>회원수정</title>
+<style>
+	table{
+		border-collapse: separate;
+		border-spacing: 0 1rem;
+	}
+	.ui-datepicker-trigger{
+	
+		width:35px !important;
+		height:35px !important;
+	}
+</style>
 </head>
 <body>
 
 <div class="panel panel-default" layout:fragment="content" align="center">
 	<h2 align="left">회원정보수정</h2>
+	<br>
 
 	<form action="/mypage/user" method="post" id="updateForm">
 	<table>
 		<tr id="tr_userId">
-			<th>아이디</th>
-			<td><input type="text" name="userId" readOnly th:value="${user.userId}"></td>
+			<th>아이디&nbsp;</th>
+			<td><input class="form-control" type="text" name="userId" readOnly th:value="${user.userId}" style="width:250px;"></td>
 		</tr >
 <!--  			<tr id="tr_before_userPw">
 				<th>이전 비밀번호</th>
@@ -28,45 +40,51 @@
 				</td>
 			</tr> -->
 			<tr id="tr_new_userPw">
-				<th>비밀번호</th>
+				<th>비밀번호&nbsp;</th>
 				<td>
-					<input type="password" id="new_userPw">
-					<span id="check_new_userPw">영문 또는 숫자조합으로 8~12자</span>
+					<input class="form-control" type="password" id="new_userPw" placeholder="영문 또는 숫자조합으로 8~12자" style="width:250px;">
+				
 				</td>
 			</tr>
 			<tr id="tr_userPw_confirm">
-				<th>비밀번호확인</th>
+				<th>비밀번호확인&nbsp;</th>
 				<td>
-					<input type="password" id="userPw_confirm">
-					<span id="check_userPw_confirm"></span>
+					<input class="form-control" type="password" id="userPw_confirm" style="width:250px;">
+				
 				</td>
 			</tr> 
 		<tr>
-			<th>휴대폰번호</th>
-			<td><input type="text" name="userPhone" id="userPhone" readOnly th:value="${user.userPhone}"></td>
+			<th>휴대폰번호&nbsp;</th>
+			<td><input class="form-control" type="text" name="userPhone" id="userPhone" readOnly th:value="${user.userPhone}"></td>
 		</tr>
 		<tr>
-			<th>이메일</th>
-			<td><input type="text" name="userEmail" id="userEmail" th:value="${user.userEmail}" readOnly></td>
+			<th>이메일&nbsp;</th>
+			<td><input class="form-control" type="text" name="userEmail" id="userEmail" th:value="${user.userEmail}" readOnly></td>
 		</tr>
 		<tr>
-			<th>이름</th>
-			<td><input type="text" name="userName" th:value="${user.userName}"></td>
+			<th>이름&nbsp;</th>
+			<td><input class="form-control" type="text" name="userName" th:value="${user.userName}"></td>
 		</tr>
 		<tr>
 			<th>생년월일</th>
-			<td><input type="text" name="userBirth" id="userBirth" th:value=${user.userBirth}></td>
+			<td>
+				<div class="input-group" style="width:200px;" id="div_userBirth">
+					
+					<input class="form-control" type="text" name="userBirth" id="userBirth" th:value="${user.userBirth}" required="required" readOnly>
+						
+				</div>
+			</td>
 		</tr>
 		<tr>
 			<th>주소</th>
 			<td>
-			<input type="text" name="userAddress" id="userAddress" readOnly th:value="${user.userAddress}" required="required">
-			<input type="text" name="userPostcode" id="userPostcode" th:value="${user.userPostcode}" readOnly required="required">
+			<input class="form-control" type="text" name="userAddress" id="userAddress" readOnly th:value="${user.userAddress}" required="required">
+			<input class="form-control" type="text" name="userPostcode" id="userPostcode" th:value="${user.userPostcode}" readOnly required="required">
 			</td>
 		</tr>
 		<tr>
 			<th>상세주소</th>
-			<td><input type="text" name="userAddressDetail" th:value="${user.userAddressDetail}"></td>
+			<td><input class="form-control" type="text" name="userAddressDetail" th:value="${user.userAddressDetail}"></td>
 		</tr>
 
 		
@@ -79,17 +97,24 @@
 	<input type="text" id="userPw" name="userPw" hidden="true" th:value="${user.userPw}">
 <!-- 	<input type="text" name="userJoindate" hidden="true" th:value="${user.userJoindate}"> -->
 	
-	<input type="submit" value="수정하기">
+	<br>
+	<br>
+	<div align="right">
+		<input class="btn btn-secondary" type="submit" value="수정하기" style="width:100px;margin-right:100px;">
+	</div>
+	
 	
 	
 	</form>
 
 </div>
+<br>
+<br>
 
 </body>
 <th:block layout:fragment="script">
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+
 <script>
 
 $(function () {
@@ -112,7 +137,7 @@ $(function () {
 		    ,changeYear: true //option값 년 선택 가능
 		    ,changeMonth: true //option값  월 선택 가능                
 		    ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시  
-		    ,buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
+		    ,buttonImage: "/img/calendar.png" //버튼 이미지 경로
 		    ,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
 		    ,buttonText: "선택" //버튼 호버 텍스트              
 		    ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
@@ -145,21 +170,13 @@ $(function () {
 	$("#new_userPw").on('input',function(){
 		
 		if(/^[a-zA-Z0-9]{8,20}$/.test($(this).val())){
-			$("#check_new_userPw").text("올바른 형식입니다");
+			$("#new_userPw").attr('class','form-control is-valid');
 		}
 		else{
-			$("#check_new_userPw").text("영문 또는 숫자조합으로 8~12자");
+			$("#new_userPw").attr('class','form-control is-invalid');
 		}
 	});
 	
-	$("#userPw_confirm").on('input',function(){
-		if($("#new_userPw").val()==$(this).val()){
-			$("#check_userPw_confirm").text("비밀번호가 일치합니다");
-		}
-		else{
-			$("#check_userPw_confirm").text("");
-		}
-	});
 	
 	$("#updateForm").on('submit',function(){
  	/* 	if($("#before_userPw").val()!=$("#userPw").val() && $("#before_userPw").val()!=''){
@@ -177,6 +194,15 @@ $(function () {
 		}
 		alert("수정이 완료되었습니다!")
 
+	});
+	
+	$("#userPw_confirm").on('input',function(){
+		if($("#new_userPw").val()==$(this).val()){
+			$("#userPw_confirm").attr('class','form-control is-valid');
+		}
+		else{
+			$("#userPw_confirm").attr('class','form-control');
+		}
 	});
 	
 

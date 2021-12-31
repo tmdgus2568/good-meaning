@@ -48,8 +48,15 @@ public class UserService implements UserDetailsService{
 		UserDetails userSecu = userRepo.findByUserId(username)
 				.filter(u -> u != null).map(u -> new SecurityUser(u)).get();
 		System.out.println("user:" + userSecu);
-		httpSession.setAttribute("userSecu", userSecu);
-		if(user.isPresent()) httpSession.setAttribute("user", user.get());
+
+		if(user.isPresent()) {
+			if(!user.get().getJoinPlatform().equals("normal")) {
+				httpSession.setAttribute("user", user.get());
+			}
+			
+		}
+		
+		
 		return userSecu;
 	}
 

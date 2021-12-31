@@ -3,25 +3,45 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css"/>
+
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-
+ 
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-	//alert("부모에서 작성된 JavaScript");
-/* 	console.log("부모에서 작성된 JavaScript"); */
-</script>
+
+
+<style>
+	@font-face {
+    font-family: 'NanumSquareRoundOTFR';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    
+	}
+	body {
+		font-family: 'NanumSquareRoundOTFR';
+	}
+
+
+	
+	
+</style>
 </head>
 <body>
 	<th:block layout:fragment="style"></th:block>
 	<header th:insert="user/fragments/header :: header"></header>
-	<nav th:insert="user/fragments/nav_mypage :: nav"></nav>
-	<section class="panel panel-default" layout:fragment="content" style="display: inline-block; width: 80%; background: white;"></section>
+	<div class="d-flex justify-content-start">
+		<div class="sidenav panel panel-default" th:insert="user/fragments/nav_mypage :: nav"></div>
+		<div class="panel panel-default" layout:fragment="content" style="width: 80%; background: white;padding:50px;"></div>
+	</div>
+	
 	<footer th:replace="user/fragments/footer :: footer"></footer>
 	<th:block layout:fragment="script"></th:block>
 </body>

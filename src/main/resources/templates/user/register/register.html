@@ -8,99 +8,150 @@
 
 <meta charset="UTF-8">
 <title>회원가입</title>
+<style>
+	table{
+		border-collapse: separate;
+		border-spacing: 0 1rem;
+	}
+	.ui-datepicker-trigger{
+	
+		width:35px !important;
+		height:35px !important;
+	}
+</style>
 
 </head>
 <body>
 <div class="panel panel-default" layout:fragment="content" align="center">
-	<h1 id="title">일반 회원가입</h1>
+	<br>
+	<br>
+	<br>
+	<h2 id="title" align="left" style="width:700px;">일반회원가입</h2>
+	<br>
 	<br>
 	<input type="text" id="param_method" th:value="${param_method}" hidden="true">
-	<form action="/register/insert" method="post" id="registerForm">
+	<form action="/register/insert" method="post" id="registerForm" style="width:1200px;">
 		<table>
 			<tr id="tr_userId">
-				<th>아이디</th>
+				<th>아이디&nbsp;</th>
 				<td>
-					<input type="text" name="userId" id="userId" th:value="${userId}">
-					<input type="button" value="중복확인" id="btn_check_userId">
-					<span id="check_userId_result"></span>
+				
+					<div class='input-group' style="width:300px;">
+						<input class="form-control"  type="text" name="userId" id="userId" th:value="${userId}" placeholder="아이디를 입력해 주세요" style="width:150px;">
+						<button class="form-control btn btn-dark" type="button" id="btn_check_userId" style="width:30px;">중복확인</button>
+				
+					</div>
 				</td>
 			</tr>
+			
 			<tr id="tr_userEmail">
-				<th>이메일</th>
-				<td><input type="text" name="userEmail" id="userEmail" th:value="${userEmail}" readOnly required="required"></td>
+				<th>이메일&nbsp;</th>
+				<td><input type="text" class="form-control" name="userEmail" id="userEmail" th:value="${userEmail}" readOnly required="required" style="width:250px;"></td>
 			</tr>
 			
 			<tr id="tr_userPw">
-				<th>비밀번호</th>
+				<th>비밀번호&nbsp;</th>
 				<td>
-					<input type="password" name="userPw" id="userPw" required="required">
-					<span id="check_userPw">영문 또는 숫자조합으로 8~12자</span>
+					<div style="width:300px;">
+						<input class="form-control" type="password" name="userPw" id="userPw" required="required" placeholder="영문 또는 숫자조합으로 8~12자">
+					</div>
+					
+					
 				</td>
 			</tr>
 			<tr id="tr_userPw_confirm">
-				<th>비밀번호확인</th>
+				<th>비밀번호확인&nbsp;</th>
 				<td>
-					<input type="password" id="userPw_confirm">
-					<span id="check_userPw_confirm"></span>
+					<div style="width:300px;">	
+						<input class="form-control" type="password" id="userPw_confirm">
+					
+					</div>
 				</td>
 			</tr>
 			<tr>
-				<th>휴대폰번호</th>
+				<th>휴대폰번호&nbsp;</th>
 				<td>
-					<select id="userPhone1" th:value="${userPhone1}">
-						<option value="" th:selected="${userPhone1}==''">선택</option>
-						<option value="010" th:selected="${userPhone1}=='010'">010</option>
-						<option value="011" th:selected="${userPhone1}=='011'">011</option>
-					</select>
-					-
-					<input type="text" id="userPhone2" th:value="${userPhone2}" required="required">
-					-
-					<input type="text" id="userPhone3" th:value="${userPhone3}" required="required">
-					<input id="btn_auth" type="button" value="인증번호 요청">
-					<span id="timer"></span>
+					<div class="form-inline">
+						<select id="userPhone1" th:value="${userPhone1}" class="form-control" style="width:80px;">
+							<option value="" th:selected="${userPhone1}==''">선택</option>
+							<option value="010" th:selected="${userPhone1}=='010'">010</option>
+							<option value="011" th:selected="${userPhone1}=='011'">011</option>
+						</select>
+						&nbsp;-&nbsp;
+						<input class="form-control" type="text" id="userPhone2" th:value="${userPhone2}" required="required" style="width:80px;">
+						&nbsp;-&nbsp;
+						<input class="form-control" type="text" id="userPhone3" th:value="${userPhone3}" required="required" style="width:80px;">
+						&nbsp;&nbsp;
+						<button class="btn btn-dark" id="btn_auth" type="button" style="display:inline;">인증요청</button>
+				
+					</div>
 				</td>
 			</tr>
 			<tr id="tr_auth_num">
 				<th></th>
 				<td>
-					<input type="text" name="auth_num" id="auth_num">
-					<input type="text" name="auth_num_data" id="auth_num_data" hidden="true">
-					<input type="button" value="인증확인" id="btn_auth_check">
+					<div style="width:300px;" class="input-group">
+						<input class="form-control" type="text" name="auth_num" id="auth_num" style="width:150px;">
+						<input type="text" name="auth_num_data" id="auth_num_data" hidden="true">
+						<input class="form-control btn btn-dark" type="button" value="인증확인" id="btn_auth_check" style="width:30px;">
+					</div>
+					
 				</td>
 			</tr>
 			<tr id="tr_input_email">
-				<th>이메일</th>
+				<th>이메일&nbsp;</th>
 				<td>
-					<input type="text" id="emailHead">@
-					<input type="text" id="emailTail" readOnly>
-					<select id="selectEmailTail">
-						<option selected="selected" value="">선택하기</option>
-						<option id="naver">naver.com</option>
-						<option id="daum">daum.net</option>
-						<option id="inputText">직접입력</option>
-					</select>
+					<div class="form-inline">
+						<input class="form-control" type="text" id="emailHead">&nbsp;@&nbsp;
+						<div class='input-group'>
+							<input class="form-control" type="text" id="emailTail" readOnly>
+							<select class="form-control" id="selectEmailTail">
+								<option selected="selected" value="">선택하기</option>
+								<option id="naver">naver.com</option>
+								<option id="daum">daum.net</option>
+								<option id="inputText">직접입력</option>
+							</select>
+						</div>
+
+					</div>
+
 				</td>
 			</tr>
 			<tr>
 				<th>이름</th>
-				<td><input type="text" name="userName" th:value="${userName}" required="required"></td>
-			</tr>
-			<tr>
-				<th>생년월일</th>
-				<td><input type="text" name="userBirth" id="userBirth" th:value="${userBirth}" required="required"></td>
-			</tr>
-			
-			<tr>
-				<th>주소</th>
 				<td>
-					<input type="text" name="userAddress" id="userAddress" readOnly required="required">
-					<input type="text" name="userPostcode" id="userPostcode" required="required">
+					<div style="width:200px;">
+						<input class="form-control" type="text" name="userName" th:value="${userName}" required="required" >
+					</div>
+					
+				</td>
+			</tr>
+			<tr>
+				<th>생년월일&nbsp;</th>
+				<td>
+					<div class="input-group" style="width:200px;" id="div_userBirth">
+					
+						<input class="form-control" type="text" name="userBirth" id="userBirth" th:value="${userBirth}" required="required" readOnly>
+						
+					</div>
+				
 				</td>
 			</tr>
 			
 			<tr>
-				<th>상세주소</th>
-				<td><input type="text" name="userAddressDetail"></td>
+				<th>주소&nbsp;</th>
+				<td>
+					<div class='input-group'>
+						<input type="text" class="form-control" name="userAddress" id="userAddress" readOnly required="required">
+						<input type="text" class="form-control" name="userPostcode" id="userPostcode" required="required">
+					</div>
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<th>상세주소&nbsp;</th>
+				<td><input class="form-control" type="text" name="userAddressDetail"></td>
 			</tr>
 	
 		</table>
@@ -112,7 +163,16 @@
 	
 	
 		<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
-		<input type="submit" value="회원가입">
+		<br>
+		<br>
+		<br>
+		<div class="input-group" style="width:250px;">
+			<input class="form-control btn btn-light" type="button" id="btn_cancel" value="취소">
+			<input class="form-control btn btn-secondary" type="submit" value="회원가입">
+		</div>
+		
+		<br>
+		<br>
 
 
 	</form>
@@ -139,8 +199,8 @@ $(function () {
 			},
 			success: function(data){
 				if(data.result == true)
-					$("#check_userId_result").text("이미 사용중인 아이디 입니다");
-				else $("#check_userId_result").text("사용 가능한 아이디 입니다");
+					$("#userId").attr('class','form-control is-invalid');
+				else $("#userId").attr('class','form-control is-valid');
 				
 			}
 		});
@@ -249,7 +309,7 @@ $(function () {
 		    ,changeYear: true //option값 년 선택 가능
 		    ,changeMonth: true //option값  월 선택 가능                
 		    ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시  
-		    ,buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
+		    ,buttonImage: "/img/calendar.png" //버튼 이미지 경로
 		    ,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
 		    ,buttonText: "선택" //버튼 호버 텍스트              
 		    ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
@@ -269,24 +329,24 @@ $(function () {
 	$("#userPw").on('input',function(){
 		
 		if(/^[a-zA-Z0-9]{8,20}$/.test($(this).val())){
-			$("#check_userPw").text("올바른 형식입니다");
+			$("#userPw").attr('class','form-control is-valid');
 		}
 		else{
-			$("#check_userPw").text("영문 또는 숫자조합으로 8~12자");
+			$("#userPw").attr('class','form-control');
 		}
 	});
 	
 	$("#userPw_confirm").on('input',function(){
 		if($("#userPw").val()==$(this).val()){
-			$("#check_userPw_confirm").text("비밀번호가 일치합니다");
+			$("#userPw_confirm").attr('class','form-control is-valid');
 		}
 		else{
-			$("#check_userPw_confirm").text("");
+			$("#userPw_confirm").attr('class','form-control');
 		}
 	});
 	
 	$("#btn_auth").on('click',function(){
-		if($(this).val()=="") alert("휴대폰 번호를 입력해 주세요.");
+		if($("#userPhone1").val()=="" || $("#userPhone2").val()=="" || $("#userPhone3").val()=="") alert("휴대폰 번호를 입력해 주세요.");
 		else{
 			$("#userPhone").val($("#userPhone1").val()+$("#userPhone2").val()+$("#userPhone3").val());
 	
@@ -312,7 +372,7 @@ $(function () {
 			alert("휴대폰 인증에 성공하였습니다!");
 		}
 		else{
-			alert("휴대폰 인증에 실하였습니다. 다시 입력해 주세요.");
+			alert("휴대폰 인증에 실패하였습니다. 다시 입력해 주세요.");
 		}
 	})
 	
