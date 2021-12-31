@@ -161,7 +161,9 @@ $(function() {
  		     var name = $(item).val();
  		     var num = $($(nums)[index]).val();
  		     var option = $($(options)[index]).val();
- 		     
+ 		     if(option == null){
+ 		    	 option = "";
+ 		     }
   		     $("#select_product_name").html($("#select_product_name").html()+"<option "+"value="+"'"+num+"'"+">"+name+" "+option+"</option>") 
  		});
 		

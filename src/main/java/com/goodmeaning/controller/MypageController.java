@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +46,9 @@ public class MypageController {
 	OrderRepository orderRepo;
 	@Autowired
 	ReviewRepository reviewRepo;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder; // security config에서 Bean생성
 
 	
 	// 회원수정 
@@ -64,8 +68,14 @@ public class MypageController {
 
 	// 회원수정 
 	@RequestMapping(value = "/mypage/user", method = RequestMethod.POST)
-	public String updateUser(UserVO user) {
+	public String updateUser(UserVO user, HttpSession session) {
 		System.out.println(user);
+		// session에 있는 user 갖고오고 
+		UserVO sessionUser = (UserVO) session.getAttribute("user");
+		// session과 변경된 비밀번호가 다르다면 인코딩
+		if(!sessionUser.getUserPw().equals(user.getUserPw()))
+			user.setUserPw(passwordEncoder.encode(user.getUserPw()));
+		
 		mypageService.updateUser(user);
 		return "redirect:/mypage/user";
 	}

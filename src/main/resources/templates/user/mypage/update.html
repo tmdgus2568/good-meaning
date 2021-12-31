@@ -20,12 +20,12 @@
 			<th>아이디</th>
 			<td><input type="text" name="userId" readOnly th:value="${user.userId}"></td>
 		</tr >
-<!-- 			<tr id="tr_before_userPw">
+<!--  			<tr id="tr_before_userPw">
 				<th>이전 비밀번호</th>
 				<td>
 					<input type="password" id="before_userPw">
 				</td>
-			</tr>
+			</tr> -->
 			<tr id="tr_new_userPw">
 				<th>비밀번호</th>
 				<td>
@@ -39,7 +39,7 @@
 					<input type="password" id="userPw_confirm">
 					<span id="check_userPw_confirm"></span>
 				</td>
-			</tr> -->
+			</tr> 
 		<tr>
 			<th>휴대폰번호</th>
 			<td><input type="text" name="userPhone" id="userPhone" readOnly th:value="${user.userPhone}"></td>
@@ -160,15 +160,19 @@ $(function () {
 	});
 	
 	$("#updateForm").on('submit',function(){
-/* 		if($("#before_userPw").val()!=$("#userPw").val() && $("#before_userPw").val()!=''){
+ 	/* 	if($("#before_userPw").val()!=$("#userPw").val() && $("#before_userPw").val()!=''){
 			alert("비밀번호가 맞지 않습니다. 다시 입력해 주세요");
 			return false;
-		}
-		if($("#before_userPw").val()!=''){
-			$("#userPw").val($("#userPw_confirm").val());
-			$("#userPw_confirm").val("");
-			$("#new_userPw").val("");
 		} */
+		
+		if($("#new_userPw").val()!=$("#userPw_confirm").val() && $("#new_userPw").val()!=''){
+			alert("비밀번호가 일치하지 않습니다. 확인 후 다시 입력해 주세요.")
+			return false;
+		}
+		if($("#new_userPw").val()!=''){
+			$("#userPw").val($("#userPw_confirm").val());
+		
+		}
 		alert("수정이 완료되었습니다!")
 
 	});

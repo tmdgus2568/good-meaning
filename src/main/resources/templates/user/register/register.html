@@ -57,13 +57,15 @@
 					-
 					<input type="text" id="userPhone3" th:value="${userPhone3}" required="required">
 					<input id="btn_auth" type="button" value="인증번호 요청">
+					<span id="timer"></span>
 				</td>
 			</tr>
 			<tr id="tr_auth_num">
 				<th></th>
 				<td>
 					<input type="text" name="auth_num" id="auth_num">
-					<input type="button" value="인증확인">
+					<input type="text" name="auth_num_data" id="auth_num_data">
+					<input type="button" value="인증확인" id="btn_auth_check">
 				</td>
 			</tr>
 			<tr id="tr_input_email">
@@ -282,6 +284,39 @@ $(function () {
 			$("#check_userPw_confirm").text("");
 		}
 	});
+	
+	$("#btn_auth").on('click',function(){
+		if($(this).val()=="") alert("휴대폰 번호를 입력해 주세요.");
+		else{
+			$("#userPhone").val($("#userPhone1").val()+$("#userPhone2").val()+$("#userPhone3").val());
+	
+			$.ajax({
+				type: "POST",
+				url: "/register/authUserPhone",
+				data:{
+					userPhone: $("#userPhone").val()
+				},
+				success: function(data){
+					alert("인증번호가 발송되었습니다.");
+					$("#auth_num_data").val(data.authNum);
+					
+				}
+			});
+		}
+		
+	})
+	
+	$("#btn_auth_check").on('click',function(){
+		if($("#auth_num").val()=="") alert("발송된 인증번호를 입력해 주세요.");
+		else if($("#auth_num").val()==$("#auth_num_data").val()){
+			alert("휴대폰 인증에 성공하였습니다!");
+		}
+		else{
+			alert("휴대폰 인증에 실하였습니다. 다시 입력해 주세요.");
+		}
+	})
+	
+
 	
 });
 
