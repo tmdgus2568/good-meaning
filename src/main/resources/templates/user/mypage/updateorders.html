@@ -60,24 +60,26 @@
 		</tr>
 		
 	</table>
+	<br>
 	
 	    <!-- paging -->
-	<nav>
+	<nav> 
 	   <div>
-	     <ul class="pagination">
+	     <ul class="pagination" style="justify-content: center;">
 	       <li class="page-item" th:if="${orders.prevPage}">
-	         <a th:href="${orders.prevPage.pageNumber}+1">PREV [[${orders.prevPage.pageNumber}+1]]</a>
+	         <a class="page-link" th:href="${orders.prevPage.pageNumber}+1">PREV [[${orders.prevPage.pageNumber}+1]]</a>
 	       </li>
 	        <li class="page-item" th:classappend="${p.pageNumber==orders.currentPageNum-1}?active:''" 
 	                             th:each="p:${orders.pageList}">
-	         <a th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a>
+	         <a class="page-link" th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a>
 	       </li>  
 	       <li class="page-item" th:if="${orders.nextPage}">
-	         <a th:href="${orders.nextPage.pageNumber}+1">NEXT [[${orders.nextPage.pageNumber}+1]]</a>
+	         <a class="page-link" th:href="${orders.nextPage.pageNumber}+1">NEXT [[${orders.nextPage.pageNumber}+1]]</a>
 	       </li>   
 	     </ul>
 	   </div>
 	  </nav>
+	  <br>
 	  <form id="f1" th:action="@{/mypage/updateorders}" method="get">
 	    <input name="page" th:value="${orders.currentPageNum}" hidden="true">
 	    <input name="size" th:value="${orders.currentPage.pageSize}" hidden="true">
