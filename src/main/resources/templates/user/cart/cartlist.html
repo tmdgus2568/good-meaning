@@ -35,7 +35,7 @@
 				<img th:src="${cart[0]}" th:width="150">
 			</td>
 			<td th:text="${cart[1]}"></td>
-			<td th:text="${cart[7]}"></td>
+			<td th:text="${cart[7]==null?'없음':cart[7]}"></td>
 						
 			<td>	       		  		
 	       		<input type="number" name="countName" th:id="'count' + ${cart[5]}"
@@ -43,9 +43,11 @@
 	       		   		      		
        		</td>
        					
-			<td th:id="'price' + ${cart[5]}" th:data-price="${cart[3]}" th:text="${cart[3]}+ '원'"></td>
+			<td th:id="'price' + ${cart[5]}" th:data-price="${cart[3]}" 
+				th:text="|${#numbers.formatInteger(cart[3], 0, 'COMMA')}원|"></td>
 			
-			<td th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName" th:text="${cart[4]}+ '원'"></td>			
+			<td th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName" 
+				th:text="|${#numbers.formatInteger(cart[4], 0, 'COMMA')}원|"></td>			
 			
 			<td>
 			<button type="button" class="btn btn-danger btndelete" 
