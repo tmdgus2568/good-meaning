@@ -67,50 +67,58 @@ public class ReviewController {
 		Long pno = Long.parseLong((String) param.get("pno"));
 		ProductVO product = prepo.findById(pno).orElse(null);
 
-		UserVO user = (UserVO)session.getAttribute("user"); //로그인 되어있는 유저
+		UserVO user = (UserVO) session.getAttribute("user"); // 로그인 되어있는 유저
 
-		List<ReviewVO> rlist = rrepo.findByProductNum(product);
+		if (user != null) {
 
-		List<OrderVO> orderlist = orepo.findByUserPhone(user);
-		List<List<OrderDetailVO>> orderdetaillist = new ArrayList<>(); // 중첩 List
+			// 구매 상품 중 작성해야 하는 리뷰가 있는지 판단
+			List<OrderVO> orderlist = orepo.findByUserPhone(user);
+			List<List<OrderDetailVO>> orderdetaillist = new ArrayList<>(); // 중첩 List
 
-		for (OrderVO o : orderlist) {
-			orderdetaillist.add(odrepo.findByOrderNum(o));
-		}
+			for (OrderVO o : orderlist) {
+				orderdetaillist.add(odrepo.findByOrderNum(o));
+			}
 
-		Map<String, Object> map = new HashMap<>();
+			List<OrderVO> reviewneededlist = new ArrayList<>();
+			List<OrderDetailVO> reviewneededdetaillist = new ArrayList<>();
 
-		List<OrderVO> reviewneededlist = new ArrayList<>();
-		List<OrderDetailVO> reviewneededdetaillist = new ArrayList<>();
+			for (List<OrderDetailVO> od : orderdetaillist) {
+				for (int i = 0; i < od.size(); i++) {
+					if (od.get(i).getProductNum().getProductNum() == pno) {
+						OrderVO order = orepo.findById(od.get(i).getOrderNum().getOrderNum()).get();
+						reviewneededlist.add(order);
 
-		for (List<OrderDetailVO> od : orderdetaillist) {
-			for (int i = 0; i < od.size(); i++) {
-				if (od.get(i).getProductNum().getProductNum() == pno) {
-					OrderVO order = orepo.findById(od.get(i).getOrderNum().getOrderNum()).get();
-					reviewneededlist.add(order);
-
-					OrderDetailVO orderdetail = odrepo.findById(od.get(i).getOrderDetailNum()).get();
-					reviewneededdetaillist.add(orderdetail);
+						OrderDetailVO orderdetail = odrepo.findById(od.get(i).getOrderDetailNum()).get();
+						reviewneededdetaillist.add(orderdetail);
+					}
 				}
+			}
+
+			if (reviewneededlist.size() != 0) {
+
+				// 일치 상품 중 가장 최근 주문 내역
+				OrderVO recentOrder = reviewneededlist.get(reviewneededlist.size() - 1);
+				OrderDetailVO recentOrderDetail = odrepo.findByOrderNumAndProductNum(recentOrder, product);
+
+				System.out.println(recentOrderDetail);
+				model.addAttribute("recentOrderDetail", recentOrderDetail);
 			}
 		}
 
-		map.put("order", reviewneededlist);
-		map.put("orderdetail", reviewneededdetaillist);
-
-		model.addAttribute("product", product);
-		model.addAttribute("review", map);
+		List<ReviewVO> rlist = rrepo.findByProductNum(product);
 
 		model.addAttribute("rlist", rlist);
 		model.addAttribute("product", product);
 		model.addAttribute("user", user);
 
 		return "user/product/productreview";
+
 	}
 
 	// @ResponseBody
 	@RequestMapping(value = "writeReviewReply", method = RequestMethod.POST)
-	public String writeReviewReply(@RequestParam Map<String, Object> param, Model model, Long productNum, HttpSession session) {
+	public String writeReviewReply(@RequestParam Map<String, Object> param, Model model, Long productNum,
+			HttpSession session) {
 
 		String ranswerContent = (String) param.get("reviewContent");
 		Long reviewno = Long.parseLong((String) param.get("reviewno"));
@@ -119,9 +127,9 @@ public class ReviewController {
 		System.out.println(reviewno);
 
 		ReviewVO review = rrepo.findById(reviewno).get();
-		//UserVO user = urepo.findByUserId("abc").get(); // 추후 session에서 get할 것
-		UserVO user = (UserVO)session.getAttribute("user");
-		
+		// UserVO user = urepo.findByUserId("abc").get(); // 추후 session에서 get할 것
+		UserVO user = (UserVO) session.getAttribute("user");
+
 		System.out.println(review);
 		System.out.println(user);
 
@@ -149,35 +157,44 @@ public class ReviewController {
 
 		UserVO user = urepo.findByUserId("1111").get(); // 추후 session에서 get 할 것
 
-		List<OrderVO> orderlist = orepo.findByUserPhone(user);
-		List<List<OrderDetailVO>> orderdetaillist = new ArrayList<>(); // 중첩 List
+		if (user != null) {
 
-		for (OrderVO o : orderlist) {
-			orderdetaillist.add(odrepo.findByOrderNum(o));
-		}
+			// 구매 상품 중 작성해야 하는 리뷰가 있는지 판단
+			List<OrderVO> orderlist = orepo.findByUserPhone(user);
+			List<List<OrderDetailVO>> orderdetaillist = new ArrayList<>(); // 중첩 List
 
-		Map<String, Object> map = new HashMap<>();
+			for (OrderVO o : orderlist) {
+				orderdetaillist.add(odrepo.findByOrderNum(o));
+			}
 
-		List<OrderVO> reviewneededlist = new ArrayList<>();
-		List<OrderDetailVO> reviewneededdetaillist = new ArrayList<>();
+			List<OrderVO> reviewneededlist = new ArrayList<>();
+			List<OrderDetailVO> reviewneededdetaillist = new ArrayList<>();
 
-		for (List<OrderDetailVO> od : orderdetaillist) {
-			for (int i = 0; i < od.size(); i++) {
-				if (od.get(i).getProductNum().getProductNum() == pno) {
-					OrderVO order = orepo.findById(od.get(i).getOrderNum().getOrderNum()).get();
-					reviewneededlist.add(order);
+			for (List<OrderDetailVO> od : orderdetaillist) {
+				for (int i = 0; i < od.size(); i++) {
+					if (od.get(i).getProductNum().getProductNum() == pno) {
+						OrderVO order = orepo.findById(od.get(i).getOrderNum().getOrderNum()).get();
+						reviewneededlist.add(order);
 
-					OrderDetailVO orderdetail = odrepo.findById(od.get(i).getOrderDetailNum()).get();
-					reviewneededdetaillist.add(orderdetail);
+						OrderDetailVO orderdetail = odrepo.findById(od.get(i).getOrderDetailNum()).get();
+						reviewneededdetaillist.add(orderdetail);
+					}
 				}
+			}
+
+			if (reviewneededlist.size() != 0) {
+
+				// 일치 상품 중 가장 최근 주문 내역
+				OrderVO recentOrder = reviewneededlist.get(reviewneededlist.size() - 1);
+				OrderDetailVO recentOrderDetail = odrepo.findByOrderNumAndProductNum(recentOrder, product);
+
+				System.out.println(recentOrderDetail);
+				model.addAttribute("recentOrder", recentOrder);
+				model.addAttribute("recentOrderDetail", recentOrderDetail);
 			}
 		}
 
-		map.put("order", reviewneededlist);
-		map.put("orderdetail", reviewneededdetaillist);
-
 		model.addAttribute("product", product);
-		model.addAttribute("review", map);
 		model.addAttribute("user", user);
 
 		return "user/product/productReviewForm";
