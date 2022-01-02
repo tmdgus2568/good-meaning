@@ -42,7 +42,7 @@
 	       		 th:value="${cart[2]}" min="1" onchange="changeCount(this)"> 
 	       		   		      		
        		</td>
-       					<!-- "${cart[3]}+ '원'" -->
+       					
 			<td th:id="'price' + ${cart[5]}" th:data-price="${cart[3]}" 
 				th:text="|${#numbers.formatInteger(cart[3], 0, 'COMMA')}원|"></td>
 			
