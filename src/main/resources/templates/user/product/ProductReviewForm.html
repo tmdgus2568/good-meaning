@@ -3,9 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css" />
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+$( ".star_rating a" ).click(function() {
+    $(this).parent().children("a").removeClass("on");
+    $(this).addClass("on").prevAll("a").addClass("on");
+    return false;
+});
+</script>
+
+<style>
+.star_rating {font-size:0; letter-spacing:-4px;}
+.star_rating a {
+    font-size:22px;
+    letter-spacing:0;
+    display:inline-block;
+    margin-left:5px;
+    color:#ccc;
+    text-decoration:none;
+}
+.star_rating a:first-child {margin-left:0;}
+.star_rating a.on {color:#F3969A;}
+</style>
 </head>
 <body>
-	<form action="empinsert"  method="post">
+	<form action="reviewinsert" method="post" enctype="multipart/form-data">
 		<table>
 			<thead>
 				<tr>
@@ -13,42 +37,41 @@
 				</tr>
 			</thead>
 			<tbody>
-			
+
 				<tr>
 					<td><img th:src="${product.productMainimg1}" width="100px"></td>
-					<td>
-					상품명 : <a th:text="${product.productName}" style="font-weight: bold"></a><br>
-					상품가격 : <a th:text="${product.productPrice}"></a><br>
-					구매수량 : <a th:text="${#maps.size(review)}"></a><br>
-					구매날짜 : <a></a>
+					<td>상품명 : <a th:text="${product.productName}"
+						style="font-weight: bold"></a><br> 상품가격 : <a
+						th:text="${product.productPrice}"></a><br> 구매수량 : <a
+						th:text="${recentOrderDetail.orderDetailQuantity}"></a><br>
+						구매날짜 : <a th:text="${recentOrder.orderDate}"></a>
 					</td>
 				</tr>
 				<tr>
 					<td>작성자</td>
-					<td><input type="text" id="writer" size="20" style="width: 100%;" th:value="${user.userId}" readonly="readonly"></td>
+					<td><input type="text" id="writer" size="20"
+						style="width: 100%;" th:value="${user.userId}" readonly="readonly"></td>
 				</tr>
 				<tr>
 					<td>평가</td>
 					<td>
-						<input type="radio" id="score5" name="score" value="5"> 
-						<label for="score5">5</label> 
-						<input type="radio" id="score4" name="score" value="4">
-						<label for="score4">4</label>
-						<input type="radio" id="score3" name="score" value="3"> 
-						<label for="score3">3</label>
-						<input type="radio" id="score2" name="score" value="2"> 
-						<label for="score2">2</label>
-						<input type="radio" id="score1" name="score" value="1"> 
-						<label for="score1">1</label>
+						<p class="star_rating">
+							<a href="#" class="on">★</a>
+							<a href="#">★</a>
+							<a href="#">★</a>
+							<a href="#">★</a>
+							<a href="#">★</a>
+						</p>
 					</td>
 				</tr>
 				<tr>
 					<td>제목</td>
-					<td><input type="text" id="title" size="20" style="width: 100%;"></td>
+					<td><input type="text" id="title" size="20"
+						style="width: 100%;"></td>
 				</tr>
 				<tr>
 					<td>내용</td>
-					<td><textarea id="contents"  rows="5" cols="50"></textarea></td>
+					<td><textarea id="contents" rows="5" cols="50"></textarea></td>
 				</tr>
 				<tr>
 					<td>파일</td>

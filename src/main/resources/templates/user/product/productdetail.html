@@ -1,19 +1,119 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
 <head>
+<style>
+div.left {
+	width: 50%;
+	height: 500px;
+	float: left;
+	box-sizing: border-box;
+}
+
+div.right {
+	width: 50%;
+	height: 500px;
+	float: right;
+	box-sizing: border-box;
+}
+
+div.bottom {
+	width: 100%;
+	box-sizing: border-box;
+	float: left;
+}
+
+.proimg:hover {
+	transition: transform 1s;
+	filter: brightness(70%);
+	cursor: pointer;
+}
+
+span #totalpircetitle {
+	margin-top: 100;
+}
+</style>
+
+
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="//code.jquery.com/jquery-3.3.1.min.js"></script><script>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css" />
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
 window.onload = function() {
-	btn1.onclick = call1;
-	btn2.onclick = call2;
-	btn3.onclick = call3;
+	btn1.onclick = call1;	//상세정보
+	btn2.onclick = call2;	//리뷰
+	btn3.onclick = call3;	//Q&A
 };
 
-	function count(type) {
+	var nu = new Map();
+	var pr = new Map();
+	var total = 0
+	
+	function count(type, obj, no, extraprice) {
+		
+		console.log("total"+total);
+		
+		nu.set(no, 0);
+		pr.set(no, 0);
+		
+		var noid = "no"+no;
+		var prid = "pr"+no;
+		
+		// 결과를 표시할 element
+		const resultElement = document.getElementById(noid);
+		const resultPrice = document.getElementById(prid);
+		const wholePrice = document.getElementById("wholeprice");
+
+		// 현재 화면에 표시된 값
+		let number = resultElement.innerText;
+		let price = resultPrice.innerText / number;	//price는 항상 1개의 값이어야 함
+		
+		pr.set(no, price);
+
+		var y = parseInt(pr.get(no));	//개수
+		var x = 1;	//가격
+		
+		// 더하기/빼기
+		if (type === 'plus') {
+			number = parseInt(number) + 1;	//더하기 눌렀으므로 + 하나 추가
+			nu.set(no, number);				//해당 개수를 옵션 set에 저장
+			x = parseInt(nu.get(no));		//옵션 set에서 해당 개수 구함
+			total += y;						//전체가격 - y
+		} else if (type === 'minus') {
+			if (parseInt(number) == 1) {
+				number = 1;
+				nu.set(no, number);
+				x = parseInt(nu.get(no));
+			} else {
+				number = parseInt(number) - 1;	//빼기를 눌렀으므로 - 하나 감소
+				nu.set(no, number);				//해당 개수를 옵션 set에 저장
+				x = parseInt(nu.get(no));		//옵션 set에서 해당 개수 구함
+				total -= y;						//전체가격 - y
+			}
+		}
+
+		console.log("총: "+total);
+		
+		// 결과 출력
+		resultElement.innerText = x;
+		resultPrice.innerText = x*y;
+		wholePrice.innerText = total;
+	}
+	
+	
+	
+	
+	
+	function countnooption(type) {
 		// 결과를 표시할 element
 		const resultElement = document.getElementById('result');
 		const resultPrice = document.getElementById('totalprice');
+		const resultWholePrice = document.getElementById('wholeprice');
 
 		// 현재 화면에 표시된 값
 		let number = resultElement.innerText;
@@ -33,14 +133,18 @@ window.onload = function() {
 		// 결과 출력
 		resultElement.innerText = number;
 		resultPrice.innerText = number * price
+		resultWholePrice.innerText = number * price;
+		
 	}
 	
+	//상세정보
 	function call1(){
 		var obj = "[[${product.productDetailimg}]]";
 		
-		here.innerHTML = "<img src=" + obj + " width='300'>";
+		here.innerHTML = "<img src=" + obj + " width='900px'>";
 	}
 	
+	//리뷰
 	function call2(){
 		$.ajax({
 			url : "productReview",
@@ -53,23 +157,18 @@ window.onload = function() {
 			type : "post",
 			success : function(responseData) { //responseData는 들어오는 값
 			$("#here").html(responseData);
-			
-			var obj = "[[${review}]]";
-			console.log(obj);
-			
-			here.innerHTML += "<button onclick='reviewWrite()'>리뷰작성</button>";
 			}
 		});
 	}
 	
+	//Q&A
 	function call3(){
 		here.innerHTML = "";
 	}
 	
-	function reviewWrite(){
-		
+	function reviewWrite(a){
+		console.log(a);
 		var obj = "[[${review}]]";
-		
 		console.log(obj);
 		
 		$.ajax({
@@ -85,45 +184,229 @@ window.onload = function() {
 			}
 		});
 	}
+	
+	
+	$(function () {
+		  $('[data-toggle="tooltip"]').tooltip()
+		})
+		
+	$(document).ready(function(){
+		
+		$(".proimg").on("mouseover", function(){
+			var imgaddress = $(this).attr('src');
+			$(".proimg").css({border : ''});
+			$(this).css({border : '2px solid black'});
+			console.log(imgaddress);
+			$("#mainimg").attr('src', imgaddress);
+			
+		})
+	});
+	
+	var jbAry = [];
+	var optionfirstprice = 0;
+	
+	function f1(obj, optionno, explusoriginal){
+			var s = "no"+optionno;
+			var opno;
+
+			console.log(s);
+			
+			var j = document.getElementById("result");
+			console.log(j);
+			if (j == null) {
+				var k = document.getElementById(s);
+				opno = k.innerText;
+			} else {
+				opno = j.innerText;
+			}
+			
+			console.log(opno);
+			
+			total -= opno * explusoriginal;
+			const wholePrice = document.getElementById("wholeprice");
+			wholePrice.innerText = total;
+			
+			$(obj).parent('div').remove();
+			jbAry.pop(optionno);
+			
+	}
+	
+	
+	function optionadded(cnt, optionno, extraprice, price){
+		
+		const wholePrice = document.getElementById("wholeprice");
+
+		var noid = "no"+optionno;
+		var prid = "pr"+optionno;
+		
+		var check = 0;
+		var explusoriginal = extraprice+price;
+		
+		console.log(explusoriginal);
+		
+		for (var i = 0; i < jbAry.length; i++) {
+			if (jbAry[i] == optionno) {
+				check ++;
+			}
+		}
+		
+		if(check != 0){
+			alert("이미 선택한 옵션입니다.")
+		} else {
+			
+			total += explusoriginal;
+			
+			wholePrice.innerText = total;
+			
+			jbAry.push(optionno);
+
+			console.log(optionno);
+			console.log(jbAry);
+			
+			const element = document.getElementById('optionhere');
+			console.log(element);
+			
+			var name = $("#option" + cnt).attr('value');
+			var no = optionno;
+			
+			const a = [
+			'<div th:if="${options.size() == 0}" id="optionsinfo" style="padding: 10px; background-color: #FFF3F0; margin-bottom: 20px;">'
+			+'<span style="font-size: 15px">'
+			+name
+			+'</span>'
+			+'<span class="badge bg-secondary" style="float: right;" onclick="f1(this,'
+			+no , explusoriginal
+			+')">X</span>'
+			+'<hr width="430px" align="left" style="margin-top: 10px;">'
+			+'<span> <input class="btn btn-dark" type='
+			+"'button' onclick='count("
+			+'"minus", this,' 
+			+no, extraprice
+			+')'
+			+"' value='-' style='margin-right: 10px;' />"
+			+'<span id="result" style="font-size: 15px" value="1">1</span>'
+			+'<input class="btn btn-dark" type='
+			+"'button' onclick='count("
+			+'"plus", this,'
+			+no, extraprice
+			+')'
+			+"' value='+' style='margin-left: 10px;' />"
+			+'</span> <span style="float: right;">'
+			+'<span id="totalprice" style="font-size: 30px;">' + explusoriginal
+			+'</span>'
+			+'<span style="font-size: 30px;">원</span>'
+			+"</span></div>"
+			]
+			
+			element.innerHTML += a;
+			
+			var noid1 = document.getElementById("result");
+			noid1.setAttribute("id", noid);
+			
+			var prid1 = document.getElementById('totalprice');
+			prid1.setAttribute("id", prid);
+		}
+	}
+	
 </script>
+
 </head>
 <body>
+	<div class="panel panel-default" layout:fragment="content"
+		align="center">
+		<div class="left">
+			<div style="width: 450px;">
+				<br> <img id="mainimg" th:src="${product.productMainimg1}"
+					th:width="450">
+				<div align="left">
+					<img class="proimg" th:src="${product.productMainimg1}"
+						th:width="50" style="border: 2px solid black; margin: 0px;">
+					<img class="proimg" th:src="${product.productMainimg2}"
+						th:width="50"> <img class="proimg"
+						th:src="${product.productMainimg3}" th:width="50"> <img
+						class="proimg" th:src="${product.productMainimg4}" th:width="50">
+				</div>
+			</div>
+		</div>
+		<div class="right" style="text-align: left;">
+			<div style="width: 450px;">
+				<br> <a th:value=${product.productNum}
+					style="font-weight: bold; font-size: 30px;">[[${product.productName}]]</a>
+				<div th:if="${options.size() == 0}">
+					<a th:value=${product.productPrice}>[[${product.productPrice}]]원</a>
+				</div>
+				<hr>
+				<span style="font-size: 15px"><a style="font-weight: bold;">구매혜택</a>
+					사은품 증정 예정</span> <span class="badge bg-primary rounded-pill"
+					data-toggle="tooltip" data-placement="top" title="Tooltip on top">?</span>
+				<br> <span style="font-size: 15px"><a
+					style="font-weight: bold;">배송방법</a> 택배</span> <br> <span
+					style="font-size: 15px"><a style="font-weight: bold;">배송비</a>
+					3,000원 (50,000원 이상 무료배송) | 도서산간 배송비 추가</span> <span
+					class="badge bg-primary rounded-pill">?</span> <br>
+				<hr>
 
-	<img th:src="${product.productMainimg1}" th:width="100">
-	<a th:value=${product.productNum}>[[${product.productName}]]</a>
-	<br>
-	<div th:if="${options.size() == 0}">
-		<a th:value=${product.productPrice}>[[${product.productPrice}]]원</a>
-	</div>
 
 
-	<div>
-		수량 <input type='button' onclick='count("minus")' value='-' /> <span
-			id="result">1</span> <input type='button' onclick='count("plus")'
-			value='+' />
-	</div>
+				<!-- 옵션 선택 -->
+				<div th:if="${options.size() != 0}">
+					<span th:each="options, status:${options}">
+						<button th:id="|option${status.count}|"
+							class="btn btn-outline-dark" th:value="${options.optionName}"
+							th:onclick="|optionadded(${status.count}, ${options.optionNum}, ${options.extraprice}, ${product.productPrice})|">
+							[[${options.optionName}]]</button>
+					</span>
+				</div>
+				<br>
 
-	<div th:if="${options.size() != 0}">
-		<select name="productoptions">
-			<option th:each="options:${options}"
-				value='[[${options.optionName}]]'>[[${options.optionName}]]</option>
-		</select>
-	</div>
 
-	총상품금액
-	<span id="result2">1</span>개
-	<span id="totalprice">[[${product.productPrice}]]</span>원
-	<br>
 
-	<button>구매하기</button>
-	<button>장바구니</button>
+				<!-- 상품수량 -->
+				<div th:if="${options.size() == 0}" id="optionsinfo"
+					style="padding: 10px; background-color: #FFF3F0; display: block;">
+					<span style="font-size: 15px">수량</span>
+					<hr width="430px" align="left" style="margin-top: 10px;">
+					<span> <input class="btn btn-dark" type='button'
+						onclick='countnooption("minus")' value='-'
+						style="margin-right: 10px;" /> <span id="result"
+						style="font-size: 20px">1</span> <input class="btn btn-dark"
+						type='button' onclick='countnooption("plus")' value='+'
+						style="margin-left: 10px;" />
+					</span>
+					<!-- options 있던 곳 -->
+					<span style="float: right;"> <span id="totalprice"
+						style="font-size: 30px;">[[${product.productPrice}]]</span> <span
+						style="font-size: 30px;">원</span>
+					</span>
+				</div>
 
-	<br>
-	<button id="btn1">상세정보</button>
-	<button id="btn2">구매평</button>
-	<button id="btn3">Q&A</button>
-	<div id="here">
-		<img th:src="${product.productDetailimg}" th:width="300">
+				<div id="optionhere"></div>
+
+				<br> <span id="totalpircetitle">총상품금액</span> <span
+					style="font-size: 30px; float: right;">원</span> <span
+					id="wholeprice" style="font-size: 30px; float: right;">[[${product.productPrice}]]</span> <br>
+				<br>
+				<button type="button" class="btn btn-secondary btn-lg"
+					style="width: 220px;">구매하기</button>
+				<button type="button" class="btn btn-light btn-lg"
+					style="width: 220px;">장바구니</button>
+			</div>
+		</div>
+
+
+		<div class="bottom">
+			<br>
+			<hr>
+			<button type="button" class="btn btn-primary" id="btn1"
+				style="width: 200px; font-size: 20px;">상세정보</button>
+			<button type="button" class="btn btn-outline-primary" id="btn2"
+				style="width: 200px; font-size: 20px;">리뷰</button>
+			<button type="button" class="btn btn-outline-primary" id="btn3"
+				style="width: 200px; font-size: 20px;">문의</button>
+			<div id="here">
+				<img th:src="${product.productDetailimg}" th:width="900px">
+			</div>
+		</div>
 	</div>
 </body>
 </html>

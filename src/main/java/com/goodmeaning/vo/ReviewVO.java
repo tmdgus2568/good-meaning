@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
@@ -76,6 +77,9 @@ public class ReviewVO {
 	@JoinColumn(name="productNum")
 	@ManyToOne
 	ProductVO productNum;
+	
+	@Transient
+	private MultipartFile[] uploadFile; //배열
 	
 //	@JoinColumn(name="orderDetailNum")
 //	@ManyToOne

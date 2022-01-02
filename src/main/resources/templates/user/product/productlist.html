@@ -5,6 +5,8 @@
 	layout:decorate="user/layout/layout_main">
 <head>
 <link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css" />
+<link rel="stylesheet"
 	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -15,66 +17,121 @@
 a.productname {
 	text-decoration: none
 }
+
+div.banner {
+	width: 20%;
+	height: 150vh;
+	float: left;
+}
+
+div.oneproduct {
+	width: 17%;
+	height: 390px;
+	float: left;
+}
+
+div.right {
+	width: 10%;
+	float: none;
+}
+
+#footer {
+	float: left;
+}
+
+select {
+	/* 생략 */
+	font-family: "Noto Sansf KR", sans-serif;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #444;
+	background-color: #fff;
+	padding: 0.6em 1.4em 0.5em 0.8em;
+	margin: 0;
+	border: 1px solid #C9CED5;
+	border-radius: 0.5em;
+	box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+}
 </style>
 </head>
 <body>
-<div class="panel panel-default" layout:fragment="content" align="center">
-	
-<a th:href="@{/productlist(category='LIVING')}">일상에서</a>
-<a th:href="@{/productlist(category='KITCHEN')}">부엌에서</a>
-<a th:href="@{/productlist(category='OFFICE')}">사무실에서</a>
-<a th:href="@{/productlist(category='BATHROOM')}">욕실에서</a>
-<a th:href="@{/productlist(category='TRAVEL')}">여행갈때</a>
-<a th:href="@{/productlist(category='MARKET')}">마트갈때</a>
-	<div>
-		<!--div 전체 추가-->
-		<select id="searchType">
-			<option value="name" th:selected="${pagevo.type=='name'}">상품명</option>
-		</select> <input type="text" id="searchKeyword">
-		<button id="searchBtn">검색</button>
-	</div>
-	<table class="table table-striped table-bordered table-hover">
-		<tr>
-			<th>상품사진</th>
-			<th>상품명</th>
-			<th>가격</th>
-		</tr>
-		
-		<tr th:each="product:${plist}">
-			<td><a th:href="@{/productdetail(pno=${product.productNum})}"><img
+	<div class="panel panel-default" layout:fragment="content"
+		align="center">
+		<!-- 
+		<a th:href="@{/productlist(category='LIVING')}">일상에서</a> <a
+			th:href="@{/productlist(category='KITCHEN')}">부엌에서</a> <a
+			th:href="@{/productlist(category='OFFICE')}">사무실에서</a> <a
+			th:href="@{/productlist(category='BATHROOM')}">욕실에서</a> <a
+			th:href="@{/productlist(category='TRAVEL')}">여행갈때</a> <a
+			th:href="@{/productlist(category='MARKET')}">마트갈때</a> -->
+
+
+		<div class="banner">배너</div>
+		<div style="width: 75%; text-align: right; align-items: center;">
+			<form action="" style="padding: 10px;">
+				<select class="form-label mt-4" id="exampleSelect1"
+					style="height: 38px; display: inline-block;">
+					<option>등록순</option>
+					<option>인기순</option>
+					<option>낮은가격순</option>
+					<option>높은가격순</option>
+					<option>이름순</option>
+				</select>
+			</form>
+			<!--div 전체 추가-->
+			<input class="form-control me-sm-2"
+				style="width: 200px; display: inline-block;" type="text"
+				id="searchKeyword">
+			<button class="btn btn-secondary my-2 my-sm-0" id="searchBtn">검색</button>
+			<br>
+			<br>
+			
+		</div>
+
+		<div th:each="product:${plist}">
+			<div class="oneproduct">
+				<a th:href="@{/productdetail(pno=${product.productNum})}"><img
 					th:src="${product.productMainimg1}"
 					th:onmouseover="this.src=[[${product.productMainimg2}]]"
 					th:onmouseout="this.src=[[${product.productMainimg1}]]"
-					th:width="100"></a></td>
-			<td><a class="productname" th:href="@{/productdetail(pno=${product.productNum})}">[[${product.productName}]]</a></td>
-			<td th:text="${product.productPrice}"></td>
-		</tr>
-	</table>
-	<form id="f1" th:action="@{/productlist}" method="get">
-		<input type="hidden" name="page" th:value="${result.currentPageNum}">
-		<input type="hidden" name="size"
-			th:value="${result.currentPage.pageSize}"> <input type="hidden"
-			name="type" th:value="${pagevo.type}"> <input type="hidden"
-			name="keyword" th:value="${pagevo.keyword}">
-	</form>
-	<!-- paging -->
-	<nav>
-		<div>
-			<ul class="pagination">
-				<li class="page-item" th:if="${result.prevPage}"><a
-					th:href="${result.prevPage.pageNumber}+1">PREV</a></li>
-				<li class="page-item"
-					th:classappend="${p.pageNumber==result.currentPageNum-1}?active:''"
-					th:each="p:${result.pageList}"><a th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a>
-				</li>
-				<li class="page-item" th:if="${result.nextPage}"><a
-					th:href="${result.nextPage.pageNumber}+1">NEXT</a></li>
-			</ul>
+					th:width="250"></a> <br> <br> <a class="productname"
+					th:href="@{/productdetail(pno=${product.productNum})}"
+					style="font-size: 15px; color: black;">[[${product.productName}]]</a>
+				<br> <span><a th:text="${product.productPrice}"></a>원</span>
+			</div>
 		</div>
-	</nav>
+
+		<form id="f1" th:action="@{/productlist}" method="get">
+			<input type="hidden" name="page" th:value="${result.currentPageNum}">
+			<input type="hidden" name="size"
+				th:value="${result.currentPage.pageSize}"> <input
+				type="hidden" name="type" th:value="${pagevo.type}"> <input
+				type="hidden" name="keyword" th:value="${pagevo.keyword}">
+		</form>
+
+		<!-- paging -->
+		<div
+			style="float: left; width: 100%; height: 50px; text-align: center;">
+			<nav>
+				<div>
+					<ul class="pagination" style="justify-content: center;">
+						<li class="page-item active" th:if="${result.prevPage}"><a
+							class="page-link" th:href="${result.prevPage.pageNumber}+1">PREV</a></li>
+						<li class="page-item"
+							th:classappend="${p.pageNumber==result.currentPageNum-1}?active:''"
+							th:each="p:${result.pageList}"><a class="page-link"
+							th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a></li>
+						<li class="page-item" th:if="${result.nextPage}"><a
+							class="page-link" th:href="${result.nextPage.pageNumber}+1">NEXT</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
 	</div>
+
 </body>
-	<th:block layout:fragment="script">
+<th:block layout:fragment="script">
 	<script>
 		$(function() {
 			var formObj = $("#f1"); //폼을 가져온다.
@@ -86,7 +143,7 @@ a.productname {
 
 			//검색을 위한 js 코드 추가하기
 			$("#searchBtn").click(function() {
-				var typeStr = $("#searchType").find(":selected").val(); //상품명
+				var typeStr = 'name'; //상품명
 				var keywordStr = $("#searchKeyword").val();
 
 				formObj.find("[name='page']").val(1);
