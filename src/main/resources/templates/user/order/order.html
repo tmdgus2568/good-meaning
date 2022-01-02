@@ -35,7 +35,7 @@
                     </div>
                 <input type="hidden" id="cartNum" th:value="${item[5]}" >                
                 <input type="hidden" name="productNum" id="productNum" th:value="${item[6]}" >                
-                <input type="text" name="optionNum" id="optionNum" th:value="${item[8]==null?0:item[8]}" >                
+                <input type="hidden" name="optionNum" id="optionNum" th:value="${item[8]==null?0:item[8]}" >                
         	</div>
         </div>
         <h2 class="text-center">
@@ -76,8 +76,7 @@
 	
 		</table>
 		
-		<input type="button" id="payNow" value="구매하기">
-		<input type="button" id="payNow2" value="구매하기2">
+		<input type="button" class="btn btn-primary btn-lg" id="payNow" value="구매하기">
 
 
 	</form>
@@ -101,56 +100,7 @@
 			
 		IMP.init("imp03054995"); // 예: imp00000000
 		var msg;
-				
-		$("#payNow2").click(function(){//테스트#####################
-			 
-        	var orderDetailQuantityArr = []
-        	$(".cartCount").each(function(index, item){     		 
-        		orderDetailQuantityArr.push($(item).attr("data-count"));
- 			});
-
-        	var orderDetailPriceArr = []
-        	$(".price").each(function(index, item){     		 
-        		orderDetailPriceArr.push($(item).attr("data-price"));
- 			});
-
-        	var productNumArr = []
-        	$('input[name="productNum"]').each(function(index, item){     		 
-        		productNumArr.push($(item).val())
- 			});
-        	
-        	var productOptionArr = []
-        	$('input[name="optionNum"]').each(function(index, item){     		 
-        		productOptionArr.push($(item).val());
- 			});
-        	
-        	var orderInfo = 
-        	{"orderNum" : new Date().getTime(),
-        	"deliveryRecipient":userName,		
-        	"deiveryPhone":customer_uid,
-        	"postcode":userPostcode,
-        	"address" :userAddress,
-        	"addressDetail": $("#userAddressDetail").val(),
-        	"orderTotalPrice":totalPrice,
-        	"orderStatus" : "주문완료",
-        	"orderWaybill":"",
-        	
-        	"orderDetailQuantity":orderDetailQuantityArr,
-        	"orderDetailPrice":orderDetailPriceArr,
-        	"productNum":productNumArr,
-        	"productOption":productOptionArr 
-        	 };
-        	console.log(JSON.stringify(orderInfo));
-        	$.ajax({
-        		url: "orderSave",
-        		type: "post",
-        		data: orderInfo,
-        		success: function(responseData){
-        			alert(responseData);
-        			location.href="/mypage/orders";//마이페이지 주문 확인으로 가기
-        		}
-        	});
-		});
+						
 		
 		//결제시 PG사의 결제 페이지가 열리는 예제
 		$("#payNow").click(function(e) {
@@ -160,44 +110,63 @@
 	          pay_method: "card",
 	          merchant_uid: new Date().getTime(),
 	          name: productName, //상품명 object로 옴
-	          amount: totalPrice,//가격
+	          amount: 100, //가격 totalPrice
 	          buyer_email: userEmail,
 	          buyer_name: userName,
 	          buyer_tel: userPhone,
 	          buyer_addr: userAddress,
 	          buyer_postcode: userPostcode
 	    }, function (rsp) { // callback
-	    	 console.log(rsp);
+	    	console.log(rsp);
 	    	alert(rsp);
 	   
 	        if (rsp.success) {// 결제 성공 시: 결제 승인 또는 가상계좌 발급에 성공한 경우       	
 	        	var msg = '결제가 완료되었습니다';
-	        	msg += '고유ID : ' + rsp.imp_uid;
+	        	/* msg += '고유ID : ' + rsp.imp_uid;
 		        msg += '상점 거래ID : ' + rsp.merchant_uid;
 		        msg += '결제 금액 : ' + rsp.paid_amount;
-		        msg += '카드 승인번호 : ' + rsp.apply_num;
+		        msg += '카드 승인번호 : ' + rsp.apply_num; */
 	        	console.log("결제성공 " + msg);
-	        	//OrderVo, OrderDetailVO
-	        	console.log( $(".cartCount").text());
-	        	var orderDetailQuantityArr = $(".cartCount").text();
-	        	var orderDetailPriceArr = $(".price").text();
-	        	var productNumArr = [];
-	        	var productOptionArr = [];
+	        	
+	        	//결제 완료시 OrderVo, OrderDetailVO에 저장할 코드
+	        	var orderDetailQuantityArr = []
+	        	$(".cartCount").each(function(index, item){     		 
+	        		orderDetailQuantityArr.push($(item).attr("data-count"));
+	 			});
+	
+	        	var orderDetailPriceArr = []
+	        	$(".price").each(function(index, item){     		 
+	        		orderDetailPriceArr.push($(item).attr("data-price"));
+	 			});
+	
+	        	var productNumArr = []
+	        	$('input[name="productNum"]').each(function(index, item){     		 
+	        		productNumArr.push($(item).val())
+	 			});
+	        	
+	        	var productOptionArr = []
+	        	$('input[name="optionNum"]').each(function(index, item){     		 
+	        		productOptionArr.push($(item).val());
+	 			});
+	        	
+	        	
 	        	var orderInfo = 
-	        	{"orderNum" : merchant_uid, 
-	        	"deiveryPhone":userPhone,
-	        	"postcode":userPostcode,
-	        	"address" : userAddress,
-	        	"addressDetail": $("#userAddressDetail").val(),
-	        	"orderTotalPrice":totalPrice,
-	        	"orderStatus" : "주문완료",
-	        	"orderWaybill":"",
-	        	"orderDetailQuantity":orderDetailQuantityArr,
-	        	"orderDetailPrice":orderDetailPriceArr,
-	        	"productNum":productNumArr,
-	        	//"orderNum": merchant_uid  ,
-	        	"productOption":productOptionArr 
+	        	{"orderNum" : new Date().getTime(),
+	                "deliveryRecipient":userName,		
+	                "deiveryPhone":customer_uid,
+	               	"postcode":userPostcode,
+	               	"address" :userAddress,
+	               	"addressDetail": $("#userAddressDetail").val(),
+	               	"orderTotalPrice":totalPrice,
+	               	"orderStatus" : "입금완료",
+	              	"orderWaybill":"",
+	        	
+	              	"orderDetailQuantity":orderDetailQuantityArr,
+	            	"orderDetailPrice":orderDetailPriceArr,
+	            	"productNum":productNumArr,
+	            	"productOption":productOptionArr 
 	        	 };
+	        	console.log(JSON.stringify(orderInfo));
 	        	$.ajax({
 	        		url: "orderSave",
 	        		type: "post",
@@ -215,7 +184,7 @@
 		        	console.log(msg);
 		        	alert(msg);
 		            //결제 실패시 이동할 페이지
-		        	//location.href="order";
+		        	location.href="/cartlist";
 	       		}
 	    	});
 		});
@@ -235,7 +204,7 @@
 			//console.log("orderTotalPrice!!:" + totalPrice);
 		});
 		
-		if(totalPrice<100000) totalPrice+=2500;
+		if(totalPrice<50000) totalPrice+=2500;
 		//console.log("orderTotalPrice:" + totalPrice);
 		 	
 		$("#orderTotalPrice").html(totalPrice+'원');
