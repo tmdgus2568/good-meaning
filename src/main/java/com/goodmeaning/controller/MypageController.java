@@ -54,7 +54,7 @@ public class MypageController {
 	ProductRepository prepo;
 	
 	@Autowired
-	ProductOptionRepository porepo;
+	ProductOptionRepository optionRepo;
 	
 	@Autowired
 	OrderDetailRepository detailRepo;
@@ -115,7 +115,7 @@ public class MypageController {
 	    System.out.println("newOrder=" + newOrder);
 	    for(int i=0; i<productNum.length; i++) {
 	    	ProductVO product = prepo.findById(Long.valueOf(productNum[i])).get();
-	    	ProductOptionVO optionVO = porepo.findById(Long.valueOf(productOption[i])).orElse(null);
+	    	ProductOptionVO optionVO = optionRepo.findById(Long.valueOf(productOption[i])).orElse(null);
 	    	OrderDetailVO detailVO = OrderDetailVO.builder()
 	    			.orderDetailQuantity(Integer.valueOf(orderDetailQuantity[i]))
 	    			.orderDetailPrice(Integer.valueOf(orderDetailPrice[i]))
