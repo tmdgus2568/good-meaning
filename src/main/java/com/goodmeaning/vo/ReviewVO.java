@@ -81,6 +81,11 @@ public class ReviewVO {
 	@Transient
 	private MultipartFile[] uploadFile; //배열
 	
+	@Column(length = 1000)
+	private String reviewMainimg1;
+	@Column(length = 1000)
+	private String reviewMainimg2;
+	
 //	@JoinColumn(name="orderDetailNum")
 //	@ManyToOne
 //	OrderDetailVO orderDetailNum;

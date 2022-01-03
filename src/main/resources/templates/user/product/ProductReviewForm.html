@@ -7,29 +7,58 @@
 	href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css" />
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
-$( ".star_rating a" ).click(function() {
-    $(this).parent().children("a").removeClass("on");
-    $(this).addClass("on").prevAll("a").addClass("on");
-    return false;
-});
+	var score = 1;
+
+	$(".star_rating a").click(function() {
+		$(this).parent().children("a").removeClass("on");
+		$(this).addClass("on").prevAll("a").addClass("on");
+		var score = document.getElementsByClassName("on").length;
+		document.getElementById("reviewLike").value = score;
+		console.log(score);
+		return false;
+	});
+
+	$("#reviewinsertjs").click(function() {
+		$.ajax({
+			url : "reviewinsert",
+			type : "POST",
+			data : $("#reviewinsertform").serialize(),
+			dataType : 'html',
+			success : function(responseData) { //responseData는 들어오는 값;
+				$("#here").html(responseData);
+			}
+		})
+	})
+	
 </script>
 
 <style>
-.star_rating {font-size:0; letter-spacing:-4px;}
-.star_rating a {
-    font-size:22px;
-    letter-spacing:0;
-    display:inline-block;
-    margin-left:5px;
-    color:#ccc;
-    text-decoration:none;
+.star_rating {
+	font-size: 0;
+	letter-spacing: -4px;
 }
-.star_rating a:first-child {margin-left:0;}
-.star_rating a.on {color:#F3969A;}
+
+.star_rating a {
+	font-size: 22px;
+	letter-spacing: 0;
+	display: inline-block;
+	margin-left: 5px;
+	color: #ccc;
+	text-decoration: none;
+}
+
+.star_rating a:first-child {
+	margin-left: 0;
+}
+
+.star_rating a.on {
+	color: #F3969A;
+}
 </style>
 </head>
 <body>
-	<form action="reviewinsert" method="post" enctype="multipart/form-data">
+	<form action="/reviewinsert" method="post"
+		enctype="multipart/form-data" id="reviewinsertform">
 		<table>
 			<thead>
 				<tr>
@@ -41,47 +70,53 @@ $( ".star_rating a" ).click(function() {
 				<tr>
 					<td><img th:src="${product.productMainimg1}" width="100px"></td>
 					<td>상품명 : <a th:text="${product.productName}"
-						style="font-weight: bold"></a><br> 상품가격 : <a
-						th:text="${product.productPrice}"></a><br> 구매수량 : <a
-						th:text="${recentOrderDetail.orderDetailQuantity}"></a><br>
-						구매날짜 : <a th:text="${recentOrder.orderDate}"></a>
+						style="font-weight: bold"></a> <a
+						th:if="${recentOrderDetail.productOption != null}"><br> <span
+							th::value="${recentOrderDetail.productOption.optionName}"></span></a>
+						<br> 상품가격 : <a th:text="${product.productPrice}"></a><br>
+						구매수량 : <a th:text="${recentOrderDetail.orderDetailQuantity}"></a><br>
+						구매날짜 : <a th:text="${recentOrder.orderDate}"></a> <input
+						type="hidden" id="productNum2" name="productNum2"
+						th:value="${product.productNum}"> <input type="hidden"
+						id="recentOrderDetail2" name="recentOrderDetail2"
+						th:value="${recentOrderDetail.orderDetailNum}">
 					</td>
 				</tr>
 				<tr>
 					<td>작성자</td>
-					<td><input type="text" id="writer" size="20"
-						style="width: 100%;" th:value="${user.userId}" readonly="readonly"></td>
+					<td><input type="text" size="20" style="width: 100%;"
+						th:value="${user.userId}" readonly="readonly"></td>
 				</tr>
 				<tr>
 					<td>평가</td>
 					<td>
 						<p class="star_rating">
-							<a href="#" class="on">★</a>
-							<a href="#">★</a>
-							<a href="#">★</a>
-							<a href="#">★</a>
-							<a href="#">★</a>
-						</p>
+							<a href="#" class="on">★</a> <a href="#">★</a> <a href="#">★</a>
+							<a href="#">★</a> <a href="#">★</a>
+						</p> <input type="text" id="reviewLike" name="reviewLike" value=1>
 					</td>
 				</tr>
 				<tr>
 					<td>제목</td>
-					<td><input type="text" id="title" size="20"
-						style="width: 100%;"></td>
+					<td><input type="text" id="reviewTitle" name="reviewTitle"
+						size="20" style="width: 100%;"></td>
 				</tr>
 				<tr>
 					<td>내용</td>
-					<td><textarea id="contents" rows="5" cols="50"></textarea></td>
+					<td><textarea id="reviewContent" name="reviewContent" rows="5"
+							cols="50"></textarea></td>
 				</tr>
 				<tr>
 					<td>파일</td>
-					<td><input type="file" name="uploadFile"></td>
+					<td><input type="file" id="reviewMainimg1" name="uploadFile"><br>
+						<input type="file" id="reviewMainimg2" name="uploadFile"></td>
 				</tr>
 			</tbody>
 			<tfoot>
 			</tfoot>
 		</table>
-		<input type="submit" value="리뷰작성">
+		<button type="button" id="reviewinsertjs" value="리뷰작성">리뷰작성</button>
+		
 	</form>
 </body>
 </html>

@@ -77,30 +77,36 @@
 </script>
 </head>
 <body>
-	<table>
+	<table class="table table-hover" style="width: 700px;">
 		<tbody th:each="review, status:${rlist}"
-			th:onclick="|showReview(${status.count}, ${review.reviewNum}, this)|">
+			th:onclick="|showReview(${status.count}, ${review.reviewNum}, this)|" style="border: none;">
 			<tr class="open">
-				<td hidden="" th:text="${review.reviewNum}"></td>
-				<td th:text="${review.reviewLike}"></td>
-			</tr>
-			<tr>
-				<td th:text="${review.productNum.productName}"></td>
+			<td>
+				<span hidden="" th:text="${review.reviewNum}"></span>
+				<span th:if="${review.reviewLike} == 5"><a style="color: #F3969A;">★★★★★</a></span>
+				<span th:if="${review.reviewLike} == 4"><a style="color: #F3969A;">★★★★</a><a style="color: #ccc;">☆</a></span>
+				<span th:if="${review.reviewLike} == 3"><a style="color: #F3969A;">★★★</a><a style="color: #ccc;">☆☆</a></span>
+				<span th:if="${review.reviewLike} == 2"><a style="color: #F3969A;">★★</a><a style="color: #ccc;">☆☆☆</a></span>
+				<span th:if="${review.reviewLike} == 1"><a style="color: #F3969A;">★</a><a style="color: #ccc;">☆☆☆☆</a></span>
+			
+				<br>
+				<span th:text="${review.productNum.productName}"></span>
 				<!-- <td th:text="${review.orderDetailNum}"></td> 옵션 -->
-			</tr>
-			<tr>
-				<td
-					th:text="${review.userPhone.userId} +' ' + ${#dates.format(review.reviewCreatedate, 'yyyy-MM-dd HH:mm')}"></td>
-			</tr>
-			<tr>
-				<td th:text="${review.reviewTitle}"></td>
-			</tr>
-			<tr>
-				<td th:text="${review.reviewContent}" style="display: none"
-					th:id="|detailcontent${status.count}|"></td>
-			</tr>
-			<tr>
-				<td th:id="|replies${status.count}|" style="display: none">
+		
+		
+				<br>
+				<span
+					th:text="${review.userPhone.userId} +' ' + ${#dates.format(review.reviewCreatedate, 'yyyy-MM-dd HH:mm')}"></span>
+				<br>
+				<span th:text="${review.reviewTitle}"></span>
+				<br>
+				<span th:text="${review.reviewContent}" style="display: none"
+					th:id="|detailcontent${status.count}|"></span>
+				<br>				
+				<a th:if="${review.reviewMainimg1} != null"><img th:id="|reviewimg1${status.count}|" th:src="|C:\Temp\${review.reviewMainimg1}|" th:width="450"></a>
+				<a th:if="${review.reviewMainimg2} != null"><img th:id="|reviewimg2${status.count}|" th:src="|C:\Temp\${review.reviewMainimg2}|" th:width="450"></a>
+
+				<div th:id="|replies${status.count}|" style="display: none">
 					<table id="replytable">
 						<tr th:each="reply:${review.answers}">
 							<td th:text="${reply.userPhone.userId}"></td>
@@ -109,22 +115,18 @@
 								th:text="${#dates.format(reply.ranswerCreatedate, 'yyyy-MM-dd HH:mm')}"></td>
 						</tr>
 					</table>
-				</td>
-			</tr>
-			<tr>
-				<td th:id="|writing${status.count}|" style="display: none">
-					<form>
-						<textarea rows="5" cols="50" id="replycontents"
-							name="replycontents"></textarea>
-						<input type="button" name="replybtn"
-							th:onclick="|writeReply(${review.reviewNum}, this, ${status.count})|"
+				</div>
+
+					<form th:id="|writing${status.count}|"  style="display: none">
+						<textarea rows="3" cols="60" class="form-control" id="replycontents"
+							name="replycontents" style="margin-bottom: 5px; padding-bottom: 5px;"></textarea>
+						<input type="button" name="replybtn" style="float: right;"
+							th:onclick="|writeReply(${review.reviewNum}, this, ${status.count})|" class="btn btn-secondary" 
 							value="댓글작성">
 					</form>
-					<hr>
-				</td>
 			</tr>
 		</tbody>
 	</table>
-	<button th:onclick="reviewWrite([[${recentOrderDetail}]], [[${user}]])">리뷰작성</button>
+	<button class="btn btn-secondary" th:onclick="reviewWrite([[${recentOrderDetail}]], [[${user}]])">리뷰작성</button>
 </body>
 </html>

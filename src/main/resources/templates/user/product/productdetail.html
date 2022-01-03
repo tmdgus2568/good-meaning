@@ -7,14 +7,12 @@
 <style>
 div.left {
 	width: 50%;
-	height: 500px;
 	float: left;
 	box-sizing: border-box;
 }
 
 div.right {
 	width: 50%;
-	height: 500px;
 	float: right;
 	box-sizing: border-box;
 }
@@ -139,6 +137,11 @@ window.onload = function() {
 	
 	//상세정보
 	function call1(){
+		$("#btn1").attr('class', "btn btn-primary");
+		$("#btn2").attr('class', "btn btn-outline-primary");
+		$("#btn3").attr('class', "btn btn-outline-primary");
+		
+		
 		var obj = "[[${product.productDetailimg}]]";
 		
 		here.innerHTML = "<img src=" + obj + " width='900px'>";
@@ -146,23 +149,33 @@ window.onload = function() {
 	
 	//리뷰
 	function call2(){
+		
+		$("#btn1").attr('class', "btn btn-outline-primary");
+		$("#btn2").attr('class', "btn btn-primary");
+		$("#btn3").attr('class', "btn btn-outline-primary");
+		
+		
 		$.ajax({
 			url : "productReview",
-			type : "POST",
+			type : "GET",
 			async : false,
 			data : {
 				pno : "[[${product.productNum}]]"
 			},
 			dataType: "html",
-			type : "post",
 			success : function(responseData) { //responseData는 들어오는 값
-			$("#here").html(responseData);
+			  $("#here").html(responseData);
 			}
 		});
 	}
 	
 	//Q&A
 	function call3(){
+		
+		$("#btn1").attr('class', "btn btn-outline-primary");
+		$("#btn2").attr('class', "btn btn-outline-primary");
+		$("#btn3").attr('class', "btn btn-primary");
+
 		here.innerHTML = "";
 	}
 	
