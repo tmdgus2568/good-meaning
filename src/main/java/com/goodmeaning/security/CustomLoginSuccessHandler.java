@@ -29,7 +29,6 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 		// TODO Auto-generated method stub
 		super.onAuthenticationSuccess(request, response, authentication);
         HttpSession session = request.getSession();
-
         Optional<UserVO> user = userRepo.findByUserId(authentication.getName());
         if(user.isPresent()) session.setAttribute("user", user.get());
      

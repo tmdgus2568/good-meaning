@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Log
 @Configuration
 @EnableWebSecurity // security설정을 담당하는 Bean이다.
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //	@Autowired
 //	UserService userService;
@@ -62,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override // WebSecurity를 통해 HTTP 요청에 대한 웹 기반 보안을 구성
 	public void configure(WebSecurity web) throws Exception {
 		// 파일 기준은 resources/static 디렉터리의 하위 파일 목록은 인증 무시 ( = 항상통과 )
-		web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
+		web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/reviewupload/**");
 
 	}
 
@@ -75,10 +77,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// hasRole : 특정권한을 가진 사람만 접근가능하다는 의미
 		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 		http.authorizeRequests() // HttpServletRequest에 따라 접근(access)을 제한
-				.antMatchers("/","/productlist","/productdetail","/productReview","/writeReviewReply","/register/**","/auth/**").permitAll() // 누구나 접근 허용
+				.antMatchers("/","/productlist","/productdetail","/productReview","/writeReviewReply","/register/**","/admin/**").permitAll() // 누구나 접근 허용
 				.antMatchers("/mypage/**").hasRole("USER") 
-				.antMatchers("/admin/**").hasRole("ADMIN") // /admin으로 시작하는 경로는 ADMIN롤을 가진 사용자만 접근 가능(자동으로 ROLE_가 삽입)
-				.antMatchers("/manager/**").hasRole("MANAGER").antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//				.antMatchers("/admin/**").hasRole("ADMIN") // /admin으로 시작하는 경로는 ADMIN롤을 가진 사용자만 접근 가능(자동으로 ROLE_가 삽입)
+//				.antMatchers("/manager/**").hasRole("MANAGER").antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.anyRequest().authenticated() // anyRequest() 나머지요청 , authenticated() : 인증된 사용자만 접근가능,
 										// anonymous():인증도지않은 사용자가 접근가능
 				.and().formLogin() // form 기반으로 인증을 하도록 한다. 로그인 정보는 기본적으로 HttpSession을 이용
@@ -86,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//.loginProcessingUrl("/auth/login")//추가하면 controller에 인증구현 , 아니면 자동인증처리 ...지금은 username이 전달안됨 							// 스프링시큐리티가 해당주소로 오는 요청을 가로채서 대신한다.
 				//.usernameParameter("username") 
 				//.passwordParameter("password") 
-				
+			
 				.defaultSuccessUrl("/") // 로그인 성공 후 리다이렉트 주소
 				.successHandler(successHandler())
 				.permitAll(); // 접근전부허용
@@ -97,6 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.invalidateHttpSession(true); // 세션 지우기
 				 // csrf(크로스사이트 위조요청에 대한 설정) 토큰 비활성화 (test시에는 disable권장)
 		http.exceptionHandling().accessDeniedPage("/accessDenied"); // 403 예외처리 핸들링 권한이 없는 대상이 접속을시도했을 때
+	
 		
 		//구글인증
 //		http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService);
