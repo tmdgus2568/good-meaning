@@ -69,14 +69,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		log.info("!!!!!!security config..........");
 		http.csrf().disable();
-	
+	    //if 주소창에 입력한 URL패턴을 검사 .... admin, user 인지 롹인 , login ㅠㅔ이지가 다름   : http 안에 들어있을 것 같음. 찾아보기! 
 		// antMatchers url 패턴에 대한 접근허용
 		// permitAll: 모든사용자가 접근가능하다는 의미
 		// hasRole : 특정권한을 가진 사람만 접근가능하다는 의미
 		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 		http.authorizeRequests() // HttpServletRequest에 따라 접근(access)을 제한
-				.antMatchers("/","/productlist","/productdetail","/productReview","/writeReviewReply","/register/**","/auth/**","/admin/**").permitAll() // 누구나 접근 허용
-				.antMatchers("/mypage/**").hasRole("USER") // /admin으로 시작하는 경로는 ADMIN롤을 가진 사용자만 접근 가능(자동으로 ROLE_가 삽입)
+				.antMatchers("/","/productlist","/productdetail","/productReview","/writeReviewReply","/register/**","/auth/**").permitAll() // 누구나 접근 허용
+				.antMatchers("/mypage/**").hasRole("USER") 
+				.antMatchers("/admin/**").hasRole("ADMIN") // /admin으로 시작하는 경로는 ADMIN롤을 가진 사용자만 접근 가능(자동으로 ROLE_가 삽입)
 				.antMatchers("/manager/**").hasRole("MANAGER").antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.anyRequest().authenticated() // anyRequest() 나머지요청 , authenticated() : 인증된 사용자만 접근가능,
 										// anonymous():인증도지않은 사용자가 접근가능
