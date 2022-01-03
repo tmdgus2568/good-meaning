@@ -26,6 +26,7 @@
 				<th>상품이미지</th>
 				<th>상품정보</th>
 				<th>개당가격</th>
+				<th>추가금액</th> 
 			</tr>
 		</thead>
 		<tr class="product" id="list" th:each="item:${olist}">
@@ -36,25 +37,30 @@
 				<h4 id="productName" th:text="${item[1]}"></h4>
                 <span class="cartCount" id="cartCount" th:data-count="${item[2]}" 
                 	th:text="|수량: ${item[2]}|" style="color:grey;"></span><br>
-				<span class="optionName" id="optionName" th:data-poname="${item[7]}" 
-                    th:text="|옵션: ${item[7]==null?'[없음]':item[7]}|" style="color:grey;"></span>
+				<span class="optionName" id="optionName" th:data-poname="${item[6]}" 
+                    th:text="|옵션: ${item[6]==null?'[없음]':item[6]}|" style="color:grey;"></span>
                 
 			</td>
 			<td><span class="price" id="price" th:data-price="${item[3]}" 
                 	th:text="${item[3]}+'원'"></span>
             </td>
+            <!-- 추가금액 -->	
+			<td><span class="extraPrice" id="extraPrice" th:data-extra="${item[8]}"
+				th:text="|${#numbers.formatInteger(item[8]!=null?item[8]:0, 0, 'COMMA')}원|"></span>
+			</td>
             <td>
-            	<input type="hidden" id="cartNum" th:value="${item[5]}" >
-            	<input type="hidden" name="productNum" id="productNum" th:value="${item[6]}" >
-            	<input type="hidden" name="optionNum" id="optionNum" th:value="${item[8]==null?0:item[8]}" >
+            	<input type="hidden" id="cartNum" th:value="${item[4]}" >
+            	<input type="hidden" name="productNum" id="productNum" th:value="${item[5]}" >
+            	<input type="hidden" name="optionNum" id="optionNum" th:value="${item[7]==null?0:item[7]}" >
             </td>
 		</tr>
 	</table>
       
         <h2 class="text-center">
 			총 주문 금액:<span id="orderTotalPrice" class="text-danger">0원</span>
-		</h2>       	
-
+		</h2>     
+		<div style="font-size: 15px; font-weight: bold;">배송비:3,000원 (50,000원 이상 무료배송)</div>  	
+		<br>
 	
 	<!-- 주문form -->
 	
@@ -64,11 +70,11 @@
 				<!-- <th>주문하시는 분</th> -->
 				
 				<th class="table-light" width=100>주문하시는 분</th>
-				<td name="userName" id="userName" th:text="${session.user.userName}"></td>
+				<td id="userName" th:text="${session.user.userName}"></td>
 				<th class="table-light"  width=100>전화번호</th>
-				<td name="userPhone" id="userPhone" th:text="${session.user.userPhone}"></td>
+				<td id="userPhone" th:text="${session.user.userPhone}"></td>
 				<th class="table-light"  width=100>이메일</th>
-				<td name="userEmail" id="userEmail" th:text="${session.user.userEmail}"></td>
+				<td id="userEmail" th:text="${session.user.userEmail}"></td>
 			</tr>			
 			<tr>
 				<th class="table-light" width=100>주소</th>
@@ -102,15 +108,7 @@
 		var userPostcode = $('#userPostcode').text();//우편번호
 			
 		IMP.init("imp03054995"); // 예: imp00000000
-		var msg;
-						
-		console.log(productName);
-		console.log(userName);
-		console.log(customer_uid);
-		console.log(userEmail);
-		console.log(productName);
-		console.log(userAddress);
-		console.log(userPostcode);
+		var msg;		
 		
 		//결제시 PG사의 결제 페이지가 열리는 예제
 		$("#payNow").click(function(e) {
@@ -120,7 +118,7 @@
 	          pay_method: "card",
 	          merchant_uid: new Date().getTime(),
 	          name: productName, //상품명
-	          amount: 100,  //가격 totalPrice
+	          amount: totalPrice, //가격 100
 	          buyer_email: userEmail,
 	          buyer_name: userName,
 	          buyer_tel: userPhone,
@@ -138,7 +136,7 @@
 		        msg += '카드 승인번호 : ' + rsp.apply_num; */
 	        	console.log("결제가 완료되었습니다. 구매내역을 확인하세요.");
 	        	
-	        	//결제 완료시 OrderVo, OrderDetailVO에 저장할 코드
+	        	//결제 완료시 OrderVo, OrderDetailVO에 저장하기 위한
 	        	var orderDetailQuantityArr = []
 	        	$(".cartCount").each(function(index, item){     		 
 	        		orderDetailQuantityArr.push($(item).attr("data-count"));
@@ -204,10 +202,15 @@
 	function getOrderTotalPrice(){			
 		$("tr.product").each(function(){
 			
-	        var price = $(this).find("span#price").attr("data-price");
-	        var count = $(this).find("span#cartCount").attr("data-count");
+	        var price = Number($(this).find("span#price").attr("data-price"));
+	        var extraPrice = Number($(this).find("span#extraPrice").attr("data-extra"));
+	        var count = Number($(this).find("span#cartCount").attr("data-count"));
 		   	
-		   	totalPrice += Number(price)*Number(count);
+	        if(isNaN(extraPrice)){
+            	extraPrice = 0;
+            	console.log("extraPrice:"+extraPrice);
+            }
+		   	totalPrice += (price*count)+(extraPrice*count);
 
 		});
 		
