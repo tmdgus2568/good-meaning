@@ -5,7 +5,7 @@
 	layout:decorate="user/layout/layout_main">
 <head>
 <meta charset="UTF-8">
-<title>장바구니목록</title>
+<title>장바구니</title>
 
 </head>
 <body>
@@ -24,7 +24,7 @@
 				<th>단가</th> 
 				<th>총금액</th> 
 				<th></th>
-				<th></th>
+				
 			</tr>
 		<tr th:each="cart:${clist}">
 			<td>
@@ -39,34 +39,45 @@
 						
 			<td>	       		  		
 	       		<input type="number" name="countName" th:id="'count' + ${cart[5]}"
-	       		 th:value="${cart[2]}" min="1" onchange="changeCount(this)"> 
-	       		   		      		
+	       		 th:value="${cart[2]}" min="1" onchange="changeCount(this)"> 	       		   		      		
        		</td>
        					
 			<td th:id="'price' + ${cart[5]}" th:data-price="${cart[3]}" 
 				th:text="|${#numbers.formatInteger(cart[3], 0, 'COMMA')}원|"></td>
 			
 			<td th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName" 
-				th:text="|${#numbers.formatInteger(cart[4], 0, 'COMMA')}원|"></td>			
+				th:text="|${#numbers.formatInteger(cart[4], 0, 'COMMA')}원|"></td>
+							
+			<!-- 옵션 추가금에 따른 if else
+			<td th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName" 
+				th:unless="${cart[7]}!=null" th:text="|${#numbers.formatInteger(cart[8], 0, 'COMMA')}원|"></td>
+			-->			
 			
 			<td>
 			<button type="button" class="btn btn-danger btndelete" 
 			       th:onclick="javascript:deleteCart([[${cart[5]}]])">삭제</button> 
 			</td>
-			<td th:id="cartnum" th:text="${cart[5]}"></td>
+			<td><input type="hidden" th:id="cartnum" th:value="${cart[5]}"></td>
 		</tr>
 		</table>
+		<h5>
+		</h5>
 		<h2 class="text-center">
 			주문 예상 금액:<span id="orderTotalPrice" class="text-danger">0원</span>
 		</h2>
+			<div style="font-size: 15px; font-weight: bold;">배송비:3,000원 (50,000원 이상 무료배송)</div>
 		<!-- <button>전체상품주문</button>	 -->	
-		<button type="button" class="btn btn-primary btn-lg" onclick="goOrders()">선택주문</button>	
+		<br>
+	
+		<button type="button" class="btn btn-secondary btn-lg" onclick="goOrders()">선택주문</button>	
 	</div>
 </form>
 <th:block layout:fragment="script">
 	<script>
+	
+
 	function deleteCart(cartNo){//삭제
-		alert(cartNo);
+		alert("담아놓은 상품을 정말 삭제하시겠습니까?");
 		location.href="cart/delete?cartNum=" + cartNo;		 
 	}
 	
@@ -108,7 +119,7 @@
 		     
 		});
 		
-		if(orderTotalPrice<50000) orderTotalPrice+=2500;
+		if(orderTotalPrice<50000) orderTotalPrice+=3000;
 			console.log(orderTotalPrice);
 		
 		$("#orderTotalPrice").html(orderTotalPrice+'원');
@@ -139,7 +150,7 @@
 		getOrderTotalPrice();//변경된 총 주문 금액 계산하기 위해서
 	}
 	
-	/*체크박스에 체크한 상품(상품번호,주문수량)을 가지고 주문 폼 페이지로 이동*/
+	/*체크박스에 체크한 상품(상품번호,주문수량)을 가지고 주문 페이지로 이동*/
 	function goOrders(){
 		 var url = "/order";
 
@@ -159,7 +170,7 @@
         //var param = JSON.stringify(paramData);
          
          console.log(arr.join("&"));
-         alert(paramData['cartlist']);
+         alert("선택한 상품을 주문하시겠습니까?");
          location.href='order?' + arr.join("&") ;
          
 	}
