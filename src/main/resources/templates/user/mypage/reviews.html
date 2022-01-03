@@ -8,6 +8,17 @@
 
 <meta charset="UTF-8">
 <title>리뷰</title>
+<style>
+.star_grey{
+    color:#ccc;
+}
+
+.star{
+	color:#F3969A;
+
+}
+
+</style>
 </head>
 <body>
 
@@ -113,8 +124,16 @@
 		            		<textarea class="form-control" id="modal_content" readOnly></textarea>
 		          		</div>
 		          		<div align="right" class="form-inline" style="text-align:center;">
-		          			<input align="right" class="form-control" type="text" id="modal_review_like" style="width:50px;margin-left:auto;">
-		          			<span>&nbsp;점</span>
+		          			<!-- <input align="right" class="form-control" type="text" id="modal_review_like" style="width:50px;margin-left:auto;"> -->
+		          			<!-- <span>&nbsp;점</span> -->
+		          			<div align="right" style="margin-left:auto;">
+		          				<span>평점 </span>
+		          				<span class="star_grey" id="star1">★</span>
+		          				<span class="star_grey" id="star2">★</span>
+		          				<span class="star_grey" id="star3">★</span>
+		          				<span class="star_grey" id="star4">★</span>
+		          				<span class="star_grey" id="star5">★</span>
+		          			</div>
 		          		</div>
 		        	</form>
 			    </div>
@@ -153,6 +172,7 @@ $(function() {
 	});
 	
 	$(".btn.show_review.btn-secondary").on('click',function(){
+		$(".star").attr('class','star_grey');
 		var product = $(this).parent().parent().find(".td_product_name").find(".product_name").text();
 		var title = $(this).parent().parent().find(".review_title").text();
 		var content = $(this).parent().parent().find(".review_content").text();
@@ -160,7 +180,23 @@ $(function() {
 		$("#modal_product").val(product);
 		$("#modal_title").val(title);
 		$("#modal_content").text(content);
-		$("#modal_review_like").val(like);
+		
+		like *= 1; // String to int
+		switch(like){
+
+			case 5:
+				$("#star5").attr('class','star');
+			case 4:
+				$("#star4").attr('class','star');
+			case 3:
+				$("#star3").attr('class','star');
+			case 2:
+				$("#star2").attr('class','star');
+			case 1:
+				$("#star1").attr('class','star');
+				
+		
+		}
 		
 		
 		console.log(title);
