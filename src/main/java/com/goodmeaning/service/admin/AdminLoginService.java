@@ -18,10 +18,9 @@ public class AdminLoginService {
 		return userRepo.findByUserIdAndUserPw(id, pw);
 	}
 	
-	// 카카오 로그인 확인(id 확인)
-	public Optional<UserVO> checkSocialLogin(String id){
+	// 로그인2
+	public Optional<UserVO> findByUserId(String id) {
 		return userRepo.findByUserId(id);
 	}
-
 
 }

@@ -16,7 +16,7 @@
 <body>
 	<div class="panel panel-default" layout:fragment="content">
 		<div class="bg-dark" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;"> 
-			<form action="adminlogin" method="post">
+			<form action="/admin/adminlogin" method="post">
 				<div class="input-group justify-content-center mb-4">
 					<img src="/img/logo_admin.png" width="200px">
 				</div>
@@ -31,7 +31,7 @@
 							<i class="material-icons" style="font-size:36px">assignment_ind</i>
 						</div>
 					</div>
-					<input type="text" class="form-control" name="userId" placeholder="아이디" onfocus="this.placeholder=''" onblur="this.placeholder='아이디'">
+					<input type="text" class="form-control" name="username" placeholder="아이디" onfocus="this.placeholder=''" onblur="this.placeholder='아이디'">
 				</div>
 				<div class="input-group mb-3">
 					<div class="input-group-prepend">
@@ -39,7 +39,7 @@
 							<i class="material-icons" style="font-size:36px">vpn_key</i>
 						</div>
 					</div>
-					<input type="password" class="form-control" name="userPw" placeholder="비밀번호" onfocus="this.placeholder=''" onblur="this.placeholder='비밀번호'">
+					<input type="password" class="form-control" name="password" placeholder="비밀번호" onfocus="this.placeholder=''" onblur="this.placeholder='비밀번호'">
 				</div>
 				<!-- <input type="hidden" name="userRole" value="ADMIN"/> -->
 				<div class="input-group mb-3 d-flex justify-content-between">
