@@ -21,8 +21,9 @@
 				<th>상품명</th> 
 				<th>옵션</th>
 				<th>수량</th> 
-				<th>단가</th> 
-				<th>총금액</th> 
+				<th>개당가격</th> 
+				<th>추가금액</th> 
+				<!-- <th>총금액</th> -->
 				<th></th>
 				
 			</tr>
@@ -41,20 +42,18 @@
 	       		<input type="number" name="countName" th:id="'count' + ${cart[5]}"
 	       		 th:value="${cart[2]}" min="1" onchange="changeCount(this)"> 	       		   		      		
        		</td>
-       					
+       	<!-- 단가 -->				
 			<td th:id="'price' + ${cart[5]}" th:data-price="${cart[3]}" 
 				th:text="|${#numbers.formatInteger(cart[3], 0, 'COMMA')}원|"></td>
-			
-			<td th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName" 
-				th:text="|${#numbers.formatInteger(cart[4], 0, 'COMMA')}원|"></td>
-							
-			<!-- 옵션 추가금에 따른 if else
-			<td th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName" 
-				th:unless="${cart[7]}!=null" th:text="|${#numbers.formatInteger(cart[8], 0, 'COMMA')}원|"></td>
-			-->			
-			
+		<!-- 추가금액 -->	
+			<td th:id="'extraPrice' + ${cart[5]}" th:data-extra="${cart[8]}"
+				th:text="|${#numbers.formatInteger(cart[8]!=null?cart[8]:0, 0, 'COMMA')}원|"></td>
+		<!-- 총금액 		
+			<td  th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName"
+				th:text="|${#numbers.formatInteger(cart[4], 0, 'COMMA')}원|"></td>	-->	
+				
 			<td>
-			<button type="button" class="btn btn-danger btndelete" 
+				<button type="button" class="btn btn-danger btndelete" 
 			       th:onclick="javascript:deleteCart([[${cart[5]}]])">삭제</button> 
 			</td>
 			<td><input type="hidden" th:id="cartnum" th:value="${cart[5]}"></td>
@@ -65,7 +64,7 @@
 		<h2 class="text-center">
 			주문 예상 금액:<span id="orderTotalPrice" class="text-danger">0원</span>
 		</h2>
-			<div style="font-size: 15px; font-weight: bold;">배송비:3,000원 (50,000원 이상 무료배송)</div>
+		<div style="font-size: 15px; font-weight: bold;">배송비:3,000원 (50,000원 이상 무료배송)</div>
 		<!-- <button>전체상품주문</button>	 -->	
 		<br>
 	
@@ -110,13 +109,19 @@
 			
 			var cartNum = $(this).val();
             var price = $("#price" + cartNum).attr("data-price");
+            var extraPrice = Number($("#extraPrice" + cartNum).attr("data-extra"));
             var count = $("#count" + cartNum).val();
-			
-		    console.log(price);
+            
+            console.log(price);
+		    //console.log("extraPrice:"+extraPrice);		    
 		   	console.log(count);
 		   	
-			orderTotalPrice += price*count;			
-		     
+            if(isNaN(extraPrice)){
+            	extraPrice = 0;
+            	console.log("extraPrice:"+extraPrice);
+            }
+            orderTotalPrice += (price*count)+(extraPrice*count);
+		   							
 		});
 		
 		if(orderTotalPrice<50000) orderTotalPrice+=3000;
@@ -129,12 +134,21 @@
 		var count = obj.value;
         var cartNum = obj.id.split('t')[1];
         var price = $("#price" + cartNum).data("price");
-        var totalPrice = count*price;
+        var extraPrice = Number($("#extraPrice" + cartNum).attr("data-extra"));
+        
+        if(isNaN(extraPrice)){
+        	extraPrice = 0;
+        	console.log("extraPrice:"+extraPrice);
+        }
+        
+        totalPrice = (count*price)+(extraPrice*count);
+        
         
         console.log(count);
         console.log(cartNum);
         console.log(price);
-        console.log(totalPrice);
+        console.log("extraPrice:"+extraPrice);
+        console.log("extraPrice:"+totalPrice);
          		 
         $("#totalPrice" + cartNum).html(totalPrice+"원");
         getOrderTotalPrice();
@@ -168,7 +182,7 @@
 
          paramData['cartlist'] = dataList;//장바구니 상품 아이디를 저장하고 있는 datalist를 paramData객체에 추가
         //var param = JSON.stringify(paramData);
-         
+        //alert(dataList);
          console.log(arr.join("&"));
          alert("선택한 상품을 주문하시겠습니까?");
          location.href='order?' + arr.join("&") ;
