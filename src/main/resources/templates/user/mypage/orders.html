@@ -66,6 +66,7 @@
 			
 			<!-- hidden -->
 			<td th:each="detail:${order.details}" hidden="true" class="td_products">
+				<input type="text" th:value="${detail.orderDetailNum}" class="detailNums">
 				<input type="text" th:value="${detail.productNum.productNum}" class="productNums">
 				<input type="text" th:value="${detail.productNum.productName}" class="productNames">
 				<input type="text" th:value="${detail.productOption==null?'':detail.productOption.optionName}" class="productOptions">
@@ -116,18 +117,24 @@
 			      	<form>
 			      		<div class="form-group">		
 		           			<label for="modal_product" class="control-label">상품명</label>
-		           			<select id="select_product_name">
-		           				
+		           			<select class="form-control" id="select_product_name">
+		           				<option selected="selected" value="">[상품을 선택해 주세요]</option>
 		           			</select>
 		            	<!-- 	<input type="text" class="form-control" id="modal_product" readOnly></input> -->
+		            		
 		          		</div>
 
 		        	</form>
 			    </div>
 			    <div class="modal-footer">
 			   		<button type="button" class="btn btn-light" data-bs-dismiss="modal">취소</button>
-			   		<button type="button" class="btn btn-primary" id="create_review" onclick="location.href='/'">작성하기</button>
+			   		<form id="create_review" action="/mypage/review/create" method="get">
+			   			<input type="text" name="orderDetailNum" hidden="true">
+			
+			   			<button type="submit" class="btn btn-primary">작성하기</button>
 			        
+			   		</form>
+			   		
 			       <!--  <button type="button" class="btn btn-primary">Save changes</button> -->
 			    </div>
 			</div>
@@ -163,22 +170,38 @@ $(function() {
 	
  	$(".btn.review_show.btn-secondary").on('click',function(){
  		console.log()
+ 		$("#select_product_name").html("<option selected='selected' value=''>[상품을 선택해 주세요]</option>");
  		var names = $(this).parent().parent().find(".productNames");
  		var nums = $(this).parent().parent().find(".productNums");
  		var options = $(this).parent().parent().find(".productOptions");
+ 		var details = $(this).parent().parent().find(".detailNums");
  		$(names).each(function (index, item) {
  		     var name = $(item).val();
  		     var num = $($(nums)[index]).val();
  		     var option = $($(options)[index]).val();
+ 		     var detail = $($(details)[index]).val();
  		     if(option == null){
  		    	 option = "";
  		     }
-  		     $("#select_product_name").html($("#select_product_name").html()+"<option "+"value="+"'"+num+"'"+">"+name+" "+option+"</option>") 
+  		     $("#select_product_name").html($("#select_product_name").html()+"<option "+"value="+"'"+detail+"'"+">"+name+(option==''?'':'['+option+']')+"</option>") 
  		});
  		
 
 
 	});
+ 	
+ 	$("#select_product_name").on('change',function(){
+ 		$("input[name=orderDetailNum]").val($(this).val());
+ 		
+ 	});
+ 	
+ 	$("#create_review").on('submit',function(){
+ 		if($("#select_product_name").val()==""){
+ 			alert("상품을 선택해 주세요");
+ 			return false;
+ 		}
+ 	})
+ 	
 	
 	
 });

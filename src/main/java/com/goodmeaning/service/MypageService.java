@@ -70,6 +70,11 @@ public class MypageService {
 		
 	}
 	
+	// orderDetailNum으로 orderdetail 객체 가져오기 
+	public Optional<OrderDetailVO> findOrderDetailById(long id){
+		return orderDetailRepo.findById(id);
+	}
+	
 	// reviews 가져오기
 	public List<ReviewVO> reviews(UserVO user){
 		return reviewRepo.findByUserPhone(user);

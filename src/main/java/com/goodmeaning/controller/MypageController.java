@@ -183,6 +183,27 @@ public class MypageController {
 		return "redirect:/mypage/orders";
 	}
 	
+	
+	// 리뷰 작성 페이지
+	@RequestMapping(value="/mypage/review/create", method = RequestMethod.GET)
+	public String createReview(long orderDetailNum, Model model, HttpSession session) {
+		System.out.println(orderDetailNum);
+		Optional<OrderDetailVO> detail = mypageService.findOrderDetailById(orderDetailNum);
+		if(detail.isPresent()) {
+			model.addAttribute("user", (UserVO)session.getAttribute("user"));
+			model.addAttribute("recentOrderDetail", detail.get());
+			model.addAttribute("product", detail.get().getProductNum());
+			model.addAttribute("recentOrder", detail.get().getOrderNum());
+		}
+		
+		return "/user/product/ProductReviewForm";
+	}
+	
+	// 리뷰 작성 수행 
+	@RequestMapping(value="/mypage/review/reviewinsert", method = RequestMethod.POST)
+	public String insertReview() {
+		return "";
+	}
 
 	
 	

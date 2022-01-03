@@ -128,24 +128,19 @@ public class RegisterController {
 
 		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 	    
-	    // 휴대폰 인증번호 생성
+	    // 인증번호 생성
 	    int authNum = randomRange(100000, 999999);
 	    
 	    
-	    // 전송대상 휴대폰 번호
+	    // 대상 휴대폰 번호
 	    String sendTarget = "+"+ country + phoneNum;
 	    
 	    // 전송 메세지
 	    String authMsg = "굿미닝 휴대폰 인증번호: [" + authNum + "]" ;
 	    
-	    
+	    // (to, from, message)
 	    Message message = Message.creator(
-	    	// to
-	    	new PhoneNumber(sendTarget),
-	        // from
-	    	new PhoneNumber("+13027543133"), 
-	        // message
-	    	authMsg).create();
+	    		new PhoneNumber(sendTarget), new PhoneNumber("+13027543133"), authMsg).create();
 	    
 			return authNum;
 		

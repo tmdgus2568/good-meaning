@@ -26,7 +26,7 @@
 		</tr>
 		<tr>
 			<th class="table-light">발송주소</th>
-			<td th:text="|${order.userPhone.userAddress} ${order.userPhone.userAddressDetail} (${order.userPhone.userPostcode})|" colspan="3"></td>
+			<td th:text="|${order.userPhone.userAddress} ${order.addressDetail==null?'':order.addressDetail} (${order.userPhone.userPostcode})|" colspan="3"></td>
 		</tr>
 		
 	</table>
@@ -41,7 +41,7 @@
 		</tr>
 		<tr>
 			<th class="table-light">수령주소</th>
-			<td th:text="|${order.address} ${order.addressDetail} (${order.postcode})|" colspan="3"></td>
+			<td th:text="|${order.address} ${order.addressDetail==null?'':order.addressDetail} (${order.postcode})|" colspan="3"></td>
 		</tr>
 		
 	</table>
@@ -64,7 +64,7 @@
 			<td align="left">
 				<h4 th:text="${detail.productNum.productName}"></h4>
 				<span th:text="|수량: ${detail.orderDetailQuantity}|" style="color:grey;"></span><br>
-				<span th:text="|옵션: ${detail.productOption==null?'[없음]':detail.productOption}|" style="color:grey;"></span>
+				<span th:text="|옵션: ${detail.productOption==null?'[없음]':detail.productOption.optionName}|" style="color:grey;"></span>
 				
 			</td>
 		<!-- 	<td th:text="${detail.orderDetailQuantity}"></td> -->
