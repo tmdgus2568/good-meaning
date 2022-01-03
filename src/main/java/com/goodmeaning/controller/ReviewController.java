@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,7 @@ import com.goodmeaning.persistence.ProductRepository;
 import com.goodmeaning.persistence.ReviewAnswerRepository;
 import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.persistence.UserRepository;
+import com.goodmeaning.util.UpLoadFileUtils;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.ProductVO;
@@ -42,6 +44,9 @@ import com.goodmeaning.vo.UserVO;
 
 @Controller
 public class ReviewController {
+
+	@Value("${spring.servlet.multipart.location}")
+	String locationPath;
 
 	@Autowired
 	UserRepository urepo;
@@ -61,7 +66,7 @@ public class ReviewController {
 	@Autowired
 	OrderDetailRepository odrepo;
 
-	@RequestMapping(value = "productReview", method = RequestMethod.POST)
+	@RequestMapping(value = "/productReview", method = RequestMethod.GET)
 	public String selectAllReview(@RequestParam Map<String, Object> param, Model model, HttpSession session) {
 
 		Long pno = Long.parseLong((String) param.get("pno"));
@@ -198,6 +203,73 @@ public class ReviewController {
 		model.addAttribute("user", user);
 
 		return "user/product/productReviewForm";
+	}
+
+	@PostMapping("/reviewinsert")
+	public String reviewinsert(ReviewVO review, Long productNum2, Model model, Long recentOrderDetail2,
+			HttpSession session) {
+
+		ProductVO product = prepo.findById(productNum2).get();
+		review.setProductNum(product);
+
+		OrderDetailVO orderdetail = odrepo.findById(recentOrderDetail2).get();
+		review.setOrderDetail(orderdetail);
+
+		UserVO user = (UserVO) session.getAttribute("user");
+		review.setUserPhone(user);
+
+		System.out.println(review);
+
+		MultipartFile[] uploadfiles = review.getUploadFile(); // max 2개 파일정보 넘어옴
+		List<String> fileNames = new ArrayList<>();
+
+		// 이미지를 업로드할 폴더를 설정 = /uploadPath/imgUpload (저장하려고 찾아가는 것)
+		String uploadPath = locationPath + File.separator + "reviewupload";
+		// 위 폴더 기준 연월 폴더 생성
+		// String ymdPath = UpLoadFileUtils.calcPath(uploadPath);
+		int i = 0;
+
+		if (uploadfiles != null) {
+
+			for (MultipartFile uploadfile : uploadfiles) {
+				// 업로드 다녀온 후 vo값세팅
+				String fileName = null;
+				if (uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
+					try {
+						fileName = UpLoadFileUtils.fileUpload(uploadPath, uploadfile.getOriginalFilename(),
+								uploadfile.getBytes(), "");
+						fileName = "reviewupload" + File.separator + fileName;
+						System.out.println("fileName=" + fileName);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					// 첨부된 파일이 없으면
+					continue;
+				}
+				fileNames.add(fileName);
+
+				if (i == 0)
+					review.setReviewMainimg1(fileName);
+				if (i == 1)
+					review.setReviewMainimg2(fileName);
+
+				i++;
+
+			}
+		}
+		
+		rrepo.save(review);
+		// return "redirect:productReview?pno=" + productNum2;
+
+		List<ReviewVO> rlist = rrepo.findByProductNum(product);
+
+		model.addAttribute("rlist", rlist);
+		model.addAttribute("product", product);
+
+		return "user/product/productreview";
+
 	}
 
 }
