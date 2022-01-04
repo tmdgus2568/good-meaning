@@ -225,8 +225,6 @@ public class ReviewController {
 
 		// 이미지를 업로드할 폴더를 설정 = /uploadPath/imgUpload (저장하려고 찾아가는 것)
 		String uploadPath = locationPath + File.separator + "reviewupload";
-		// 위 폴더 기준 연월 폴더 생성
-		// String ymdPath = UpLoadFileUtils.calcPath(uploadPath);
 		int i = 0;
 
 		if (uploadfiles != null) {

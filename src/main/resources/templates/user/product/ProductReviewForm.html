@@ -19,10 +19,18 @@
 	});
 
 	$("#reviewinsertjs").click(function() {
+		
+		var form = $('#reviewinsertform')[0];  	    
+	    // Create an FormData object          
+	    var data = new FormData(form);
+		
 		$.ajax({
 			url : "reviewinsert",
 			type : "POST",
-			data : $("#reviewinsertform").serialize(),
+			data : data,
+			processData: false,    
+	        contentType: false,
+	        enctype: 'multipart/form-data',
 			dataType : 'html',
 			success : function(responseData) { //responseData는 들어오는 값;
 				$("#here").html(responseData);
@@ -39,7 +47,7 @@
 }
 
 .star_rating a {
-	font-size: 22px;
+	font-size: 30px;
 	letter-spacing: 0;
 	display: inline-block;
 	margin-left: 5px;
@@ -59,17 +67,17 @@
 <body>
 	<form action="/reviewinsert" method="post"
 		enctype="multipart/form-data" id="reviewinsertform">
-		<table>
+		<table style="border-collapse: separate; border-spacing: 10px;">
 			<thead>
 				<tr>
-					<th>상품리뷰쓰기</th>
+				<th><th>
 				</tr>
 			</thead>
 			<tbody>
-
 				<tr>
+				<br>
 					<td><img th:src="${product.productMainimg1}" width="100px"></td>
-					<td>상품명 : <a th:text="${product.productName}"
+					<td> 상품명 : <a th:text="${product.productName}"
 						style="font-weight: bold"></a> <a
 						th:if="${recentOrderDetail.productOption != null}"><br> <span
 							th::value="${recentOrderDetail.productOption.optionName}"></span></a>
@@ -83,31 +91,31 @@
 					</td>
 				</tr>
 				<tr>
-					<td>작성자</td>
-					<td><input type="text" size="20" style="width: 100%;"
+					<td style="text-align: center;">작성자</td>
+					<td><input class="form-control form-control-sm" type="text" size="20" style="width: 100%;"
 						th:value="${user.userId}" readonly="readonly"></td>
 				</tr>
 				<tr>
-					<td>평가</td>
-					<td>
+					<td style="text-align: center;">평가</td>
+					<td style="vertical-align:center">
 						<p class="star_rating">
 							<a href="#" class="on">★</a> <a href="#">★</a> <a href="#">★</a>
 							<a href="#">★</a> <a href="#">★</a>
-						</p> <input type="text" id="reviewLike" name="reviewLike" value=1>
+						</p> <input type="hidden" id="reviewLike" name="reviewLike" value=1>
 					</td>
 				</tr>
 				<tr>
-					<td>제목</td>
-					<td><input type="text" id="reviewTitle" name="reviewTitle"
+					<td style="text-align: center;">제목</td>
+					<td><input class="form-control form-control-sm" type="text" id="reviewTitle" name="reviewTitle"
 						size="20" style="width: 100%;"></td>
 				</tr>
 				<tr>
-					<td>내용</td>
-					<td><textarea id="reviewContent" name="reviewContent" rows="5"
-							cols="50"></textarea></td>
+					<td style="text-align: center;">내용</td>
+					<td><textarea class="form-control form-control-sm" id="reviewContent" name="reviewContent" rows="5"
+							cols="70"></textarea></td>
 				</tr>
 				<tr>
-					<td>파일</td>
+					<td style="text-align: center;">사진</td>
 					<td><input type="file" id="reviewMainimg1" name="uploadFile"><br>
 						<input type="file" id="reviewMainimg2" name="uploadFile"></td>
 				</tr>
@@ -115,8 +123,8 @@
 			<tfoot>
 			</tfoot>
 		</table>
-		<button type="button" id="reviewinsertjs" value="리뷰작성">리뷰작성</button>
-		
+		<br>
+		<button type="button" class="btn btn-secondary"  id="reviewinsertjs" value="리뷰작성">리뷰작성</button>
 	</form>
 </body>
 </html>
