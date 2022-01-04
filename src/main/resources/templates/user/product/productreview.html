@@ -9,22 +9,26 @@
 <script>
 	function showReview(a, reviewnum, obj) {
 
-		if (document.activeElement.name == "replycontents" || document.activeElement.name == "replybtn") {
+		if (document.activeElement.name == "replycontents" || document.activeElement.name == "replybtn"
+				|| document.activeElement.name == "images" ) {
 			return;
 		}
 		
 		constatus = $("#detailcontent" + a).css("display")
 		revstatus = $("#replies" + a).css("display")
 		wristatus = $("#writing" + a).css("display")
+		imgstatus = $("#images" + a).css("display")
 
 		if (constatus == "none") {
 			$("#detailcontent" + a).css("display", "");
 			$("#replies" + a).css("display", "");
 			$("#writing" + a).css("display", "");
+			$("#images" + a).css("display", "");
 		} else {
 			$("#detailcontent" + a).css("display", "none");
 			$("#replies" + a).css("display", "none");
 			$("#writing" + a).css("display", "none");
+			$("#images" + a).css("display", "none");
 		}
 	}
 
@@ -95,6 +99,7 @@
 		
 		
 				<br>
+				
 				<span
 					th:text="${review.userPhone.userId} +' ' + ${#dates.format(review.reviewCreatedate, 'yyyy-MM-dd HH:mm')}"></span>
 				<br>
@@ -102,10 +107,13 @@
 				<br>
 				<span th:text="${review.reviewContent}" style="display: none"
 					th:id="|detailcontent${status.count}|"></span>
-				<br>				
-				<a th:if="${review.reviewMainimg1} != null"><img th:id="|reviewimg1${status.count}|" th:src="|C:\Temp\${review.reviewMainimg1}|" th:width="450"></a>
-				<a th:if="${review.reviewMainimg2} != null"><img th:id="|reviewimg2${status.count}|" th:src="|C:\Temp\${review.reviewMainimg2}|" th:width="450"></a>
-
+				<br>
+				<br>
+				<div th:id="|images${status.count}|" th:name="images" style="display: none">			
+				<a th:if="${review.reviewMainimg1} != null"><img th:id="|reviewimg1${status.count}|" th:src="|/${review.reviewMainimg1}|" th:width="200"></a>
+				<a th:if="${review.reviewMainimg2} != null"><img th:id="|reviewimg2${status.count}|" th:src="|/${review.reviewMainimg2}|" th:width="200"></a>
+				</div>
+					
 				<div th:id="|replies${status.count}|" style="display: none">
 					<table id="replytable">
 						<tr th:each="reply:${review.answers}">
@@ -122,7 +130,7 @@
 							name="replycontents" style="margin-bottom: 5px; padding-bottom: 5px;"></textarea>
 						<input type="button" name="replybtn" style="float: right;"
 							th:onclick="|writeReply(${review.reviewNum}, this, ${status.count})|" class="btn btn-secondary" 
-							value="댓글작성">
+							 value="댓글작성">
 					</form>
 			</tr>
 		</tbody>
