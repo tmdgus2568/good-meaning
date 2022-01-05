@@ -47,10 +47,11 @@ public class AdminProductController {
 	
 	// 상품목록 보여주기
 	@GetMapping("/list") //리스트할때부터 온애(VO 2개있음)
-	public String getProductListPage(PageVO pageVO, Model model, HttpSession session, HttpServletRequest request,  String colmnName) { //, ProductOptionVO prdOptVO
+	public String getProductListPage(PageVO pageVO, Model model, HttpSession session, HttpServletRequest request,  String colmnName ) { //, ProductOptionVO prdOptVO
 		System.out.println(colmnName);
 		String sortColumn = colmnName;
-		//sessions 넣기
+
+		 
 		System.out.println("pagevo: " + pageVO);
 		int direction = 0;
 		if(colmnName =="" || colmnName == null) {
@@ -68,16 +69,20 @@ public class AdminProductController {
 			if (pageVO2 != null) {
 				pageVO = pageVO2;
 			}
+			int result = (Integer)flashMap.get("deleteresult");
+			model.addAttribute("deleteResult", result==0?"삭제할 수 없습니다.":"삭제되었습니다.");
+
 		}
 
 		if (pageVO == null) //맨 처음 null일때 
 			pageVO = PageVO.builder().page(1).size(12).type(null).keyword(null).build();
 
 		Page<ProductVO> result = adminService.productList(pageVO, direction, colmnName); //확인해보기
+		
 		model.addAttribute("productPaging", new PageMaker<>(result));
 		model.addAttribute("pageVO", pageVO);
 		model.addAttribute("sortColumn", sortColumn);
-		model.addAttribute("totalCount", adminService.selectAll(pageVO));
+		model.addAttribute("totalCount", adminService.selectProductAll(pageVO));
          
 		return "admin/product/list";
 	}
@@ -109,7 +114,7 @@ public class AdminProductController {
 		String ymdPath = UpLoadFileUtils.calcPath(uploadPath);
 		
 		
-		for(MultipartFile uploadfile:uploadfiles){ // 업로드 다녀온 후 vo값세팅
+		for(MultipartFile uploadfile:uploadfiles){
 			String fileName = null;
 			if(uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
 				try {
@@ -252,9 +257,10 @@ public class AdminProductController {
 	public String deleteProduct(Long productNum, RedirectAttributes reAttr, Model model, PageVO pageVO) {
 		System.out.println("delete:" + pageVO);
 		System.out.println("productNum:" + productNum);
-		adminService.deleteByProductNum(productNum);
+		int result = adminService.deleteByProductNum(productNum);
 		model.addAttribute("pageVO", pageVO);
 		reAttr.addFlashAttribute("pageVO", pageVO);
+		reAttr.addFlashAttribute("deleteResult", result);
 		return "redirect:list";
 	}
 	

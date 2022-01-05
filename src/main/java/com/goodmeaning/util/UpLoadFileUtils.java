@@ -11,22 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 
 public class UpLoadFileUtils {
-	//썸네일 이미지 만드는 이유는..?
-//		static final int THUMB_WIDTH = 300;
-//		static final int THUMB_HEIGHT = 300;
+
 	
 		//파일 업로드
-		public static String fileUpload(String uploadPath, String fileName, byte[] fileData, String ymdPath) //byte[] fileData : 이미지 byte로 들어온다, 
+		public static String fileUpload(String uploadPath, String fileName, byte[] fileData, String ymdPath)                //byte[] fileData : 이미지 byte로 들어온다, 
 				throws Exception {
-			System.out.println("uploadpath : "+uploadPath);
-			System.out.println("filename : "+fileName);
-			System.out.println("ymdPath : " + ymdPath);
 			
-			// 고유식별 파일이름 생성
-			//UUID uid = UUID.randomUUID();
-			//String newFileName = uid + "_" + fileName;
-			
-			//String fileName = uploadfile.getOriginalFilename();
 			String newFileName = makeUniqueFileName(fileName);
 			String imgPath = uploadPath + File.separator + ymdPath;
 
@@ -34,16 +24,6 @@ public class UpLoadFileUtils {
 			
 			FileCopyUtils.copy(fileData, target);  //toFile과 같다.
 
-			//String thumbFileName = "s_" + newFileName;
-			//File image = new File(imgPath + File.separator + newFileName);
-			
-			
-			//File thumbnail = new File(imgPath + File.separator + "s" + File.separator + thumbFileName);
-
-			//if (image.exists()) {
-			//	thumbnail.getParentFile().mkdirs();
-			//	Thumbnails.of(image).size(THUMB_WIDTH, THUMB_HEIGHT).toFile(thumbnail);
-			//}
 			return  newFileName;
 		}
 		
@@ -65,14 +45,7 @@ public class UpLoadFileUtils {
 			Calendar cal = Calendar.getInstance();
 			String yearPath = File.separator + cal.get(Calendar.YEAR);
 			String monthPath = yearPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.MONTH) + 1);
-			//String datePath = monthPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.DATE));
-			//new DecimalFormat("00") > 빈자리는 0으로 채움 
-
-			//makeDir(uploadPath, yearPath, monthPath, datePath);
 			makeDir(uploadPath, yearPath, monthPath);
-			//makeDir(uploadPath, yearPath, monthPath, datePath + "\\s");
-
-			//return datePath;
 			return monthPath;
 		}
 		
@@ -85,7 +58,6 @@ public class UpLoadFileUtils {
 
 			for (String path : paths) { //연도도 있는지 확인
 				File dirPath = new File(uploadPath + path);
-
 				if (!dirPath.exists()) {
 					dirPath.mkdir();
 				}
