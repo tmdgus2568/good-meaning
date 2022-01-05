@@ -14,10 +14,14 @@
 		    	<div class="navbar-header ml-4">
 		        	<a class="navbar-brand" href="http://localhost:8888/admin/list"><img src="/img/logo_admin.png" width="120px"></a>
 		        </div>
-			    <ul class="nav nav-pills nav-justified navbar-nav "> <!--  navbar-nav navbar-right -->
+		        <div th:if="${session.user eq null}">
+		        	<span style="color:#efe9ce">로그인 필요</span>
+		        </div>
+			    <ul class="nav nav-pills nav-justified navbar-nav" th:if="!${session.user eq null}"> <!--  navbar-nav navbar-right -->
+					<li class="nave-item mr-2 mt-3 pt-1"><p th:text="|😄  ${session.user.userName} 관리자님, 환영합니다!|" style="color:#efe9ce"></p></li>
 			        <li class="nav-item ml-2"><a class="nav-link" href="http://localhost:8888/admin/list"><i class="material-icons">home</i></a></li> <!-- MyPage -->
 			        <li class="nav-item ml-2"><a class="nav-link" href="#"><i class="material-icons">account_box</i></a></li> <!-- MyPage -->
-			        <li class="nav-item ml-2"><a class="nav-link" href="#"><i class="material-icons">exit_to_app</i></a></li> <!-- Logout -->
+			        <li class="nav-item ml-2"><a class="nav-link" href="/invalidate"><i class="material-icons">exit_to_app</i></a></li> <!-- Logout -->
 			    </ul>
 		    </div>
 		</nav>

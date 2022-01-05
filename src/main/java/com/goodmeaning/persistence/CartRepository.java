@@ -26,7 +26,7 @@ public interface CartRepository extends CrudRepository<CartVO, Long>{
     public int countCart(Long productNum, String userPhone);
 	
 	//로그인한 회원의 장바구니 전부 조회
-	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, product_price*cart_count money, cart_num, p.product_num, option_name"
+	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, product_price*cart_count money, cart_num, p.product_num, option_name, op.extraprice"
 			+ " from tbl_cart c join tbl_product p on ( c.product_num = p.product_num)"
 			+ " join tbl_user u on (c.user_phone = u.user_phone)"
 			+ " left outer  join tbl_product_option op on ( c.product_option = op.option_num)"
@@ -34,7 +34,7 @@ public interface CartRepository extends CrudRepository<CartVO, Long>{
 	public List<Object[]> findAllCartList(String userPhone);
 	
 	//order list로 가져가는
-	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, cart_count*product_price sumMoney, cart_num, p.product_num, option_name, option_num"
+	@Query(value = "select product_mainimg1, product_name, cart_count, product_price, cart_num, p.product_num, option_name, option_num, op.extraprice"
 			+ " from tbl_cart c join tbl_product p on ( c.product_num = p.product_num)"
 			+ " join tbl_user u on (c.user_phone = u.user_phone)"
 			+ " left outer  join tbl_product_option op on ( c.product_option = op.option_num)"
