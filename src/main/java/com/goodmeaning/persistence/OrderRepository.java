@@ -1,8 +1,9 @@
 package com.goodmeaning.persistence;
 
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 
 import com.goodmeaning.vo.OrderVO;
@@ -10,8 +11,6 @@ import com.goodmeaning.vo.QOrderVO;
 import com.goodmeaning.vo.UserVO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 
 public interface OrderRepository extends CrudRepository<OrderVO, Long> ,QuerydslPredicateExecutor<OrderVO> {
@@ -57,4 +56,6 @@ public interface OrderRepository extends CrudRepository<OrderVO, Long> ,Querydsl
 
 		return builder;
 	}
+	
+	
 }

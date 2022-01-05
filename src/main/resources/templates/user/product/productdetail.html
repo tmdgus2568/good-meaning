@@ -319,56 +319,8 @@ window.onload = function() {
 			prid1.setAttribute("id", prid);
 		}
 	}	
+	
 	//주문하기 버튼 누르면 실행
-	function goOrdersNow(){
-		var url="/ordernow";
-		
-		var dataList = new Array();
-        var paramData = new Object();
-
-		var arr=[];
-		var mainimg = $("#mainimg").attr("src");
-
-		$(".calloption").each(function(index, item) {
-			var obj = {"optionid": $(item).attr("id").substr(2), "optioncount":$(item).text()};
-			arr.push(obj);
-		});
-			console.log(mainimg);
-			console.log(arr);
- 			/* var productName = $(this);
- 			var count = $(this);
- 			var optionName = $(this);
- 			var price = $(this);
- 			var extraprice = $(this);
- 			var productNum = $(this);
- 			var options = $(this);
- 			var data = new Object();
- 			data["mainimg"] = mainimg;
- 			data["productName"] = ;
- 			data["count"] = ;
- 			data["optionName"] = ;
- 			data["price"] = ;
- 			data["extraprice"] = ;
- 			data["productNum"] = ;
- 			data["options"] = ;
- 			data["data"] = ;
- 			dataList.push(data);
- 			arr.push("mainimg=" + mainimg); */
-		 
- 		/* $.ajax({
- 			url:"ordernow",
- 			data : {"data":arr},
- 			success: function(){
- 				location.href="이동";
- 			}
- 		}); */
-  		//location.href='ordernow?'+arr.join("&");
- 		
-		
-	}//goOrdersNow() 
-
-	
-	
 	function buy(productnum){
 		var pronum = productnum;	//상품번호
 		
@@ -388,7 +340,7 @@ window.onload = function() {
 		}
 		
 		 $.ajax({
-		        url : '/buyclick',
+		        url : '/ordernow',
 		        type : 'POST',
 		        data : {
 		        	pronum : pronum, 
@@ -396,10 +348,17 @@ window.onload = function() {
 		        	optionnum : optionnum, 
 		        	opquantity : opquantity
 		        	},
+		        	
 		        success : function(){
 		            alert("요청되었습니다.")
+		            location.href="/ordernow";
 		        }       
 		    }); 
+		 console.log(pronum);
+		 console.log(proquantity);
+		 console.log(optionnum);
+		 console.log(opquantity);
+		 
 	}
 	
 	function cart(productnum){
@@ -435,6 +394,7 @@ window.onload = function() {
 		        }
 		 		
 		    }); 
+		 
 	}
 	
 

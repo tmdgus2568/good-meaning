@@ -39,7 +39,7 @@ public interface CartRepository extends CrudRepository<CartVO, Long>{
 			+ " join tbl_user u on (c.user_phone = u.user_phone)"
 			+ " left outer  join tbl_product_option op on ( c.product_option = op.option_num)"
 			+ " where c.cart_num in ?1", nativeQuery = true)	 
-	public List<Object[]> findOrderList2(Long[] cartNum);
+	public List<Object[]> findOrderList(Long[] cartNum);
 	
 	
 

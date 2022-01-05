@@ -30,7 +30,7 @@ public class CartService {
     	return crepo.findByProductNumAndUserPhone(productNum, userPhone).orElse(null);
     }
     
-  //상품 있는지 조회 (옵션있을 때)
+    //상품 있는지 조회 (옵션있을 때)
     public CartVO findByProductNumAndUserPhoneAndProductOption(ProductVO productNum, 
     		UserVO userPhone, ProductOptionVO productOption){
     	return crepo.findByProductNumAndUserPhoneAndProductOption(productNum, userPhone, productOption).orElse(null);
