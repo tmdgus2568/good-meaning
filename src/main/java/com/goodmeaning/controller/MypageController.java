@@ -106,9 +106,6 @@ public class MypageController {
 	    System.out.println(Arrays.toString(productNum));
 	    System.out.println(Arrays.toString(productOption));
 		//OrderVo완성 
-	    //OrderDetailVO완성 (배열갯수만큼)
-	    //UserVO user = urepo.findById("01011114444").get();
-    	//session.setAttribute("user", user);
 	    UserVO sessionUser = (UserVO) session.getAttribute("user");
 	    orderVO.setUserPhone(sessionUser);
 	    OrderVO newOrder =   orderRepo.save(orderVO);
@@ -126,9 +123,7 @@ public class MypageController {
 	    	System.out.println("detailVO=" + detailVO);
 	    	detailRepo.save(detailVO);
 	    }
-	    
-	    
-	    
+	    	    
 	    return "주문성공";
 	}
 	// 주문 내역 확인

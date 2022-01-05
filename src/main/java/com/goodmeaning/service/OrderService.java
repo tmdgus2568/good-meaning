@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.goodmeaning.persistence.CartRepository;
+import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.vo.UserVO;
 
@@ -17,13 +18,16 @@ public class OrderService {
 	@Autowired
 	CartRepository crepo;
 	
+	@Autowired
+	OrderRepository orepo;
+	
 	public void userCheck(UserVO user) {
 		urepo.save(user);
 	}
-
+	
+	//장바구니->구매하기
 	public List<Object[]> findOrderList(Long[] cartNum) {
-		// TODO Auto-generated method stub
-		 
-		return crepo.findOrderList2(cartNum);
+		return crepo.findOrderList(cartNum);
 	}
+	
 }

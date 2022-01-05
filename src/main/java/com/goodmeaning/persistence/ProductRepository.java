@@ -14,7 +14,7 @@ import com.querydsl.core.BooleanBuilder;
 
 public interface ProductRepository extends CrudRepository<ProductVO, Long>, QuerydslPredicateExecutor<ProductVO> {
 	Optional<ProductVO> findByProductName(String pname);
-
+	
 	// 1.default: findAll(), findById(id값)
 	// 2.pattern에 맞는 함수 정의: findBy속성()....
 	List<ProductVO> findAll(Sort aa);
