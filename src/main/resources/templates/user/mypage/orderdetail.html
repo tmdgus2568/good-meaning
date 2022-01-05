@@ -64,17 +64,22 @@
 			<td align="left">
 				<h4 th:text="${detail.productNum.productName}"></h4>
 				<span th:text="|수량: ${detail.orderDetailQuantity}|" style="color:grey;"></span><br>
-				<span th:text="|옵션: ${detail.productOption==null?'[없음]':detail.productOption.optionName}|" style="color:grey;"></span>
+				<span th:text="|옵션: ${detail.productOption==null?'[없음]':detail.productOption.optionName+' (+'+#numbers.formatInteger(detail.productOption.extraprice, 0, 'COMMA')+'원'+')'}|" style="color:grey;"></span>
 				
 			</td>
-		<!-- 	<td th:text="${detail.orderDetailQuantity}"></td> -->
-			<td th:text="|${#numbers.formatInteger(detail.orderDetailPrice, 0, 'COMMA')}원|"></td>
+		<!-- 	<td th:text="${detail.orderDetailPrice}"></td> -->
+			<td th:text="|${detail.productOption==null?#numbers.formatInteger(detail.orderDetailPrice, 0, 'COMMA'):#numbers.formatInteger(detail.orderDetailPrice+detail.productOption.extraprice, 0, 'COMMA')}원|"></td>
 		</tr>
 		
 	</table> 
+	<div align="right">
+		<span style="text-align:right;">(50,000원 이내 구매시, 배송비 3,000원 추가)</span>
+	</div>
+	
 	<br>
 	<br>
 	<br>
+	
 	<div align="right">
 		<h3>총 가격</h3>
 		<h1 th:text="|${#numbers.formatInteger(order.orderTotalPrice, 0, 'COMMA')} 원|"></h1>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
+<head>
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<meta charset="UTF-8">
+<title>아이디/비밀번호 찾기</title>
+<style>
+	table{
+		border-collapse: separate;
+		border-spacing: 0 1rem;
+	}
+</style>
+</head>
+<body>
+	<div class="panel panel-default" layout:fragment="content" align="center">
+		<br>
+		<br>
+		<br>
+		<br>
+		<div class="btn-group" role="group" aria-label="Basic example">
+  			<button type="button" class="btn btn-info" id="btn_find_id">아이디 찾기</button>
+  			<button type="button" class="btn btn-warning" id="btn_find_pwd">비밀번호 찾기</button>
+
+		</div>
+		<br>
+		<br>
+		<br>
+		<br>
+		
+		<div id="div_find_id">
+			<h4>아이디 찾기</h4>
+			<form action="/auth/find/id" method="post">
+				<table>
+					<tr id="tr_userPhone">
+						<th>휴대폰번호&nbsp;</th>
+						<td>
+							<input class="form-control"  type="text" name="userPhone" id="userPhone" placeholder="ex) 01012345678" style="width:250px;">
+						</td>
+					</tr>
+			
+					<tr id="tr_userEmail">
+						<th>이메일&nbsp;</th>
+						<td>
+							<input type="text" class="form-control" name="userEmail" id="userEmail" placeholder="ex) gm@goodmeaning.com" required="required" style="width:250px;">
+						</td>
+					</tr>
+					<tr id="tr_userName">
+						<th>이름&nbsp;</th>
+						<td>
+							<input type="text" class="form-control" name="userName" id="userName" placeholder="ex) 홍길동" required="required" style="width:250px;">
+						</td>
+					</tr>
+				
+				</table>
+		
+				<br>
+				<br>
+				<br>	
+				<button class="btn btn-secondary" type="submit" style="width:100px;">찾기</button>
+			</form>
+			
+		</div>
+		<div id="div_find_pwd" hidden="true">
+			<h4>비밀번호 찾기</h4>
+			<form action="/auth/find/pwd" method="post">
+				<table>
+					<tr id="tr_userName">
+						<th>아이디&nbsp;</th>
+						<td>
+							<input type="text" class="form-control" name="userId" id="userId" required="required" style="width:250px;">
+						</td>
+					</tr>
+					<tr id="tr_userPhone">
+						<th>휴대폰번호&nbsp;</th>
+						<td>
+							<input class="form-control"  type="text" name="userPhone" id="userPhone" placeholder="ex) 01012345678" style="width:250px;">
+						</td>
+					</tr>
+			
+					<tr id="tr_userEmail">
+						<th>이메일&nbsp;</th>
+						<td>
+							<input type="text" class="form-control" name="userEmail" id="userEmail" placeholder="ex) gm@goodmeaning.com" required="required" style="width:250px;">
+						</td>
+					</tr>
+					
+					<tr id="tr_userName">
+						<th>이름&nbsp;</th>
+						<td>
+							<input type="text" class="form-control" name="userName" id="userName" placeholder="ex) 홍길동" required="required" style="width:250px;">
+						</td>
+					</tr>
+					
+				
+				</table>
+		
+				<br>
+				<br>
+				<br>	
+				<button class="btn btn-secondary" type="submit" style="width:100px;">찾기</button>
+			</form>
+			
+		</div>
+		
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+
+	</div>
+</body>
+<th:block layout:fragment="script">
+<script>
+$(function(){
+	$("#btn_find_pwd").on('click',function(){
+		$("#div_find_pwd").attr('hidden',false);
+		$("#div_find_id").attr('hidden',true);
+	});
+	
+	$("#btn_find_id").on('click',function(){
+		$("#div_find_pwd").attr('hidden',true);
+		$("#div_find_id").attr('hidden',false);
+	});
+});
+
+
+</script>
+</th:block>
+</html>
