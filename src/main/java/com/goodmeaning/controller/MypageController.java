@@ -1,6 +1,9 @@
 package com.goodmeaning.controller;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -29,6 +34,7 @@ import com.goodmeaning.persistence.ProductRepository;
 import com.goodmeaning.persistence.ReviewRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.service.MypageService;
+import com.goodmeaning.util.UpLoadFileUtils;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.PageMaker;
@@ -41,6 +47,9 @@ import com.querydsl.core.types.Predicate;
 
 @Controller
 public class MypageController {
+	@Value("${spring.servlet.multipart.location}")
+	String locationPath;
+	
 	@Autowired
 	MypageService mypageService;
 	@Autowired
@@ -186,7 +195,7 @@ public class MypageController {
 	
 	// 리뷰 작성 페이지
 	@RequestMapping(value="/mypage/review/create", method = RequestMethod.GET)
-	public String createReview(long orderDetailNum, Model model, HttpSession session) {
+	public String createReviewForm(long orderDetailNum, Model model, HttpSession session) {
 		System.out.println(orderDetailNum);
 		Optional<OrderDetailVO> detail = mypageService.findOrderDetailById(orderDetailNum);
 		if(detail.isPresent()) {
@@ -196,15 +205,73 @@ public class MypageController {
 			model.addAttribute("recentOrder", detail.get().getOrderNum());
 		}
 		
-		return "/user/product/ProductReviewForm";
+		return "/user/mypage/createreview";
 	}
 	
-	// 리뷰 작성 수행 
-	@RequestMapping(value="/mypage/review/reviewinsert", method = RequestMethod.POST)
-	public String insertReview() {
-		return "";
-	}
+	@RequestMapping(value="/mypage/review/create", method = RequestMethod.POST)
+	public String createReview(ReviewVO review, long productNum, long orderDetail, int isUpdate, HttpSession session, RedirectAttributes rattrs) {
 
+		System.out.println("review1 : "+review);
+	
+
+		UserVO user = (UserVO) session.getAttribute("user");
+		review.setUserPhone(user);
+
+		System.out.println(review);
+
+		MultipartFile[] uploadfiles = review.getUploadFile(); // max 2개 파일정보 넘어옴
+		List<String> fileNames = new ArrayList<>();
+
+		// 이미지를 업로드할 폴더를 설정 = /uploadPath/imgUpload (저장하려고 찾아가는 것)
+		String uploadPath = locationPath + File.separator + "reviewupload";
+		// 위 폴더 기준 연월 폴더 생성
+		// String ymdPath = UpLoadFileUtils.calcPath(uploadPath);
+		int i = 0;
+
+		if (uploadfiles != null) {
+
+			for (MultipartFile uploadfile : uploadfiles) {
+				// 업로드 다녀온 후 vo값세팅
+				String fileName = null;
+				if (uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
+					try {
+						fileName = UpLoadFileUtils.fileUpload(uploadPath, uploadfile.getOriginalFilename(),
+								uploadfile.getBytes(), "");
+						fileName = "reviewupload" + File.separator + fileName;
+						System.out.println("fileName=" + fileName);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					// 첨부된 파일이 없으면
+					continue;
+				}
+				fileNames.add(fileName);
+
+				if (i == 0)
+					review.setReviewMainimg1(fileName);
+				if (i == 1)
+					review.setReviewMainimg2(fileName);
+
+				i++;
+
+			}
+		}
+		
+		mypageService.saveReview(review);
+		if(isUpdate == 1) {
+			rattrs.addFlashAttribute("review_update_result","success");
+			return "redirect:/mypage/reviews";
+		}
+			
+		rattrs.addFlashAttribute("review_result","success");
+		return "redirect:/mypage/orders";
+			
+		
+		
+	}
+	
 	
 	
 	// 구매취소 항목 확인 
@@ -272,6 +339,22 @@ public class MypageController {
 		if(review.isPresent()) return review.get();
 		return null;
 		
+	}
+	
+	// 리뷰 수정 페이지
+	@RequestMapping(value="/mypage/review/update", method = RequestMethod.GET)
+	public String updateReviewForm(long reviewNum, Model model, HttpSession session) {
+		
+		Optional<ReviewVO> review = mypageService.findReviewtById(reviewNum);
+		if(review.isPresent()) {
+			model.addAttribute("user", (UserVO)session.getAttribute("user"));
+			model.addAttribute("recentOrderDetail", review.get().getOrderDetail());
+			model.addAttribute("product", review.get().getProductNum());
+			model.addAttribute("recentOrder", review.get().getOrderDetail().getOrderNum());
+			model.addAttribute("review", review.get());
+		}
+		
+		return "/user/mypage/createreview";
 	}
 	
 	

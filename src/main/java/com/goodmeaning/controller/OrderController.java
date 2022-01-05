@@ -1,16 +1,28 @@
 package com.goodmeaning.controller;
 
 import java.util.Arrays;
+import java.util.List;
+
+import java.util.Map;
+
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.goodmeaning.persistence.ProductOptionRepository;
+import com.goodmeaning.persistence.ProductRepository;
 import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.service.OrderService;
+import com.goodmeaning.vo.ProductOptionVO;
+import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.UserVO;
 @Controller
 public class OrderController {
@@ -21,8 +33,15 @@ public class OrderController {
 	@Autowired
 	UserRepository urepo;
 	
+	@Autowired
+	ProductRepository prepo;
+
+	@Autowired
+	ProductOptionRepository porepo;
+	
+	
 	@RequestMapping("/order")//브라우저에서 요청하는 코드
-	public String selectAll(  Long[] cartNum, HttpSession session, Model model) {
+	public String selectAll(Long[] cartNum, HttpSession session, Model model) {
 		
 		System.out.println( Arrays.toString(cartNum) );
 		
@@ -35,26 +54,36 @@ public class OrderController {
 		return "user/order/order";		
 	}
 	
-	/*public class HomeController {
+	@PostMapping("/ordernow/")
+	public String goOrderNow(Long productNum, HttpSession session, Model model) {
+		ProductVO product = prepo.findById(productNum).orElse(null);
 		
-		private IamportClient api;
+		List<ProductOptionVO> options = porepo.findByProductNum(product);
 		
-		public HomeController() {
-	    	// REST API 키와 REST API secret 를 아래처럼 순서대로 입력한다.
-			this.api = new IamportClient("","");
-		}
-			
-		@ResponseBody
-		@RequestMapping(value="/verifyIamport/{imp_uid}")
-		public IamportResponse<Payment> paymentByImpUid(
-				Model model
-				, Locale locale
-				, HttpSession session
-				, @PathVariable(value= "imp_uid") String imp_uid) throws IamportResponseException, IOException
-		{	
-				return api.paymentByImpUid(imp_uid);
-		}
-		
-	}*/
 	
+		model.addAttribute("product", product);
+		model.addAttribute("options", options);
+		//model.addAttribute("productVO", productVO);
+		System.out.println("model"+product);
+		System.out.println("model"+options);
+		UserVO user = (UserVO)session.getAttribute("user"); 
+		return "user/order/ordernow";
+	}
+	
+	
+	@RequestMapping(value = "/buyclick", method = RequestMethod.POST)
+	@ResponseBody
+	public void buying (@RequestParam(value="optionnum[]", required = false) List<String> optionnum
+						,@RequestParam(value="opquantity[]", required = false) List<String> opquantity
+						, String pronum
+						, String proquantity) {
+		
+		System.out.println(pronum);
+		System.out.println(proquantity);
+		System.out.println(optionnum);
+		System.out.println(opquantity);
+		
+		
+		
+	}
 }

@@ -14,6 +14,7 @@
 <body>
 
 <div class="panel panel-default" layout:fragment="content">
+	<input type="text" th:value="${review_result}" id="review_result" hidden="true">
 	<h2 align="left">구매내역</h2>
 	<br>
 	<span style="text-align:left;">입금완료시에만 구매취소가 가능합니다.</span>
@@ -146,6 +147,10 @@
 <th:block layout:fragment="script">
 <script>
 $(function() {
+	if($("#review_result").val()=='success'){
+		alert('리뷰 등록에 성공하였습니다. \n리뷰 페이지 또는 해당 상품의 리뷰탭에서 확인이 가능합니다!');
+	}
+	
 	if($("#iscancel").val() == 'success'){
 		alert('구매취소를 완료하였습니다.');
 	}

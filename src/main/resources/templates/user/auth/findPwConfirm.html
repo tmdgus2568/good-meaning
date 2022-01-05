@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
+<head>
+<meta charset="UTF-8">
+<title>비밀번호 찾기</title>
+</head>
+<body>
+<div class="panel panel-default" layout:fragment="content" align="center">
+	<br>
+	<br>
+	<br>
+	<h2 id="title" align="left" style="width:700px;">비밀번호 찾기</h2>
+	<br>
+	<br>
+	<div th:if="${result.equals('success')}">
+		<h5 th:text="|새로운 비밀번호가 ${userEmail}로 전송되었습니다.|"></h5>
+		<span>확인 후 '마이페이지 > 회원정보수정'을 통해 비밀번호를 변경해 주세요 .</span>
+		<br>
+		<br>
+		<button class="btn btn-secondary" onclick="location.href='/auth/login'">로그인 화면으로</button>
+	</div>
+	
+	<div th:if="${result.equals('failed')}">
+		<h5>해당 정보와 일치하는 회원 정보가 없습니다.</h5>
+		<span>확인 후 다시 입력해 주세요.</span>
+		<br>
+		<br>
+		<br>
+		<button class="btn btn-secondary" onclick="location.href='/auth/login'">로그인 화면으로</button>
+	</div>
+</div>
+</body>
+<th:block layout:fragment="script">
+<script>
+</script>
+</th:block>
+</html>
