@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.admin.AdminProductOptionRepository;
 import com.goodmeaning.persistence.admin.AdminProductRepository;
 import com.goodmeaning.vo.PageVO;
@@ -24,6 +25,9 @@ public class AdminProductService {
 	@Autowired
 	private AdminProductOptionRepository productOptionRepo;
 	
+	@Autowired
+	private OrderDetailRepository orderDetailRepo;
+	
 //	@Autowired
 //	private productRepositoryOrder orderRepo;
 
@@ -37,7 +41,7 @@ public class AdminProductService {
 
 		Pageable paging = pageVO.makePaging(direction, colmnName); // 전체 order
 
-		Predicate pre = productRepo.makePredicate(pageVO); // 조건넣기
+		Predicate pre = productRepo.makeProductPredicate(pageVO); // 조건넣기
 		Page<ProductVO> result = productRepo.findAll(pre, paging);
 
 		return result;
@@ -67,16 +71,21 @@ public class AdminProductService {
 	}
 
 
-	public Long selectAll(PageVO pageVO) {
-		Predicate pre = productRepo.makePredicate(pageVO);
+	public Long selectProductAll(PageVO pageVO) {
+		Predicate pre = productRepo.makeProductPredicate(pageVO);
 		return productRepo.count(pre);
 	}
 
 	
 	@Transactional
-	public void deleteByProductNum(Long productNum) {
+	public int deleteByProductNum(Long productNum) {
+		ProductVO product = productRepo.findById(productNum).get();
+		if(orderDetailRepo.countByProductNum(product) > 0) {
+			return 0;
+		}
 		productOptionRepo.deleteByProductNum(productNum);
 		productRepo.deleteById(productNum); //지우는 순서 옵션 > 프로덕트
+		return 1;
 	}
 
 	@Transactional

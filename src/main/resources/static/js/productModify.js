@@ -1,4 +1,4 @@
-/**
+/*
  * detailModal에 대한 JS
  */
  
@@ -12,7 +12,7 @@ function checkInputData(){
 	for(var idx = 0; idx < optionPrice.length; idx++){
 		optionPrice[idx].value = optionPrice[idx].value.replace(",","");
 	}
-	alert("상품을 수정하시겠습니까?");
+	
 	//form에 페이징, 검색어, sort부분도 함께 보낸다.
 	$("#myfrm").find("input[name='page']").val($("#f1").find("input[name='page']").val());
 	$("#myfrm").find("input[name='size']").val($("#f1").find("input[name='size']").val());
@@ -21,11 +21,6 @@ function checkInputData(){
 		$("#myfrm").find("input[name='type']").eq(i).val($("#f1").find("input[name='type']").eq(i).val());
 		$("#myfrm").find("input[name='keyword']").eq(i).val($("#f1").find("input[name='keyword']").eq(i).val());
 	}
-	
-	 
-	
-	
-	
 }
 
 // 옵션 사용안함 선택
@@ -61,26 +56,10 @@ $("select[name='optionCategory']").change(function(){ //#optionCategory
 	}
 });
 
-// 파일 삭제시 첨부파일 이름 재설정
-$(".btnDelete").click(function () {
-	var num = this.id;
-	num = num.charAt(num.length-1);
-	$(this).parent().parent().find("input[type='file']").val('');
-	var a = $(this).parent().parent().find("label").html('Choose File' + num);
-	console.log(a);
-});
-
-
-//첨부파일 이름 보이기
-$(".custom-file-input").on("change", function() {
-	var fileName = $(this).val().split("\\").pop();
-	$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-});
-
-			
-//옵션추가 클릭시 옵션명/추가금액 추가
+// 옵션추가 클릭시 옵션명&추가금액 추가
 $(".deleteBtn").css("display", "none");
 
+// 옵션 클론시 
 var cloneCount = 1;
 $("#addOptionBtn").click(function(){
 	var copyObj = $(this).parent().parent().clone(true);
@@ -121,20 +100,64 @@ function onKeyup(obj) {
 	$(obj).val(value);
 }
 
-//상품 삭제 시
+// 삭제 시
 $("#delProdBtn").click(function(){
-	alert('상품을 삭제하시겠습니까?aaaaaaa');
+	
 	var obj = $("#f1");
 	
 	$("#f1").attr("action", "deleteProduct");
 	$("#f1").append("<input type='text' name='productNum' value=" + $("#productNum").val() + ">");
 	console.log($("#f1"));
+	
+	if(confirm('해당 상품을 삭제하시겠습니까?') == true){
+			//alert('삭제되었습니다.');
+			$("#f1").submit();
+		} else {
+			alert('취소되었습니다.');
+			return false;
+		}
 	$("#f1").submit();
 	//location.href="deleteProduct?productNum=" + $("#productNum").val();
 })
 
+// 수정 시 알림창
+$("#myfrm").submit(function() {
+		if(confirm('상품 정보를 수정하시겠습니까?') == true){
+			return true;
+		}
+		alert('취소되었습니다.');
+		return false;
+});
+
+// 첨부파일 수정
  var uploadFile = $('.fileBox .uploadBtn');
  $(uploadFile).on('change', function(event){
 	var filename = $(this)[0].files[0].name;
 	$(this).parent().find('.fileName').val(filename);
-});  
+}); 
+
+// 첫번재 첨부파일 삭제버튼 안보이기
+var firstFile = $("#productMainimg1").parent().parent().find("input[type='button']");
+$(firstFile).attr("disabled", true);
+$(firstFile).css("color", "white");
+
+// 파일삭제버튼 클릭시 이름삭제
+$(".btnDelete").click(function () {
+	$(this).parent().parent().find("input[type='text']").val('');
+});
+
+/*// 파일 삭제시 라벨 이름 재설정
+$(".btnDelete").click(function () {
+	var num = this.id;
+	num = num.charAt(num.length-1);
+	$(this).parent().parent().find("input[type='file']").val('');
+	var a = $(this).parent().parent().find("label").html('Choose File' + num);
+	console.log(a);
+});
+*/
+
+/*//첨부파일 이름 보이기
+$(".custom-file-input").on("change", function() {
+	var fileName = $(this).val().split("\\").pop();
+	$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});*/

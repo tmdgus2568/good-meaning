@@ -8,177 +8,199 @@
 <title>상품목록</title>
 <th:block layout:fragment="style">
 	<style>
-		
-		.fileBox .fileName {
-			display: inline-block;
-			width: 300px;
-			height: 30px;
-			padding-left: 10px;
-			margin-right: 5px;
-			line-height: 30px;
-			border: 1px solid #aaa;
-			background-color: #fff;
-			vertical-align: middle
-		}
-		
-		.fileBox .btn_file {
-			display: inline-block;
-			border: 1px solid #000;
-			width: 100px;
-			height: 30px;
-			font-size: 0.8em;
-			line-height: 30px;
-			text-align: center;
-			vertical-align: middle
-		}
-		
-		.fileBox input[type="file"] {
-			position: absolute;
-			width: 1px;
-			height: 1px;
-			padding: 0;
-			margin: -1px;
-			overflow: hidden;
-			clip: rect(0, 0, 0, 0);
-			border: 0
-		}
-	</style>
+.fileBox .fileName {
+	background-color: #fff;
+}
+
+input{
+	background-color: #fff;
+}
+
+
+ .fileBox input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0
+}
+
+
+
+</style>
 </th:block>
 
 </head>
 <body>
 
 	<div layout:fragment="content">
-		<h4>상품검색</h4>
-		<hr>
+		<h3>📑 상품목록</h3>
+		<hr class="mb-5">
 		<div id="searchBox" class="mt-4">
-			<div class="input-group mb-3">
+			<div class="input-group mb-4">
 				<div class="input-group-prepend">
 					<span class="input-group-text">검색어</span>
 				</div>
-				<input type="text" id="searchKeyword1" class="form-control" th:value="${pageVO.keyword!=null?pageVO.keyword[0]:''}" placeholder="상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품명 입력'">
-				<input type="text" id="searchKeyword2" class="form-control" th:value="${pageVO.keyword!=null?pageVO.keyword[1]:''}" placeholder="상품번호 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품번호 입력'">
+				<input type="text" id="searchKeyword1" class="form-control"
+					th:value="${pageVO.keyword!=null?pageVO.keyword[0]:''}"
+					placeholder="상품명 입력" onfocus="this.placeholder=''"
+					onblur="this.placeholder='상품명 입력'"> <input type="text"
+					id="searchKeyword2" class="form-control"
+					th:value="${pageVO.keyword!=null?pageVO.keyword[1]:''}"
+					placeholder="상품번호 입력" onfocus="this.placeholder=''"
+					onblur="this.placeholder='상품번호 입력'">
 			</div>
-			<label for="selectPeriod">기간선택</label>
-			<div class="form-row" id="selectPeriod">
+			<label for="selectPeriod">상품등록기간</label>
+			<div class="form-row mb-2" id="selectPeriod">
 				<!-- <span >From</span> -->
-			    <div class="col input-group mb-3">
-			        <div class="input-group-prepend">
-			          <span class="input-group-text"><i class="material-icons">date_range</i></span>
-			        </div>
-			        <input type="text" class="form-control datepicker" id="datepicker1" placeholder="날짜선택" name="datepicker"
-			        	th:value="${pageVO.keyword!=null?pageVO.keyword[2]:''}">
-			    </div>
-			    <div class="mt-2 ml-3 mr-3">
-			    	<span class="input-group-addon"><i class="material-icons">play_arrow</i></span>
-			    </div>
-			    <div class="col input-group mb-3">
-			        <div class="input-group-prepend">
-			          <span class="input-group-text"><i class="material-icons">date_range</i></span>
-			        </div>
-			        <input type="text" class="form-control datepicker"  id="datepicker2" placeholder="날짜선택" name="datepicker"
-			        	th:value="${pageVO.keyword!=null?pageVO.keyword[3]:''}">
-			    </div>
+				<div class="col input-group mb-3">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="material-icons">date_range</i></span>
+					</div>
+					<input type="text" class="form-control datepicker" id="datepicker1"
+						placeholder="&nbsp;날짜선택" name="datepicker"
+						th:value="${pageVO.keyword!=null?pageVO.keyword[2]:''}">
+				</div>
+				<div class="mt-2 ml-3 mr-3">
+					<span class="input-group-addon"><i class="material-icons">play_arrow</i></span>
+				</div>
+				<div class="col input-group mb-3">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="material-icons">date_range</i></span>
+					</div>
+					<input type="text" class="form-control datepicker" id="datepicker2"
+						placeholder="&nbsp;날짜선택" name="datepicker"
+						th:value="${pageVO.keyword!=null?pageVO.keyword[3]:''}">
+				</div>
 			</div>
 			<label for="statePosting">게시상태</label>
 			<div id="statePosting">
 				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" id="all" name="postingState" value="전체" 
-					th:checked="${pageVO.keyword==null || pageVO.keyword[4]=='전체'}">전체</label>
+					<label class="form-check-label"><input type="radio"
+						class="form-check-input" id="all" name="postingState" value="전체"
+						th:checked="${pageVO.keyword==null || pageVO.keyword[4]=='전체'}">전체</label>
 				</div>
 				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" value="게시중" name="postingState" th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='게시중'}">게시중</label>
+					<label class="form-check-label"><input type="radio"
+						class="form-check-input" value="정상" name="postingState"
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='정상'}">정상</label>
 				</div>
 				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" value="일시중단" name="postingState" th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='일시중단'}">일시중단</label>
+					<label class="form-check-label"><input type="radio"
+						class="form-check-input" value="품절" name="postingState"
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='품절'}">품절</label>
 				</div>
-				<div class="form-check-inline">
+				<!-- 				<div class="form-check-inline">
 					<label class="form-check-label"><input type="radio" class="form-check-input" value="게시종료" name="postingState" th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='게시종료'}">게시종료</label>
-				</div>
+				</div> -->
 			</div>
-			<div class="d-flex justify-content-center mt-3">
+			<div class="d-flex justify-content-center mt-4">
 				<div>
-					<button class="btn btn-info mr-4" id="searchBtn"><i class="material-icons">&nbsp;&nbsp;search&nbsp;&nbsp;</i></button>
+					<button class="btn mr-3" id="searchBtn"
+						style="background-color: #f7edbc">
+						<i class="material-icons pt-2 pl-3 pr-3">&nbsp;&nbsp;search&nbsp;&nbsp;</i>
+					</button>
 				</div>
 				<div>
-					<button class="btn btn-danger" id="resetBtn"><i class="material-icons">&nbsp;&nbsp;cached&nbsp;&nbsp;</i></button>
+					<button class="btn" id="resetBtn"
+						style="background-color: #fcc0c5;">
+						<i class="material-icons pt-2 pl-3 pr-3">&nbsp;&nbsp;cached&nbsp;&nbsp;</i>
+					</button>
 				</div>
 			</div>
 		</div>
-        
+
 		<!-- 			<img alt="이미지" th:src="@{/images/coffee-blue.jpg}" width="50px"
 				height="50px"> -->
-		<div class="p-3 ">
-			<hr>
-		</div>
+
+		<hr class="mt-4 mb-5">
+		<div></div>
 		<div class="d-flex justify-content-between">
 			<div>
 				<p th:text="'총 ' + ${totalCount} + '건'"></p>
 			</div>
-			<div class="form-group" style="float:right; width:190px;">
-				<select id = "sortColumn" class="form-control"> <!-- asc desc 가져가는 방법 찾기 -->
-					<option value="productCreatedate0" th:selected="${sortColumn=='productCreatedate0'}">최신순</option>
-					<option value="productCreatedate1" th:selected="${sortColumn=='productCreatedate1'}">과거순</option>
-					<option value="productName1" th:selected="${sortColumn=='productName1'}">상품명(ㄱ~ㅎ)</option>
-					<option value="productName0" th:selected="${sortColumn=='productName0'}">상품명(ㅎ~ㄱ)</option>
-					<option value="productNum1" th:selected="${sortColumn=='productNum1'}">상품번호(오름차순)</option>
-					<option value="productNum0" th:selected="${sortColumn=='productNum0'}">상품번호(내림차순)</option>
+			<div class="form-group" style="float: right; width: 190px;">
+				<select id="sortColumn" class="form-control">
+					<!-- asc desc 가져가는 방법 찾기 -->
+					<option value="productCreatedate0"
+						th:selected="${sortColumn=='productCreatedate0'}">최신순</option>
+					<option value="productCreatedate1"
+						th:selected="${sortColumn=='productCreatedate1'}">과거순</option>
+					<option value="productName1"
+						th:selected="${sortColumn=='productName1'}">상품명(ㄱ~ㅎ)</option>
+					<option value="productName0"
+						th:selected="${sortColumn=='productName0'}">상품명(ㅎ~ㄱ)</option>
+					<option value="productNum1"
+						th:selected="${sortColumn=='productNum1'}">상품번호(오름차순)</option>
+					<option value="productNum0"
+						th:selected="${sortColumn=='productNum0'}">상품번호(내림차순)</option>
 				</select>
 			</div>
 		</div>
 		<div>
-			<table id="prdlist"class="table table-bordered table-striped table-hover">
+			<table id="prdlist" class="table table-bordered table-hover">
 				<thead>
-					<tr class="table-warning" >
+					<tr>
 						<th>No.</th>
-						<th>상품번호 <i class="material-icons" style="font-size:15px">unfold_more</i></th>
-						<th>상품명<i class="material-icons" style="font-size:15px">unfold_more</i></th>
-						<th>등록일<i class="material-icons" style="font-size:15px">unfold_more</i></th>
-						<th>게시상태<i class="material-icons" style="font-size:15px">unfold_more</i></th>
+						<th>상품번호</th>
+						<!-- <i class="material-icons" style="font-size:15px">unfold_more</i> -->
+						<th>상품명</th>
+						<th>등록일</th>
+						<th>게시상태</th>
 						<th>홈페이지</th>
 					</tr>
 				</thead>
 				<tbody id="myTable">
-					<tr th:each="product, pstate:${productPaging.result.content}" > <!-- 객체, status(반복상태변수)  -->
-						<td th:text="${pstate.count + (productPaging.currentPageNum-1) * productPaging.currentPage.pageSize}"></td>
+					<tr th:if="${#lists.size(productPaging.result.content)}==0">
+						<td colspan="6" >검색하신 조건에 맞는 상품이 없습니다.</td>
+					</tr>
+					<tr th:each="product, pstate:${productPaging.result.content}">
+						<!-- 객체, status(반복상태변수)  -->
+						<td
+							th:text="${pstate.count + (productPaging.currentPageNum-1) * productPaging.currentPage.pageSize}"></td>
 						<td th:text="${product.productNum}"></td>
 						<td th:text="${product.productName}"></td>
-						<td th:text="${#dates.format(product.productCreatedate, 'yyyy-MM-dd')}"></td>
+						<td
+							th:text="${#dates.format(product.productCreatedate, 'yyyy-MM-dd')}"></td>
 						<td th:text="${product.postingState}"></td>
-						<td>
-							<a th:href="@{/oreder/details(id=${product.productNum})}" target='_blank'>바로가기</a>
-						</td>
+						<td><a th:href="@{/productdetail(pno=${product.productNum})}"
+							onclick="event.cancelBubble=true" target='_blank'>바로가기</a></td>
 					</tr>
 				</tbody>
 			</table>
-		</div>	
+		</div>
 		<!-- paging -->
 		<nav>
-		<!--  페이지 없을때(previous, next) .disabled 추가 -->
 			<div>
 				<ul class="pagination justify-content-center">
-					<li class="page-item" th:if="${productPaging.prevPage}">
-						<a class="page-link" th:href="${productPaging.prevPage.pageNumber}+1">PREV</a>
+					<li class="page-item" th:if="${productPaging.prevPage}"><a
+						class="page-link" th:href="${productPaging.prevPage.pageNumber}+1">PREV</a>
 					</li>
-					<li class="page-item" th:classappend="${p.pageNumber==productPaging.currentPageNum-1}?active:''"
-						th:each="p:${productPaging.pageList}">
-						<a class="page-link" th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a>
-					</li>
-					<li class="page-item" th:if="${productPaging.nextPage}">
-						<a class="page-link" th:href="${productPaging.nextPage.pageNumber}+1">NEXT</a>
+					<li class="page-item"
+						th:classappend="${p.pageNumber==productPaging.currentPageNum-1}?active:''"
+						th:each="p:${productPaging.pageList}"><a class="page-link"
+						th:href="${p.pageNumber}+1">[[${p.pageNumber}+1]]</a></li>
+					<li class="page-item" th:if="${productPaging.nextPage}"><a
+						class="page-link" th:href="${productPaging.nextPage.pageNumber}+1">NEXT</a>
 					</li>
 				</ul>
 			</div>
 		</nav>
-		//추후 hidden으로 변경
-		<form id="f1" th:action="@{list}" method="get" >
-			<input type="text" name="page" th:value="${productPaging.currentPageNum}"> 
-			<input type="text" name="size" th:value="${productPaging.currentPage.pageSize}">
+		<!-- hidden 변경 -->
+		<form id="f1" th:action="@{list}" method="get">
+			<input type="hidden" name="page"
+				th:value="${productPaging.currentPageNum}"> <input
+				type="hidden" name="size"
+				th:value="${productPaging.currentPage.pageSize}">
 			<div th:each="num : ${#numbers.sequence(0,4)}">
-				<input type="text" name="type" value=""> 
-				<input type="text" name="keyword" value="">
+				<input type="hidden" name="type" value=""> <input
+					type="hidden" name="keyword" value="">
 			</div>
-			<input type="text" id="sort" name="colmnName" th:value="${sortColumn}">
+			<input type="hidden" id="sort" name="colmnName"
+				th:value="${sortColumn}">
 		</form>
 		<div th:insert="~{admin/product/detailModal :: detailModal}"></div>
 	</div>
@@ -188,14 +210,16 @@
 			//jQuery는 ready를 여러번 쓸 수 있음. js는 불가능
 			
 			$(function() {
-				
+				var msg = [[${deleteResult}]];
+				if(msg != null) {
+					alert(msg);
+				}
 				//modal 띄우기
 				$("#myTable").on("click", "tr", function(){
 				    
-					var tds = $(this).find("td"); //여러개
+					var tds = $(this).find("td");
 			    	var rno = tds[1].innerHTML;
-					alert(rno);
-					//일반컨트롤러에서 url 뒤에 / + 값 X (레스트컨트롤러에서만줌/값. 일반?키=값)
+					
 					$.ajax({
 			            url:"/admin/detail?productNum=" + rno,
 			            success:function(responseData){
@@ -209,7 +233,6 @@
 							$("#myModal").modal("show");
 			            }
 			        });
-	 				
 				});
 				
 				function putDataList(responseData){
@@ -297,7 +320,6 @@
 					        	$(this).parent().parent().find("#addOptionBtn").attr("hidden", true);
 					        	$(this).parent().parent().find("#deleteOption").attr("hidden", true);
 					        	$(this).parent().parent().find("#optionNum").attr("hidden", true);
-					        	
 					        } 
 					     });
 
@@ -324,10 +346,11 @@
 			    	  weekStart: 0,
 			    	  clearBtn: true,
 			    	  language: "ko",
-			    	  orientation: "auto right",
+			    	  orientation: "bottom right",
 			          keyboardNavigation: false,
 			          forceParse: false,
 			    	  autoclose: true,
+			    	  todayBtn: "linked",
 			    	  todayHighlight: true
 			      });
 			});
@@ -338,19 +361,13 @@
 				
 		    	//저장하고 난 후 input에 정보남기기
 		    	var columnName = ["productName", "productNum", "from", "to", "postingState"];
-		    	var columnValue = [[${pageVO.keyword}]]; //배열
+		    	var columnValue = [[${pageVO.keyword}]];  //배열
 		    	
 		    	for(var idx = 0; columnValue!=null && idx < columnName.length; idx++){
 		    		formObj.find("input[name='type']").eq(idx).val(columnName[idx]);
 		    		formObj.find("input[name='keyword']").eq(idx).val(columnValue[idx]);
 		    	}
 				 
-		    	//for(var idx = 0; idx < columnName.length; idx++){
-		    	//}
-				
-		    	//check한 값 넣기
-		    	//formObj.find("input[name='keyword']").eq(4).val(pageVO.keyword[4]);
-				
 				if(formObj.find("[name='page']").val()==''){
 					formObj.find("[name='page']").val(1);
 				}
@@ -375,6 +392,7 @@
 					if(formObj.find("[name='page']").val()==''){
 						formObj.find("[name='page']").val(1);
 					}
+					
 					formObj.submit();
 				});
 				
@@ -404,7 +422,7 @@
 				});
 			});
 			
-			//table sort(columnName 클릭시 sort)
+/* 			//table sort(columnName 클릭시 sort)
 			$(document).ready(function(){ 
 				$('#prdlist th').each(function (column) { 
 					$(this).click(function() { 
@@ -433,7 +451,7 @@
 							}); 
 						}); 
 					}); 
-				});
+				}); */
 
 		</script>
 	</th:block>
