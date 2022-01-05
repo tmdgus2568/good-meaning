@@ -402,7 +402,7 @@ window.onload = function() {
 		    }); 
 	}
 	
-	function cart(){
+	function cart(productnum){
 
 		var pronum = productnum;	//상품번호
 		
@@ -430,9 +430,10 @@ window.onload = function() {
 		        	optionnum : optionnum, 
 		        	opquantity : opquantity
 		        	},
-		        success : function(){
-		            alert("요청되었습니다.")
-		        }       
+		        success: function(){
+		        	location.href="/cartlist";
+		        }
+		 		
 		    }); 
 	}
 	

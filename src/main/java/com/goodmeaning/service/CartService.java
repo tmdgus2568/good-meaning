@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.goodmeaning.persistence.CartRepository;
 import com.goodmeaning.vo.CartVO;
+import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.UserVO;
 
@@ -28,6 +29,13 @@ public class CartService {
     		UserVO userPhone){
     	return crepo.findByProductNumAndUserPhone(productNum, userPhone).orElse(null);
     }
+    
+  //상품 있는지 조회 (옵션있을 때)
+    public CartVO findByProductNumAndUserPhoneAndProductOption(ProductVO productNum, 
+    		UserVO userPhone, ProductOptionVO productOption){
+    	return crepo.findByProductNumAndUserPhoneAndProductOption(productNum, userPhone, productOption).orElse(null);
+    }
+
 
     //장바구니 삭제    
     public void delete(Long cartNum) {
