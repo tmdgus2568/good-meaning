@@ -296,7 +296,7 @@ window.onload = function() {
 			+no, extraprice
 			+')'
 			+"' value='-' style='margin-right: 10px;' />"
-			+'<span id="result" style="font-size: 15px" value="1">1</span>'
+			+'<span id="result" class="calloption" style="font-size: 15px" value="1">1</span>'
 			+'<input class="btn btn-dark" type='
 			+"'button' onclick='count("
 			+'"plus", this,'
@@ -319,6 +319,75 @@ window.onload = function() {
 			prid1.setAttribute("id", prid);
 		}
 	}
+	
+	
+	function buy(productnum){
+		var pronum = productnum;	//상품번호
+		
+		var choosenoption = document.getElementsByClassName("calloption");	//선택되어진 옵션의 수
+		var proquantity = null;	//상품수량
+		
+		var optionnum = [];	//옵션넘버
+		var opquantity = [];	//옵션수량
+		
+		if(choosenoption.length == 0){
+			proquantity = document.getElementById("result").innerText;
+		} else {
+			for (var i = 0; i < choosenoption.length; i++) {
+				optionnum[i] = $(choosenoption[i]).attr("id").substr(2);	//옵션번호
+				opquantity[i] = (document.getElementById($(choosenoption[i]).attr("id"))).innerText;	//옵션수량
+			}
+		}
+		
+		 $.ajax({
+		        url : '/buyclick',
+		        type : 'POST',
+		        data : {
+		        	pronum : pronum, 
+		        	proquantity : proquantity, 
+		        	optionnum : optionnum, 
+		        	opquantity : opquantity
+		        	},
+		        success : function(){
+		            alert("요청되었습니다.")
+		        }       
+		    }); 
+	}
+	
+	function cart(){
+
+		var pronum = productnum;	//상품번호
+		
+		var choosenoption = document.getElementsByClassName("calloption");	//선택되어진 옵션의 수
+		var proquantity = null;	//상품수량
+		
+		var optionnum = [];	//옵션넘버
+		var opquantity = [];	//옵션수량
+		
+		if(choosenoption.length == 0){
+			proquantity = document.getElementById("result").innerText;
+		} else {
+			for (var i = 0; i < choosenoption.length; i++) {
+				optionnum[i] = $(choosenoption[i]).attr("id").substr(2);	//옵션번호
+				opquantity[i] = (document.getElementById($(choosenoption[i]).attr("id"))).innerText;	//옵션수량
+			}
+		}
+		
+		 $.ajax({
+		        url : '/cartclick',
+		        type : 'POST',
+		        data : {
+		        	pronum : pronum, 
+		        	proquantity : proquantity, 
+		        	optionnum : optionnum, 
+		        	opquantity : opquantity
+		        	},
+		        success : function(){
+		            alert("요청되었습니다.")
+		        }       
+		    }); 
+	}
+	
 	
 </script>
 
@@ -396,12 +465,12 @@ window.onload = function() {
 
 				<br> <span id="totalpircetitle">총상품금액</span> <span
 					style="font-size: 30px; float: right;">원</span> <span
-					id="wholeprice" style="font-size: 30px; float: right;">[[${product.productPrice}]]</span> <br>
-				<br>
-				<button type="button" class="btn btn-secondary btn-lg"
-					style="width: 220px;">구매하기</button>
-				<button type="button" class="btn btn-light btn-lg"
-					style="width: 220px;">장바구니</button>
+					id="wholeprice" style="font-size: 30px; float: right;">[[${product.productPrice}]]</span>
+				<br> <br>
+				<button type="button" th:onclick="|buy(${product.productNum})|"
+					class="btn btn-secondary btn-lg" style="width: 220px;">구매하기</button>
+				<button type="button" th:onclick="|cart(${product.productNum})|"
+					class="btn btn-light btn-lg" style="width: 220px;">장바구니</button>
 			</div>
 		</div>
 

@@ -1,6 +1,8 @@
 package com.goodmeaning.controller;
 
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +119,20 @@ public class CartController {
         return "redirect:/cartlist";
     }
     
- 
+    @RequestMapping(value = "/cartclick", method = RequestMethod.POST)
+	@ResponseBody
+	public void cart (@RequestParam(value="optionnum[]", required = false) List<String> optionnum
+						,@RequestParam(value="opquantity[]", required = false) List<String> opquantity
+						, String pronum
+						, String proquantity) {
+		
+		System.out.println(pronum);
+		System.out.println(proquantity);
+		System.out.println(optionnum);
+		System.out.println(opquantity);
+		
+		
+	}
 
    
     
