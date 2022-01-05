@@ -11,6 +11,8 @@ public interface UserRepository extends CrudRepository<UserVO, String>{
 	
 	Optional<UserVO> findByUserId(String userId);
 	
-
+	Optional<UserVO> findByUserPhoneAndUserNameAndUserEmail(String userPhone, String userName, String userEmail);
+	
+	Optional<UserVO> findByUserPhoneAndUserNameAndUserEmailAndUserId(String userPhone, String userName, String userEmail, String userId);
 
 }

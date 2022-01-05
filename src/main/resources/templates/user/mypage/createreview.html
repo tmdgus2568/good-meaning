@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+<style>
+.star_rating {
+	font-size: 0;
+	letter-spacing: -4px;
+}
+
+.star_rating a {
+	font-size: 22px;
+	letter-spacing: 0;
+	display: inline-block;
+	margin-left: 5px;
+	color: #ccc;
+	text-decoration: none;
+}
+
+.star_rating a:first-child {
+	margin-left: 0;
+}
+
+.star_rating a.on {
+	color: #F3969A;
+}
+table{
+	border-collapse: separate;
+	border-spacing: 0 1rem;
+}
+</style>
+</head>
+<body>
+<div class="panel panel-default" layout:fragment="content" align="center">
+	<br>
+	<br>
+	<br>
+	<h2 id="title" align="left" style="width:700px;">상품리뷰쓰기</h2>
+	<br>
+	<br>
+	<form action="/mypage/review/create" method="post"
+		enctype="multipart/form-data" id="reviewinsertform">
+		<table>
+
+			<tbody>
+
+				<tr>
+					<td><img th:src="${product.productMainimg1}" width="100px"></td>
+					<td>상품명 : <a th:text="${product.productName}"
+						style="font-weight: bold"></a> <a
+						th:if="${recentOrderDetail.productOption != null}"><br> <span
+							th::value="${recentOrderDetail.productOption.optionName}"></span></a>
+						<br> 상품가격 : <a th:text="${product.productPrice}"></a><br>
+						구매수량 : <a th:text="${recentOrderDetail.orderDetailQuantity}"></a><br>
+						구매날짜 : <a th:text="${recentOrder.orderDate}"></a> <input
+						type="hidden" id="productNum2" name="productNum2"
+						th:value="${product.productNum}"> <input type="hidden"
+						id="recentOrderDetail2" name="recentOrderDetail2"
+						th:value="${recentOrderDetail.orderDetailNum}">
+					</td>
+					
+				</tr>
+				<tr></tr>
+				<tr>
+					<td>작성자</td>
+					<td><input class="form-control" type="text" size="20" style="width: 100%;"
+						th:value="${user.userId}" readonly="readonly"></td>
+				</tr>
+				<tr>
+					<td>평가</td>
+					<td>
+						<p class="star_rating">
+							<a href="#" class="on" id="star1">★</a> <a href="#" id="star2">★</a> <a href="#" id="star3">★</a>
+							<a href="#" id="star4">★</a> <a href="#" id="star5">★</a>
+						</p> <input type="text" id="reviewLike" name="reviewLike" th:value=${review==null?1:review.reviewLike} hidden="true">
+					</td>
+				</tr>
+				<tr>
+					<td>제목</td>
+					<td><input class="form-control" type="text" id="reviewTitle" name="reviewTitle"
+						size="20" style="width: 100%;" th:value="${review==null?'':review.reviewTitle}"></td>
+				</tr>
+				<tr>
+					<td>내용</td>
+					<td><textarea class="form-control" id="reviewContent" name="reviewContent" rows="5"
+							cols="50" th:text="${review==null?'':review.reviewContent}"></textarea></td>
+				</tr>
+				<tr>
+					<td>파일</td>
+					<td><input type="file" id="reviewMainimg1" name="uploadFile"><br>
+						<input type="file" id="reviewMainimg2" name="uploadFile"></td>
+				</tr>
+			</tbody>
+			<tfoot>
+			</tfoot>
+		</table>
+		<br>
+		<br>
+		<br>
+		<br>
+		<button class="btn btn-secondary" type="submit" value="리뷰작성">리뷰작성</button>
+		<input type="text" name="productNum" th:value="${product.productNum}" hidden="true">
+		<input type="text" name="orderDetailNum" th:value="${recentOrderDetail.orderDetailNum}" hidden="true">
+		<input type="text" name="isUpdate" th:value="${review==null?0:1}" hidden="true">
+		
+		
+	</form>
+</div>
+</body>
+<th:block layout:fragment="script">
+<script>
+
+$(function(){
+	var score = $("#reviewLike").val();
+	score *= 1;
+	if(score > 1){
+		switch(score){
+		case 5:
+			$("#star5").addClass("on");
+		case 4:
+			$("#star4").addClass("on");
+		case 3:
+			$("#star3").addClass("on");
+		case 2:
+			$("#star2").addClass("on");
+		}
+	}
+	
+	
+	$(".star_rating a").click(function() {
+		$(this).parent().children("a").removeClass("on");
+		$(this).addClass("on").prevAll("a").addClass("on");
+		var score = document.getElementsByClassName("on").length;
+		document.getElementById("reviewLike").value = score;
+		console.log(score);
+		return false;
+	});
+});
+
+</script>
+</th:block>
+</html>

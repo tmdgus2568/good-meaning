@@ -54,7 +54,20 @@ public class MypageService {
 	public Optional<OrderVO> findOrderById(long oid){
 		return orderRepo.findById(oid);
 	}
+	// product 찾기 
+	public Optional<ProductVO> findProductById(long pid){
+		return productRepo.findById(pid);
+	}
 	
+	// review 저장하기
+	public void saveReview(ReviewVO review) {
+		reviewRepo.save(review);
+	}
+	
+	// review 참기 
+	public Optional<ReviewVO> findReviewtById(long rid){
+		return reviewRepo.findById(rid);
+	}
 	// 구매취소
 	@Transactional
 	public void updateOrder(OrderVO order) {
