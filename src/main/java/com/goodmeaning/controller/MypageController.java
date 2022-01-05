@@ -209,13 +209,10 @@ public class MypageController {
 	}
 	
 	@RequestMapping(value="/mypage/review/create", method = RequestMethod.POST)
-	public String createReview(ReviewVO review, long productNum, long orderDetailNum, int isUpdate, HttpSession session, RedirectAttributes rattrs) {
+	public String createReview(ReviewVO review, long productNum, long orderDetail, int isUpdate, HttpSession session, RedirectAttributes rattrs) {
 
-		ProductVO product = mypageService.findProductById(productNum).get();
-		review.setProductNum(product);
-
-		OrderDetailVO orderdetail = mypageService.findOrderDetailById(orderDetailNum).get();
-		review.setOrderDetail(orderdetail);
+		System.out.println("review1 : "+review);
+	
 
 		UserVO user = (UserVO) session.getAttribute("user");
 		review.setUserPhone(user);
@@ -275,13 +272,6 @@ public class MypageController {
 		
 	}
 	
-	
-//	// 리뷰 작성 수행 
-//	@RequestMapping(value="/mypage/review/reviewinsert", method = RequestMethod.POST)
-//	public String insertReview() {
-//		return "";
-//	}
-
 	
 	
 	// 구매취소 항목 확인 
