@@ -42,9 +42,6 @@ public class CartController {
 	
 	@RequestMapping("/cartlist")//브라우저에서 요청하는 코드
 	public String selectAll(HttpSession session, Model model) {
-		 // session의 id
-//		UserVO user = urepo.findById("01011114444").get();
-//    	session.setAttribute("user", user);
     	UserVO user = (UserVO)session.getAttribute("user");    
     	
 		model.addAttribute("clist", cartService.findAllCartList(user.getUserPhone()));		
@@ -61,8 +58,6 @@ public class CartController {
     public String insert(CartVO vo, Long optionNum,  Long productNum, HttpSession session){
     	//로그인된 유저 확인
     	System.out.println("cartvo:" + vo);
-//    	UserVO user = urepo.findById("01011114444").get();
-//    	session.setAttribute("user", user );
     	UserVO user = (UserVO)session.getAttribute("user");
         vo.setUserPhone(user);
         ProductVO product = productService.selectById(productNum);       
@@ -86,28 +81,15 @@ public class CartController {
         return "redirect:/cartlist";
     }
     
-    //장바구니 수정@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //장바구니 수정
     @PatchMapping(value = "/cartlist/{cartNum}")
-    public @ResponseBody ResponseEntity<Long> updateCartItem(@PathVariable("cartNum") Long cartNum, int count){
+    public @ResponseBody ResponseEntity<Long> updateCartItem(
+    	@PathVariable("cartNum") Long cartNum, int count){
+    	
+    	//장바구니 상품의 수량 업데이트
         cartService.updateCartItemCount(cartNum, count);
         return new ResponseEntity<Long>(cartNum, HttpStatus.OK);
     }
-    
-    //장바구니 수정
-    /*@RequestMapping(value="cart/update", method = RequestMethod.GET)
-    public String update(Long[] cartNum,  int[] amount, HttpSession session) {
-        // session의 id
-    	UserVO user = UserVO.builder().userPhone("01011114444").build();
-    	session.setAttribute("user", user );
-    	//UserVO user = (UserVO)session.getAttribute("user");
-        // 레코드의 갯수 만큼 반복문 실행
-        for(int i=0; i<cartNum.length; i++){
-            CartVO vo = cartService.findById(cartNum[i]);         
-            vo.setCartCount(amount[i]);
-            cartService.insertOrUpdate(vo);
-        }
-        return "redirect:/cartlist";
-    }*/
     
     //장바구니 삭제
     @RequestMapping(value="/cart/delete", method = RequestMethod.GET)

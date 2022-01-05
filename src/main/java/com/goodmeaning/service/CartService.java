@@ -34,10 +34,12 @@ public class CartService {
         crepo.deleteById(cartNum);
     }  
     
-    //수량 수정@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //수량 수정
     public void updateCartItemCount(Long cartNum, int count) {
-    	CartVO cart = crepo.findById(cartNum).orElse(null);
+    	CartVO cart = crepo.findById(cartNum).get();
 		cart.setCartCount(count);
+		
+		CartVO result = crepo.save(cart);//변경된 수량 DB에 저장
 	}
     
     //카트 조회
@@ -52,7 +54,6 @@ public class CartService {
     
     //장바구니 list 보여주는
 	public List<Object[]> findAllCartList(String userPhone) {
-		// TODO Auto-generated method stub
 		return crepo.findAllCartList(userPhone);
 	}
 	

@@ -296,7 +296,7 @@ window.onload = function() {
 			+no, extraprice
 			+')'
 			+"' value='-' style='margin-right: 10px;' />"
-			+'<span id="result" style="font-size: 15px" value="1">1</span>'
+			+'<span  class="optionCount" id="result" style="font-size: 15px" value="1">1</span>'
 			+'<input class="btn btn-dark" type='
 			+"'button' onclick='count("
 			+'"plus", this,'
@@ -322,12 +322,50 @@ window.onload = function() {
 	//주문하기 버튼 누르면 실행
 	function goOrdersNow(){
 		var url="/ordernow";
-		var data = new Object;
-		data = productNum;
-		data = optionNum;
-		data = count;
 		
-	}
+		var dataList = new Array();
+        var paramData = new Object();
+
+		var arr=[];
+		var mainimg = $("#mainimg").attr("src");
+
+		$(".optionCount").each(function(index, item) {
+			var obj = {"optionid": $(item).attr("id").substr(2), "optioncount":$(item).text()};
+			arr.push(obj);
+		});
+			console.log(mainimg);
+			console.log(arr);
+ 			/* var productName = $(this);
+ 			var count = $(this);
+ 			var optionName = $(this);
+ 			var price = $(this);
+ 			var extraprice = $(this);
+ 			var productNum = $(this);
+ 			var options = $(this);
+ 			var data = new Object();
+ 			data["mainimg"] = mainimg;
+ 			data["productName"] = ;
+ 			data["count"] = ;
+ 			data["optionName"] = ;
+ 			data["price"] = ;
+ 			data["extraprice"] = ;
+ 			data["productNum"] = ;
+ 			data["options"] = ;
+ 			data["data"] = ;
+ 			dataList.push(data);
+ 			arr.push("mainimg=" + mainimg); */
+		 
+ 		/* $.ajax({
+ 			url:"ordernow",
+ 			data : {"data":arr},
+ 			success: function(){
+ 				location.href="이동";
+ 			}
+ 		}); */
+  		//location.href='ordernow?'+arr.join("&");
+ 		
+		
+	}//goOrdersNow() 
 </script>
 
 </head>
