@@ -183,6 +183,7 @@ public class CartController {
 				cartService.insertOrUpdate(existCart); // update
 			}
 			System.out.println(cart);
+			//commit해야하눈디...!
 		}
 
 	}
