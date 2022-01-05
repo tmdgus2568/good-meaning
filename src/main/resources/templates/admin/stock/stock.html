@@ -6,76 +6,73 @@
 <head>
 <meta charset="UTF-8">
 <title>재고확인</title>
-<!-- <th:block layout:fragment="style">
+<th:block layout:fragment="style">
 	<style>
-
+		.hidden-col {display: none}
 	</style>
-</th:block> -->
+</th:block>
 
 
 </head>
 <body>
 
 	<div layout:fragment="content">
-		<h4>상품검색</h4>
+		<h3>📑 재고현황</h3>
 		<hr>
-<!-- 		<div class="mt-4">
-			<div class="input-group mb-3">
+		<div id="searchBox" class="mt-5">
+			<div class="input-group mb-5">
 				<div class="input-group-prepend">
 					<span class="input-group-text">검색어</span>
 				</div>
-				<input type="text" id="searchKeyword1" class="form-control" placeholder="상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품명 입력'">
-				<input type="text" id="searchKeyword2" class="form-control" placeholder="상품번호 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품번호 입력'">
+				<input type="text" id="searchKeyword1" class="form-control"	th:value="${pageVO.keyword!=null?pageVO.keyword[0]:''}"
+					placeholder="상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품명 입력'"> 
+				<input type="text" id="searchKeyword2" class="form-control" th:value="${pageVO.keyword!=null?pageVO.keyword[1]:''}"
+					placeholder="상품번호 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품번호 입력'">
 			</div>
-			<label for="selectPeriod">기간선택</label>
-			<div class="form-row" id="selectPeriod">
-				<span >From</span>
-			    <div class="col input-group mb-3">
-			        <div class="input-group-prepend">
-			          <span class="input-group-text"><i class="material-icons">date_range</i></span>
-			        </div>
-			        <input type="text" class="form-control datepicker" id="datepicker1" placeholder="날짜선택" name="datepicker">
-			    </div>
-			    <div class="mt-2 ml-3 mr-3">
-			    	<span class="input-group-addon"><i class="material-icons">play_arrow</i></span>
-			    </div>
-			    <div class="col input-group mb-3">
-			        <div class="input-group-prepend">
-			          <span class="input-group-text"><i class="material-icons">date_range</i></span>
-			        </div>
-			        <input type="text" class="form-control datepicker"  id="datepicker2" placeholder="날짜선택" name="datepicker">
-			    </div>
-			</div>
-			<label for="statePosting">게시상태</label>
+		
 			<div id="statePosting">
+				<label for="statePosting" class="mr-4">재고상태</label>
 				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" name="postingState" value="전체">전체</label>
+					<label class="form-check-label">
+					<input type="radio" class="form-check-input" id="all" name="stockState" value="전체"
+						th:checked="${pageVO.keyword==null || pageVO.keyword[4]=='전체'}">전체</label>
 				</div>
 				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" value="게시중" name="postingState">게시중</label>
+					<label class="form-check-label">
+					<input type="radio" class="form-check-input" value="정상" name="stockState"
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='정상'}">정상</label>
 				</div>
 				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" value="일시중단" name="postingState">일시중단</label>
+					<label class="form-check-label">
+					<input type="radio" class="form-check-input" value="부족" name="stockState"
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='부족'}">부족</label>
 				</div>
 				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" value="게시종료" name="postingState">게시종료</label>
+					<label class="form-check-label">
+					<input type="radio"
+						class="form-check-input" value="품절" name="stockState" 
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='품절'}">품절</label>
 				</div>
 			</div>
-			<div class="d-flex justify-content-center mt-3">
+			<div class="d-flex justify-content-center mt-4">
 				<div>
-					<button class="btn btn-info mr-4" id="searchBtn"><i class="material-icons">&nbsp;&nbsp;search&nbsp;&nbsp;</i></button>
+					<button class="btn mr-3" id="searchBtn"
+						style="background-color: #f7edbc">
+						<i class="material-icons pt-2 pl-3 pr-3">&nbsp;&nbsp;search&nbsp;&nbsp;</i>
+					</button>
 				</div>
 				<div>
-					<button class="btn btn-danger" id="resetBtn"><i class="material-icons">&nbsp;&nbsp;cached&nbsp;&nbsp;</i></button>
+					<button class="btn" id="resetBtn"
+						style="background-color: #fcc0c5;">
+						<i class="material-icons pt-2 pl-3 pr-3">&nbsp;&nbsp;cached&nbsp;&nbsp;</i>
+					</button>
 				</div>
 			</div>
-		</div> -->
+		</div>
         
 		<!-- 			<img alt="이미지" th:src="@{/images/coffee-blue.jpg}" width="50px"
 				height="50px"> -->
-		<div class="p-3 ">
-			<hr>
-		</div>
+		<hr class="mt-4 mb-5">
 		<div class="d-flex justify-content-between">
 			<div>
 				<p th:text="'총 ' + ${totalCount} + '건'"></p>
@@ -85,43 +82,118 @@
 			</div>
 
 			<div class="form-group" style="float:right; width:190px;">
-				<select id = "sortColumn" class="form-control"> <!-- asc desc 가져가는 방법 찾기 -->
-					<option value="productCreatedate0">최신순</option>
-					<option value="productCreatedate1">과거순</option>
-					<option value="productName1">상품명(ㄱ~ㅎ)</option>
-					<option value="productName0">상품명(ㅎ~ㄱ)</option>
-					<option value="productNum1">상품번호(오름차순)</option>
-					<option value="productNum0">상품번호(내림차순)</option>
+				<select id = "sortColumn" class="form-control"> <!-- asc1 desc0 가져가는 방법 찾기 -->
+					<option value="product_num0" th:selected="${sortColumn=='product_num0'}">상품번호(오름차순)</option>
+					<option value="total_stock0" th:selected="${sortColumn=='total_stock0'}">총재고량 높은순</option>
+					<option value="total_stock1" th:selected="${sortColumn=='total_stock1'}">총재고량 낮은순</option>
+					<option value="sales_quantity0" th:selected="${sortColumn=='sales_quantity0'}">금일판매량 높은순</option>
+					<option value="sales_quantity1" th:selected="${sortColumn=='sales_quantity1'}">금일판매량 낮은순</option>
+					<option value="purchase_quantity0" th:selected="${sortColumn=='purchase_quantity0'}">금일입고량 높은순</option>
+					<option value="purchase_quantity1" th:selected="${sortColumn=='purchase_quantity1'}">금일입고량 낮은순</option>
 				</select>
 			</div>
 		</div>
 		<div>
-			<table id="stocklist"class="table table-bordered table-striped table-hover">
+			<table id="stocklist" class="table table-bordered table-hover">
 				<thead>
-					<tr class="table-warning" >
+					<tr>
 						<th>No.</th>
-						<th>상품번호 <i class="material-icons" style="font-size:15px">unfold_more</i></th>
-						<th>상품명<i class="material-icons" style="font-size:15px">unfold_more</i></th>
-						<th>옵션<i class="material-icons" style="font-size:15px">unfold_more</i></th>
-						<th>입고수량<i class="material-icons" style="font-size:15px">unfold_more</i></th>
-						<th>판매수량</th>
-						<th>재고수량</th>
-						<th>상태</th>
+						<th>상품번호</th>
+						<th>상품명</th>
+						<th class="hidden-col">옵션번호</th>
+						<th>옵션</th>
+ 						<th>금일입고</th>
+						<th>금일판매</th>
+						<th>총재고수</th>
+						<th>재고상태</th>
+						<th>입고등록</th>
 					</tr>
 				</thead>
 				<tbody id="myTable">
-					<tr th:each="product, state:${stockPaging.result.content}" > <!-- 객체, status(반복상태변수)  -->
-						[[${stockPaging}]]
+					<tr th:each="product, state:${stockPaging.result.content}" >
 						<td th:text="${state.count + (stockPaging.currentPageNum-1) * stockPaging.currentPage.pageSize}"></td>
-						<td th:text="${product[0]}"></td> <!-- Object배열일때 -->
+						<td th:text="${product[0]}"></td> 
 						<td th:text="${product[1]}"></td>
-						<td th:text="${product[4]}"></td>
-						<td th:text="${product[7]}"></td>
-						<td th:text="${product[9]}"></td>
-						<td th:if="${#strings.isEmpty(product[4])}" th:text="${product[3]}"></td>
-						<td th:if="${not #strings.isEmpty(product[4])}" th:text="${product[5]}"></td>
-						<td>
-							<a th:href="@{/oreder/details(id=${product[0]})}" target='_blank'>바로가기</a>
+						<td class="hidden-col" th:text="${product[3]}"></td> <!-- optionNum -->
+ 						<td th:text="${product[4]}"></td>
+ 						<td th:text="${product[8]}"></td>
+ 						<td th:text="${product[9]}"></td>
+						<td class="stockQuantity" th:text="${product[10]}"></td>
+						<td class="stockStatus"></td>
+						<td >
+							<a href="#" onclick = "pibtn(this);">입고하기</a> 
+								<!-- The Modal -->
+							<div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+								<div class="modal-dialog modal-dialog-centered" style="max-width: 100%; width: auto; display: table;">
+									<div class="modal-content">
+
+										<!-- Modal Header -->
+										<div class="modal-header">
+											<h4 class="modal-title">입고등록</h4>
+											<button type="button" class="close" data-dismiss="modal">&times;</button>
+										</div>
+
+										<!-- Modal body -->
+										<div class="modal-body">
+											<form action="stockregister" method="post" id="myfrm">
+												<table id="stocklist"class="table table-bordered">
+													<tr>
+														<th>상품번호</th>
+														<td>
+															<input type="text" name="productNum" class="form-control-plaintext" readonly/>
+														</td>
+														<th>상품명</th>
+														<td>
+															<input type="text" name="productName" class="form-control-plaintext" readonly/>
+														</td>
+													</tr>
+													<tr id="options">
+														<th>옵션번호</th>
+														<td>
+															<input type="text" name="optionNum" class="form-control-plaintext" readonly/> <!-- form-control-plaintext -->
+														</td>
+														<th>옵션명</th>
+														<td>
+															<input type="text" name="optionName" class="form-control-plaintext" readonly/> <!-- form-control-plaintext -->
+														</td>
+													</tr>
+													<tr>
+														<th >단가</th>
+														<td colspan="3" id="price"></td>
+													</tr>
+													<tr>
+														<th>총재고수량</th>
+														<td id="quantity"></td>
+														<th>적정재고수량</th>
+														<td><span>10</span></td>
+													</tr>
+													<tr>
+														<th>입고수량</th>
+														<td colspan="3">
+															<input type="number" name="purchaseQuantity" class="form-control" min="0" max="1000" required/>
+														</td>
+	
+													</tr>
+	
+												</table>
+												<div class="float-right ">
+													<button type="submit" class="btn" style="background-color: #f7edbc;" onClick="checkInputData();">등록</button>
+												</div>
+												<div>
+													<input type="text" name="page" th:value="${stockPaging.currentPageNum}"> 
+													<input type="text" name="size" th:value="${stockPaging.currentPage.pageSize}">
+													<div th:each="num : ${#numbers.sequence(0,2)}">
+														<input type="text" name="type" value=""> 
+														<input type="text" name="keyword" value="">
+													</div>
+													<input type="text" id="sort" name="colmnName" th:value="${sortColumn}">
+												</div>
+											</form>
+										
+										</div>
+									</div>
+								</div>
+							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -147,22 +219,157 @@
 		</nav>
 
 
-<!-- 		//추후 hidden으로 변경
-		<form id="f1" th:action="@{list}" method="get" >
+ 		//추후 hidden으로 변경
+		<form id="f1" th:action="@{stock}" method="get" >
 			<input type="text" name="page" th:value="${stockPaging.currentPageNum}"> 
 			<input type="text" name="size" th:value="${stockPaging.currentPage.pageSize}">
-			<div th:each="num : ${#numbers.sequence(0,4)}">
+			<div th:each="num : ${#numbers.sequence(0,2)}">
 				<input type="text" name="type" value=""> 
 				<input type="text" name="keyword" value="">
 			</div>
 			<input type="text" id="sort" name="colmnName" th:value="${sortColumn}">
 		</form>
-		<div th:insert="~{admin/product/detailsModal :: modifyModal}"></div> -->
+		
 
-	</div> -->
+	</div>
 	<th:block layout:fragment="script">
-		<script>
-			//console.log(stockPaging);
+		<script th:inline="javascript">
+		//입고성공시 alert
+		var msg = [[${insertResult}]];
+				if(msg != null) {
+					alert(msg);
+				}
+		
+		//재고 상태 입력
+		var stockQuantity = document.getElementsByClassName("stockQuantity");
+		var stockStatus = document.getElementsByClassName("stockStatus");
+		console.log(stockQuantity);
+ 		for(var i = 0; i < stockQuantity.length; i++) {
+			console.log(stockQuantity[i].innerHTML);
+			var quantity = Number(stockQuantity[i].innerHTML);
+			if(quantity <= 0) {
+				stockStatus[i].innerHTML = "품절"
+			} else if(quantity < 10) {
+				stockStatus[i].innerHTML = "부족"
+			} else {
+				stockStatus[i].innerHTML = "정상"
+			}
+		} 
+		
+		//입고등록 모달에 정보 보내기
+		function pibtn (obj) {
+			var tds = $(obj).parent().parent().find("td"); //여러개
+	    	var pno = tds[1].innerHTML;
+			var ono = tds[3].innerHTML;
+			
+			if (ono== "" ) ono = 0;
+			
+			alert(ono);
+			alert(pno);
+			
+			$.ajax({
+	            url:"/admin/stockinfo?productNum=" + pno + "&optionNum=" + ono, 
+	            success:function(responseData){
+	            	console.log(responseData.product);
+	            	console.log(responseData.productOption);
+	            	$("#options").attr("style", "display:'';");
+ 					$("input[name='purchaseQuantity']").val("");
+					putDataList(responseData);
+	                $("#myModal").modal("show");
+	            }
+	        }); 
+			
+		}
+		
+		function putDataList(responseData) {
+			var product = responseData.product;
+			var option = responseData.productOption;
+			console.log("option: " + option);
+			$("input[name='productNum']").val(product.productNum);
+			$("input[name='productName']").val(product.productName);
+			if(option != null){
+				$("input[name='optionNum']").val(option.optionNum);
+				$("input[name='optionName']").val(option.optionName);
+				var price = product.productPrice + option.extraprice;
+				$("#price").text(Number(price).toLocaleString('en').split(".")[0] + '원');
+				$("#quantity").text(option.optionStock);
+			} else {
+				$("#options").attr("style", "display:none;");
+				$("#price").text(Number(product.productPrice).toLocaleString('en').split(".")[0] + '원');
+				$("#quantity").text(product.productStock);
+			}
+		}
+		
+		var formObj = $("#f1");
+		//페이지 클릭시
+		$(".pagination a").click(function(e) { //클래스 pagination 자식중 a 클릭시 
+			alert($(this).attr('href'));
+			e.preventDefault(); //링크취소
+			formObj.find("[name='page']").val($(this).attr('href'));
+			$("#searchBtn").click(); //페이지만달라지고 다시 조회
+			//다시 그 폼에서 이름이 page인걸 찾아서 href가 가지고 있는 숫자를 page(this) 값으로 넣어줌
+			//formObj.submit(); //그리고 나서 submit > list로 다시 감. 그때 pageVO로 넘어가는 것
+			//(controller에서 pagevo가 들어가는 것!)
+		});
+		
+		//조건 검색시
+		$("#searchBtn").click(function() {
+			
+			formObj.find("input[name='type']").eq(0).val("productName");
+			formObj.find("input[name='type']").eq(1).val("productNum");
+			formObj.find("input[name='type']").eq(2).val("stockState");
+			 
+			formObj.find("input[name='keyword']").eq(0).val($("#searchKeyword1").val());
+			formObj.find("input[name='keyword']").eq(1).val($("#searchKeyword2").val());
+			formObj.find("input[name='keyword']").eq(4).val($("input:radio[name='stockState']:checked").val());
+
+			if(formObj.find("[name='page']").val()==''){
+				formObj.find("[name='page']").val(1);
+			}
+			formObj.submit();
+		});
+	
+		$("#searchBox input").change(function(){ 
+			formObj.find("[name='page']").val(1);
+		});
+		
+		//resetBtn 누를때
+		$(function() {
+			$("#resetBtn").click(function(){
+				$('input').each(function(index, item){
+					console.log()
+					$(item).val('');
+				});
+			});
+		});
+		
+		//전체 sort시
+		$("#sortColumn").change(function(){
+			alert($(this).val());
+			formObj.find("#sort").val($(this).val());
+			$("#searchBtn").click();
+		});
+		
+		// 입고등록 시 알림창
+		$("#myfrm").submit(function() {
+				if(confirm('입고등록을 하시겠습니까?') == true){
+					return true;
+				}
+				alert('취소되었습니다.');
+				return false;
+		});
+		
+		// 입고등록 시 해당페이지정보 가져가기
+		function checkInputData(){
+			$("#myfrm").find("input[name='page']").val($("#f1").find("input[name='page']").val());
+			$("#myfrm").find("input[name='size']").val($("#f1").find("input[name='size']").val());
+			$("#myfrm").find("input[name='colmnName']").val($("#f1").find("input[name='colmnName']").val());
+			for(var i = 0; i <2; i++) {
+				$("#myfrm").find("input[name='type']").eq(i).val($("#f1").find("input[name='type']").eq(i).val());
+				$("#myfrm").find("input[name='keyword']").eq(i).val($("#f1").find("input[name='keyword']").eq(i).val());
+			}
+		}
+		
 		</script>
 	</th:block>
 
@@ -186,16 +393,6 @@
 				$("#myModal").modal("show");
 			}); */
 
-			//resetBtn 누를때
-			$(function() {
-				$("#resetBtn").click(function(){
-					$('input').each(function(index, item){
-						console.log()
-						$(item).val('');
-					});
-				});
-			});
-			
 			//
 			function fnModuleInfo(str){
 			   $('#MoaModal .modal-content').load("moaModal?id="+str);
@@ -216,98 +413,7 @@
 			      });
 			  });
 
-		
-			$(function() {
-				var formObj = $("#f1");
-				
-				// 게시글 제목 클릭시 값 넘어가기
-				$(".boardLink").click(function(event){ //타이틀을 누르면
-					alert("링크누름")
-		    		event.preventDefault(); //a태그의 본래기능은 취소 
-		    		var bno = $(this).attr("href");
-		    		formObj.attr("action", "[[@{detail}]]") //디테일로가기
-		    		formObj.find($("input[name='bno']")).remove();
-		    		formObj.append("<input type='text' name='bno' value='" + bno + "'>" ); //form에다 추가 내용보고싶다면 text로 변경
-		    		alert("링크누름")
-		    		formObj.submit();
-		    		formObj.attr("action", "[[@{list}]]"); //다시 원상복귀
-		    	});
-				
-				//조건 검색시
-				$("#searchBtn").click(function() {
-					
-					formObj.find("input[name='type']").eq(0).val("productName");
-					formObj.find("input[name='type']").eq(1).val("productNum");
-					formObj.find("input[name='type']").eq(2).val("from");
-					formObj.find("input[name='type']").eq(3).val("to");
-					formObj.find("input[name='type']").eq(4).val("postingState");
-					 
-					formObj.find("input[name='keyword']").eq(0).val($("#searchKeyword1").val());
-					formObj.find("input[name='keyword']").eq(1).val($("#searchKeyword2").val());
-					formObj.find("input[name='keyword']").eq(2).val($("#datepicker1").val());
-					formObj.find("input[name='keyword']").eq(3).val($("#datepicker2").val());
-					formObj.find("input[name='keyword']").eq(4).val($("input:radio[name='postingState']:checked").val());
-					//var typeStr = $("#searchType").find(":selected").val();// = $("#searchType").val(), 조건
-					//var keywordStr = $("#searchKeyword").val(); //검색내용
-					//formObj.find("[name='type']").val(typeStr); //type에 저장
-					//formObj.find("[name='keyword']").val(keywordStr); //keyword에 저장
-					if(formObj.find("[name='page']").val()==''){
-						formObj.find("[name='page']").val(1);
-					}
-					//formObj.find("[name='page']").val(); //첫번째 페이지 얻은 것
-					//alert(typeStr + ":" + keywordStr);
-					formObj.submit();
-				});
-				
-				//전체 sort시
-				$("#sortColumn").change(function(){
-					alert($(this).val());
-					formObj.find("#sort").val($(this).val());
-					$("#searchBtn").click();
-				});
-				
-				//페이지 클릭시
-				$(".pagination a").click(function(e) { //클래스 pagination 자식중 a 클릭시 
-					alert($(this).attr('href'));
-					e.preventDefault(); //링크취소
-					formObj.find("[name='page']").val($(this).attr('href'));
-					$("#searchBtn").click(); //페이지만달라지고 다시 조회
-					//다시 그 폼에서 이름이 page인걸 찾아서 href가 가지고 있는 숫자를 page(this) 값으로 넣어줌
-					//formObj.submit(); //그리고 나서 submit > list로 다시 감. 그때 pageVO로 넘어가는 것
-					//(controller에서 pagevo가 들어가는 것!)
-				});
-			});
-			
-			//table sort(columnName 클릭시 sort)
-			$(document).ready(function(){ 
-				$('#prdlist th').each(function (column) { 
-					$(this).click(function() { 
-						if($(this).is('.asc')) { 
-							$(this).removeClass('asc'); 
-							$(this).addClass('desc'); 
-							sortdir=-1; 
-						} else { 
-							$(this).addClass('asc'); 
-							$(this).removeClass('desc'); 
-							sortdir=1; 
-						} 
-						
-						$(this).siblings().removeClass('asc'); 
-						$(this).siblings().removeClass('desc'); 
-						var rec = $('#prdlist').find('tbody>tr').get(); 
-						
-						rec.sort(function (a, b) { 
-							var val1 = $(a).children('td').eq(column).text().toUpperCase(); 
-							var val2 = $(b).children('td').eq(column).text().toUpperCase(); 
-							return (val1 < val2)?-sortdir:(val1>val2)?sortdir:0; 
-						}); 
-						$.each(rec, function(index, row) { 
-							$('#prdlist tbody').append(row);
-							}); 
-						}); 
-					}); 
-				});
-
+	
 		</script>
 	</th:block>
  --></body>

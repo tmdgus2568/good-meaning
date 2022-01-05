@@ -8,15 +8,6 @@
 <title>상품등록</title>
 <th:block layout:fragment="style">
 	<style>
-		.modal{
-		  position: absolute;
-		  top: 50%;
-		  left: 50%;
-		  transform: translate(-50%, -50%);
-		}
-/* 		div {
-		  background-color: gray;
-		} */
 		button {
 		  float: right;
 		}
@@ -26,11 +17,11 @@
 </head>
 <body>
 	<div th:fragment="detailModal">
-		<!-- script도 fragment div 안에 넣어줘야 작동됨!  <th:block layout:fragment="script"> 아니야!! -->
+		<!-- script도 fragment div 안에 넣어줘야 작동됨!  <th:block layout:fragment="script"> 아니야!!   style="width: 1000px; height: 100%; justify-content: center; " -->
 		<!-- The Modal -->
-		<div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog">
-				<div class="modal-content" style="width: 1000px; height: 100%; justify-content: center; ">
+		<div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false"  >
+			<div class="modal-dialog  modal-dialog-centered" style="max-width: 100%; width: auto; display: table;">
+				<div class="modal-content" >
 				
 					<div class="modal-header">
 						<h3 class="modal-title">상세 정보</h3>
@@ -101,14 +92,14 @@
 													<input class="optionPrice form-control" pattern="[0-9]+" id="optionPrice" name="optionPrice" type="text" placeholder="직접 입력" onfocus="this.placeholder=''" onblur="this.placeholder='직접 입력'"
 														onkeyup="onKeyup(this);"/>
 												</div>
-												<div class="col-1">
+												<div class="col-2">
 													<input type="button" id="addOptionBtn" value="add_to_photos" class="btn form-control material-icons">
 												</div>
-												<div class="col-1" >
+												<div class="col-2" >
 													<input type="button" id="deleteOption" value="delete" class="btn deleteBtn form-control material-icons"> 
 												</div>
 												<div class="col-2">
-													<input type="text" id="optionNum" name="optionNum" class="form-control"> 
+													<input type="hidden" id="optionNum" name="optionNum" class="form-control"> 
 												</div>
 											</div>
 											<div id="addOptions"></div>
@@ -119,32 +110,17 @@
 									<th>대표이미지</th>
 									<td>
 										<div>
-											<div class="fileBox">
-												<input type="text" class="fileName" name="file" readonly="readonly" >
-												<label for="productMainimg1" class="btn_file">파일선택</label> 
-												<input type="file" id="productMainimg1" name="uploadFile" class="uploadBtn">
-											</div>
-
-											<div class="fileBox">
-												<input type="text" class="fileName form-control" name="file"
-													readonly="readonly" >
-												<label for="productMainimg2" class="btn_file ">파일선택</label> <input
-													type="file" id="productMainimg2" name="uploadFile"
-													class="uploadBtn">
-											</div>
-											<div class="fileBox">
-												<input type="text" class="fileName" name="file"
-													readonly="readonly" >
-												<label for="productMainimg3" class="btn_file">파일선택</label> <input
-													type="file" id="productMainimg3" name="uploadFile"
-													class="uploadBtn">
-											</div>
-											<div class="fileBox">
-												<input type="text" class="fileName" name="file"
-													readonly="readonly">
-												<label for="productMainimg4" class="btn_file">파일선택</label> <input
-													type="file" id="productMainimg4" name="uploadFile"
-													class="uploadBtn">
+											<div class="d-flex justify-content-left" th:each="num : ${#numbers.sequence(1,4)}">
+												<div class="fileBox input-group mb-3">
+													<input type="text" class="fileName form-control " name="file" readonly="readonly"> 
+													<input type="file" th:id="|productMainimg${num}|" name="uploadFile" class="uploadBtn">
+												    <div class="input-group-append">
+												        <label th:for="|productMainimg${num}|" class="input-group-text">Browse</label>
+												    </div>
+												</div> 
+												<div>
+													<input type="button" value="delete" class="btn btnDelete material-icons  ml-2"><!-- hidden="true" -->
+												</div>
 											</div>
 										</div> <!-- <div class="d-flex justify-content-around mb-2" th:each="num : ${#numbers.sequence(1,4)}">
 											<div class="custom-file">
@@ -161,26 +137,18 @@
 								<tr>
 									<th>상세페이지</th>
 									<td>
-										<div class="d-flex justify-content-around">
-											<div class="fileBox">
-												<input type="text" class="fileName" name="file" readonly="readonly"> 
-												<label for="productDetailimg" class="btn_file">파일선택</label> 
+										<div class="d-flex justify-content-left">
+											<div class="fileBox input-group mb-3">
+												<input type="text" class="fileName form-control " name="file" readonly="readonly"> 
 												<input type="file" id="productDetailimg" name="uploadFile" class="uploadBtn">
+												<div class="input-group-append">
+											        <label for="productDetailimg" class="input-group-text">Browse</label>
+											    </div>
 											</div> 
-											<div class="col-3">
-												<input type="button" value="delete" class="btn form-control btnDelete material-icons"><!-- hidden="true" -->
+											<div >
+												<input type="button" value="delete" class="btn btnDelete material-icons ml-2" disabled style="color: white;">
 											</div>
 										</div>
-										<!-- 										<div class="d-flex justify-content-around">
-											<div class="custom-file">
-												<input type = "text" class="bg-danger">
-												<input type="file" class="custom-file-input" id="productDetailimg" name="uploadFile" accept="image/*">
-												<label id="label5" class="custom-file-label" for="productDetailimg">Choose File</label>
-											</div>
-											<div class="col-1">
-												<button class="btn form-control btnDelete" hidden="true">삭제</button>
-											</div>
-										</div> -->
 									</td>
 								</tr>
 								<tr>
@@ -197,20 +165,19 @@
 								</tr>
 								
 							</table>
-							<input type="hidden" name="postingState" value="게시중">
+							<input type="hidden" name="postingState" value="정상">
 							<div class="float-right ">
-								<button type="submit" class="btn btn-secondary" onClick="checkInputData();">수정</button>
-								<button type="button" id="delProdBtn" class="btn btn-danger">삭제</button>
-								<button type="button" class="btn btn-light" data-dismiss="modal">닫기</button>
+								<button type="submit" class="btn" onClick="checkInputData();" style="background-color: #f7edbc;">수정</button>
+								<button type="button" id="delProdBtn" class="btn" onClick="checkInputData();" style="background-color: #fcc0c5;">삭제</button>
 							</div>
 							<div>
-								<input type="text" name="page" value=""> 
-								<input type="text" name="size" value="">
+								<input type="hidden" name="page" value=""> 
+								<input type="hidden" name="size" value="">
 								<div th:each="num : ${#numbers.sequence(0,4)}">
-									<input type="text" name="type" value=""> 
-									<input type="text" name="keyword" value="">
+									<input type="hidden" name="type" value=""> 
+									<input type="hidden" name="keyword" value="">
 								</div>
-								<input type="text" id="sort" name="colmnName" value="">
+								<input type="hidden" id="sort" name="colmnName" value="">
 							</div>
 							
 						</form>
