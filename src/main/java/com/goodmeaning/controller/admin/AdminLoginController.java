@@ -26,7 +26,7 @@ public class AdminLoginController {
 	PasswordEncoder passwordEncoder;
 	
 	//로그인 페이지 
-	@GetMapping ("/auth/admin") //주소창에서 들어오는것! 
+	@GetMapping ("/adminlogin") //주소창에서 들어오는것! 
 	public String getLoginPage() {
 		return "admin/auth/login";
 	}
@@ -42,7 +42,7 @@ public class AdminLoginController {
 			session.setAttribute("user", (UserVO)user.get());
 			return "admin/product/list";
 		}
-		return "redirect:auth/admin";
+		return "redirect:adminlogin";
 	}
 
 	
