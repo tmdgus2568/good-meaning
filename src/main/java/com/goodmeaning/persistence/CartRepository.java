@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.goodmeaning.vo.CartVO;
+import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.UserVO;
 
@@ -16,7 +17,9 @@ import com.goodmeaning.vo.UserVO;
 public interface CartRepository extends CrudRepository<CartVO, Long>{
 	
 	//카트 아이디와 상품을 이용해서 장바구니에 상품이 들었는지 조회
-	public Optional<CartVO> findByProductNumAndUserPhone(ProductVO productNum, UserVO userPhone);	
+	public Optional<CartVO> findByProductNumAndUserPhone(ProductVO productNum, UserVO userPhone);
+	
+	public Optional<CartVO> findByProductNumAndUserPhoneAndProductOption(ProductVO productNum, UserVO userPhone, ProductOptionVO productOption);	
 	
     //장바구니 동일한 상품 레코드 확인
 	@Query(value = "select count(*) from tbl_cart where product_Num=?1 and user_Phone=?2", nativeQuery = true)
