@@ -2,7 +2,10 @@ package com.goodmeaning.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +40,7 @@ import com.goodmeaning.persistence.UserRepository;
 import com.goodmeaning.util.UpLoadFileUtils;
 import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
+import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
 import com.goodmeaning.vo.ReviewAnswerVO;
 import com.goodmeaning.vo.ReviewVO;
@@ -71,43 +75,11 @@ public class ReviewController {
 
 		Long pno = Long.parseLong((String) param.get("pno"));
 		ProductVO product = prepo.findById(pno).orElse(null);
-
-		UserVO user = (UserVO) session.getAttribute("user"); // 로그인 되어있는 유저
+		UserVO user = (UserVO) session.getAttribute("user"); // 로그인 되어 있는 유저
 
 		if (user != null) {
-
-			// 구매 상품 중 작성해야 하는 리뷰가 있는지 판단
-			List<OrderVO> orderlist = orepo.findByUserPhone(user);
-			List<List<OrderDetailVO>> orderdetaillist = new ArrayList<>(); // 중첩 List
-
-			for (OrderVO o : orderlist) {
-				orderdetaillist.add(odrepo.findByOrderNum(o));
-			}
-
-			List<OrderVO> reviewneededlist = new ArrayList<>();
-			List<OrderDetailVO> reviewneededdetaillist = new ArrayList<>();
-
-			for (List<OrderDetailVO> od : orderdetaillist) {
-				for (int i = 0; i < od.size(); i++) {
-					if (od.get(i).getProductNum().getProductNum() == pno) {
-						OrderVO order = orepo.findById(od.get(i).getOrderNum().getOrderNum()).get();
-						reviewneededlist.add(order);
-
-						OrderDetailVO orderdetail = odrepo.findById(od.get(i).getOrderDetailNum()).get();
-						reviewneededdetaillist.add(orderdetail);
-					}
-				}
-			}
-
-			if (reviewneededlist.size() != 0) {
-
-				// 일치 상품 중 가장 최근 주문 내역
-				OrderVO recentOrder = reviewneededlist.get(reviewneededlist.size() - 1);
-				OrderDetailVO recentOrderDetail = odrepo.findByOrderNumAndProductNum(recentOrder, product);
-
-				System.out.println(recentOrderDetail);
-				model.addAttribute("recentOrderDetail", recentOrderDetail);
-			}
+			OrderDetailVO ordetail = odrepo.selectByOrder2(product.getProductNum(), user.getUserPhone());
+			model.addAttribute("ordetail", ordetail);
 		}
 
 		List<ReviewVO> rlist = rrepo.findByProductNum(product);
@@ -155,52 +127,40 @@ public class ReviewController {
 	}
 
 	@RequestMapping(value = "reviewWriteForm", method = RequestMethod.POST)
-	public String reviewWriteForm(@RequestParam Map<String, Object> param, Model model) {
+	public String reviewWriteForm(@RequestParam Map<String, Object> param, Model model, HttpSession session) {
 
 		Long pno = Long.parseLong((String) param.get("pno"));
 		ProductVO product = prepo.findById(pno).orElse(null); // 리뷰를 작성해야 하는 상품
 
-		UserVO user = urepo.findByUserId("1111").get(); // 추후 session에서 get 할 것
+		UserVO user = (UserVO) session.getAttribute("user"); // 추후 session에서 get 할 것
 
-		if (user != null) {
+		List<Object[]> objlist = odrepo.selectByOrder(product.getProductNum(), user.getUserPhone());
 
-			// 구매 상품 중 작성해야 하는 리뷰가 있는지 판단
-			List<OrderVO> orderlist = orepo.findByUserPhone(user);
-			List<List<OrderDetailVO>> orderdetaillist = new ArrayList<>(); // 중첩 List
-
-			for (OrderVO o : orderlist) {
-				orderdetaillist.add(odrepo.findByOrderNum(o));
-			}
-
-			List<OrderVO> reviewneededlist = new ArrayList<>();
-			List<OrderDetailVO> reviewneededdetaillist = new ArrayList<>();
-
-			for (List<OrderDetailVO> od : orderdetaillist) {
-				for (int i = 0; i < od.size(); i++) {
-					if (od.get(i).getProductNum().getProductNum() == pno) {
-						OrderVO order = orepo.findById(od.get(i).getOrderNum().getOrderNum()).get();
-						reviewneededlist.add(order);
-
-						OrderDetailVO orderdetail = odrepo.findById(od.get(i).getOrderDetailNum()).get();
-						reviewneededdetaillist.add(orderdetail);
-					}
-				}
-			}
-
-			if (reviewneededlist.size() != 0) {
-
-				// 일치 상품 중 가장 최근 주문 내역
-				OrderVO recentOrder = reviewneededlist.get(reviewneededlist.size() - 1);
-				OrderDetailVO recentOrderDetail = odrepo.findByOrderNumAndProductNum(recentOrder, product);
-
-				System.out.println(recentOrderDetail);
-				model.addAttribute("recentOrder", recentOrder);
-				model.addAttribute("recentOrderDetail", recentOrderDetail);
-			}
-		}
-
+		Object[] obj = objlist.get(0);
+		
+		System.out.println(objlist.size());
+		System.out.println(objlist.get(0)[0]);
+		System.out.println(objlist.get(0)[1]);
+		System.out.println(objlist.get(0)[2]);
+		System.out.println(objlist.get(0)[3]);
+		System.out.println(objlist.get(0)[4]);
+		System.out.println(objlist.get(0)[5]);
+		System.out.println(objlist.get(0)[6]);
+		
+		
+		OrderDetailVO orderdetail = OrderDetailVO.builder()
+					.orderDetailNum(((BigInteger)obj[0]).longValue())
+					.orderDetailPrice((Integer)obj[1])
+					.orderDetailQuantity((Integer)obj[2])
+					//.orderNum((OrderVO)obj[3])
+					//.productNum((ProductVO)obj[4])
+					//.productOption(obj[5])
+					.build();
+		
+		model.addAttribute("date",(Date)obj[6]);
 		model.addAttribute("product", product);
 		model.addAttribute("user", user);
+		model.addAttribute("orderdetail", orderdetail);
 
 		return "user/product/productReviewForm";
 	}
@@ -257,7 +217,7 @@ public class ReviewController {
 
 			}
 		}
-		
+
 		rrepo.save(review);
 		// return "redirect:productReview?pno=" + productNum2;
 
