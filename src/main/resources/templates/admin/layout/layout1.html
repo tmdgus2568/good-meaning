@@ -74,6 +74,17 @@
 		text-decoration-line: none;
 		color: #f3969a;
 	}
+	body .content{
+	  height: auto;
+ 	  min-height: 100%;
+	  padding-bottom: 120px; 
+	}
+	footer{
+	  height: 180px;
+	  position : relative;
+	  transform : translateY(-100%);
+	}
+
 </style>
 <script>
 	console.log("부모에서 작성된 JavaScript");
@@ -84,7 +95,7 @@
 	<header th:insert="admin/layout/header :: header"></header>
 	<div class="d-flex justify-content-start">
 		<div class="sidenav bg-dark panel panel-default" th:insert="admin/layout/aside :: aside"></div>
-		<div class="page container-fluid w-75 panel panel-default" layout:fragment="content"></div >
+		<div class="page container-fluid w-75 panel panel-default content" layout:fragment="content"></div >
 	</div>
 	<footer th:replace="admin/layout/footer :: footer"></footer>
 	<th:block layout:fragment="script"></th:block>
