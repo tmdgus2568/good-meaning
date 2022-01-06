@@ -78,16 +78,14 @@
 				<br>
 					<td><img th:src="${product.productMainimg1}" width="100px"></td>
 					<td> 상품명 : <a th:text="${product.productName}"
-						style="font-weight: bold"></a> <a
-						th:if="${recentOrderDetail.productOption != null}"><br> <span
-							th::value="${recentOrderDetail.productOption.optionName}"></span></a>
+						style="font-weight: bold"></a> 
+						<a th:if="${orderdetail.productOption != null}"><br> 
+						<span th::value="${orderdetail.productOption.optionName}"></span></a>
 						<br> 상품가격 : <a th:text="${product.productPrice}"></a><br>
-						구매수량 : <a th:text="${recentOrderDetail.orderDetailQuantity}"></a><br>
-						구매날짜 : <a th:text="${recentOrder.orderDate}"></a> <input
-						type="hidden" id="productNum2" name="productNum2"
-						th:value="${product.productNum}"> <input type="hidden"
-						id="recentOrderDetail2" name="recentOrderDetail2"
-						th:value="${recentOrderDetail.orderDetailNum}">
+						구매수량 : <a th:text="${orderdetail.orderDetailQuantity}"></a><br>
+						구매날짜 : <a th:text="${date}"></a> 
+						<input type="hidden" id="productNum2" name="productNum2" th:value="${product.productNum}">
+						<input type="hidden" id="recentOrderDetail2" name="recentOrderDetail2" th:value="${orderdetail.orderDetailNum}">
 					</td>
 				</tr>
 				<tr>
