@@ -51,15 +51,6 @@ import com.querydsl.core.types.Predicate;
 public class MypageController {
 	
 	
-	@Value("${cloud.aws.s3.bucket}")
-	String bucketName;
-	  
-	@Value("${cloud.aws.credentials.accessKey}")
-	String accessKey;
-	  
-	@Value("${cloud.aws.credentials.secretKey}")
-	String secretKey;
-	
 	@Autowired
 	MypageService mypageService;
 	@Autowired
@@ -88,7 +79,7 @@ public class MypageController {
 	// 회원수정 
 	@RequestMapping(value = "/mypage/user", method = RequestMethod.GET)
 	public String updateUserForm(Model model, HttpSession session) {
-		System.out.println("accessKey : " + accessKey);
+
 		UserVO user = (UserVO) session.getAttribute("user");
 		
 		Optional<UserVO> userInfo = mypageService.findUser(user.getUserPhone());

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.goodmeaning.aws.S3Service;
 import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.ProductRepository;
@@ -69,6 +71,9 @@ public class ReviewController {
 
 	@Autowired
 	OrderDetailRepository odrepo;
+	
+	@Autowired
+	S3Service s3Service;
 
 	@RequestMapping(value = "/productReview", method = RequestMethod.GET)
 	public String selectAllReview(@RequestParam Map<String, Object> param, Model model, HttpSession session) {
@@ -194,10 +199,11 @@ public class ReviewController {
 				String fileName = null;
 				if (uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
 					try {
-						fileName = UpLoadFileUtils.fileUpload(uploadPath, uploadfile.getOriginalFilename(),
-								uploadfile.getBytes(), "");
-						fileName = "reviewupload" + File.separator + fileName;
+
+						fileName = "reviewupload" + File.separator + UUID.randomUUID() + uploadfile.getOriginalFilename();
 						System.out.println("fileName=" + fileName);
+						
+						s3Service.uploadFile(uploadfile, fileName) ;
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
