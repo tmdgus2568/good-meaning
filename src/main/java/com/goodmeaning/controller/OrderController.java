@@ -52,25 +52,27 @@ public class OrderController {
 
 	@GetMapping("/ordernow")	
 	public String goOrderNow(
-			@RequestParam(value = "optionnum[]", required = false) List<Long> optionnum,
-			@RequestParam(value = "opquantity[]", required = false) List<Integer> opquantity, Long pronum,
+			@RequestParam(value = "optionnum", required = false) List<Long> optionnum,
+			@RequestParam(value = "opquantity", required = false) Integer[] opquantity, Long pronum,
 			Integer proquantity, HttpSession session, Model model) {
 		System.out.println("pronum=" + pronum);
-		System.out.println("opquantity=" + opquantity);
+		System.out.println("옵션수량opquantity"+Arrays.toString(opquantity));
 		UserVO user = (UserVO)session.getAttribute("user"); 
 		ProductVO product = productService.selectById(pronum);
 		List<ProductOptionVO> optionList = new ArrayList<>();
 		 
-		if (opquantity == null) {//옵션이 없을 때 상품에서 가격 가져옴
+		if (opquantity.length == 0) {//옵션이 없을 때 상품에서 가격 가져옴
 				model.addAttribute("proquantity", proquantity);
-				System.out.println("proquantity=" + proquantity);
+				System.out.println("상품수량proquantity=" + proquantity);
 		}else { 
 			
 	 
-			for (int i = 0; opquantity != null && i < opquantity.size(); i++) {
+			for (int i = 0; opquantity != null && i < opquantity.length; i++) {
 				ProductOptionVO option = porepo.findById(optionnum.get(i)).get();
+				System.out.println("optionnum"+optionnum);
 				optionList.add(option);
 			}
+			System.out.println(optionList);
 	
 		}
 		model.addAttribute("product", product);//productVO
