@@ -325,7 +325,7 @@ window.onload = function() {
 		var pronum = productnum;	//상품번호
 		
 		var choosenoption = document.getElementsByClassName("calloption");	//선택되어진 옵션의 수
-		var proquantity = null;	//상품수량
+		var proquantity = 0;	//상품수량
 		
 		var optionnum = [];	//옵션넘버
 		var opquantity = [];	//옵션수량
@@ -339,25 +339,20 @@ window.onload = function() {
 			}
 		}
 		
-		 $.ajax({
-		        url : '/ordernow',
-		        type : 'POST',
-		        data : {
+		var obj =   {
 		        	pronum : pronum, 
 		        	proquantity : proquantity, 
 		        	optionnum : optionnum, 
 		        	opquantity : opquantity
-		        	},
-		        	
-		        success : function(){
-		            alert("요청되었습니다.")
-		            location.href="/ordernow";
-		        }       
-		    }); 
-		 console.log(pronum);
-		 console.log(proquantity);
-		 console.log(optionnum);
-		 console.log(opquantity);
+		        	};
+		alert("해당 상품을 구매하시겠습니까?");
+		var url ='/ordernow';
+		Object.keys(obj).forEach(function(key, index){
+			url = url + (index==0?"?":"&") + key + "=" + obj[key];
+		});
+		location.href = url;
+		
+		return;
 		 
 	}
 	

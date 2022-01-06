@@ -12,7 +12,8 @@
 	<!-- 재정의 받는 곳-->
 <form action="/cartlist" method="post" id="cartlistForm" name="cartlistForm">
 	<div class="panel panel-default" layout:fragment="content" align="center">
-		<table  class="table table-striped table-bordered table-hover" >
+	<table class="table table-striped table-bordered table-hover" >
+		<thead>
 			<tr>
 				<th>	            	
 					<input type="checkbox" name="ckb" id="checkall" onclick="checkAll()">전체선택					
@@ -21,12 +22,15 @@
 				<th>상품명</th> 
 				<th>옵션</th>
 				<th>수량</th> 
-				<th>개당가격</th> 
+				<th>판매가</th> 
 				<th>추가금액</th> 
-				<!-- <th>총금액</th> -->
-				<th></th>
-				
+				<th>합계</th>
+				<th></th>				
 			</tr>
+		</thead>	
+		<tr th:if="${#lists.size(clist)}==0">
+			<td colspan="9">장바구니에 담긴 상품이 없습니다.</td>
+		</tr>
 		<tr th:each="cart:${clist}">
 			<td>
 				<input type="checkbox" name="cartChkBox" th:value="${cart[5]}">			
@@ -37,21 +41,20 @@
 			</td>
 			<td th:text="${cart[1]}"></td>
 			<td th:text="${cart[7]==null?'없음':cart[7]}"></td>
-						
+		<!-- 수량 -->				
 			<td>	       		  		
 	       		<input type="number" name="countName" th:id="'count' + ${cart[5]}"
 	       		 th:value="${cart[2]}" min="1" onchange="changeCount(this)"> 	       		   		      		
        		</td>
-       	<!-- 단가 -->				
+       	<!-- 판매가 -->				
 			<td th:id="'price' + ${cart[5]}" th:data-price="${cart[3]}" 
 				th:text="|${#numbers.formatInteger(cart[3], 0, 'COMMA')}원|"></td>
 		<!-- 추가금액 -->	
 			<td th:id="'extraPrice' + ${cart[5]}" th:data-extra="${cart[8]}"
 				th:text="|${#numbers.formatInteger(cart[8]!=null?cart[8]:0, 0, 'COMMA')}원|"></td>
-		<!-- 총금액 		
-			<td  th:id="'totalPrice' + ${cart[5]}" th:name="totalPriceName"
-				th:text="|${#numbers.formatInteger(cart[4], 0, 'COMMA')}원|"></td>	-->	
-				
+		<!-- 합계  -->	
+			<td th:id="'totalPrice' + ${cart[5]}" th:class="totalPrice"></td>
+								
 			<td>
 				<button type="button" class="btn btn-danger btndelete" 
 			       th:onclick="javascript:deleteCart([[${cart[5]}]])">삭제</button> 
@@ -59,6 +62,10 @@
 			<td><input type="hidden" th:id="cartnum" th:value="${cart[5]}"></td>
 		</tr>
 		</table>
+		<!-- <div align="right">
+			<input type="button" value="전체삭제" class="btn btn-danger btn-sm" onclick="deleteValue();">
+		</div> -->
+		<br>
 		<h5>
 		</h5>
 		<h2 class="text-center">
@@ -74,29 +81,36 @@
 <th:block layout:fragment="script">
 	<script>
 	
-
 	function deleteCart(cartNo){//삭제
 		alert("담아놓은 상품을 정말 삭제하시겠습니까?");
 		location.href="cart/delete?cartNum=" + cartNo;		 
 	}
 	
-	function updateCartItemCount(cartNum, count){
-        var url = "/cartlist/" + cartNum+"?count=" + count;
-
-        $.ajax({
-            url      : url,
-            type     : "PATCH",
-            dataType : "json",
-            cache   : false, //캐쉬 막아서 현재 값 호출
-            success  : function(result, status){
-                console.log("cartNum count update success");
-            },
-        });
-    }
-
+	function deleteAllCart(cartNo){//전체삭제
+		alert("담아놓은 상품을 정말 삭제하시겠습니까?");
+		location.href="cart/delete?cartNum=" + cartNo;		 
+	}
 	
-	$(document).ready(function(){//주문상품 체크하거나 해제할 경우 총 주문액
-		$("input[name='cartChkBox']").change(function(){
+	function updateCartItemCount(cartNum, count){//수량 변경
+		if (confirm("수량을 변경하시겠습니까?") == true){//확인
+			var url = "/cartlist/" + cartNum+"?count=" + count;
+			$.ajax({
+		           url      : url,
+		           type     : "PATCH",
+		           dataType : "json",
+		           cache   : false, //캐쉬 막아서 현재 값 호출
+		           success  : function(result, status){
+					console.log("cartNum count update success");
+		           },
+		    });		    
+		 }else{   //취소
+		     return;
+		 }      
+    }	
+	
+	$(document).ready(function(){
+		
+		$("input[name='cartChkBox']").change(function(){//주문상품 체크하거나 해제할 경우 총 주문액	
 			//alert("input[name='cartChkBox']");
 			getOrderTotalPrice();
 		});
@@ -121,13 +135,20 @@
             	console.log("extraPrice:"+extraPrice);
             }
             orderTotalPrice += (price*count)+(extraPrice*count);
+            
+            //합계 계산되는 코드
+            totalPrice = (count*price)+(extraPrice*count);
+           	$("#totalPrice" + cartNum).html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");
 		   							
 		});
 		
 		if(orderTotalPrice<50000) orderTotalPrice+=3000;
 			console.log(orderTotalPrice);
 		
-		$("#orderTotalPrice").html(orderTotalPrice+'원');
+		
+		$("#orderTotalPrice").html(orderTotalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'원');
+		
+		
 	}
 	
 	function changeCount(obj){//장바구니에 들어있는 수량 변경시 상품 가격과 수량 곱해줌
@@ -142,15 +163,8 @@
         }
         
         totalPrice = (count*price)+(extraPrice*count);
-        
-        
-        console.log(count);
-        console.log(cartNum);
-        console.log(price);
-        console.log("extraPrice:"+extraPrice);
-        console.log("extraPrice:"+totalPrice);
          		 
-        $("#totalPrice" + cartNum).html(totalPrice+"원");
+        $("#totalPrice" + cartNum).html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");
         getOrderTotalPrice();
         updateCartItemCount(cartNum, count);
 	}
