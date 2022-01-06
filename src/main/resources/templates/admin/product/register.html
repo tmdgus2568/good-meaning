@@ -136,6 +136,20 @@
 	<th:block layout:fragment="script">
 		<script type="text/javascript" src="/js/productRegister.js">
 		</script>
+		<script>
+		//상품등록 성공시 alert
+		
+		$(function() {
+
+			var msg = "[[${result}]]";
+			
+			if(msg != "") {
+				alert(msg);
+				console.log(msg);
+			}
+		})
+
+		</script>
 	</th:block>
 </body>
 </html>
