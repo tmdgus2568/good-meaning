@@ -124,10 +124,10 @@
 							style="display: none">
 							<a th:if="${review.reviewMainimg1} != null"><img
 								th:id="|reviewimg1${status.count}|"
-								th:src="|/${review.reviewMainimg1}|" th:width="200"></a> <a
+								th:src="|https://good-meaning.s3.ap-northeast-2.amazonaws.com/${review.reviewMainimg1}|" th:width="200"></a> <a
 								th:if="${review.reviewMainimg2} != null"><img
 								th:id="|reviewimg2${status.count}|"
-								th:src="|/${review.reviewMainimg2}|" th:width="200"></a>
+								th:src="|https://good-meaning.s3.ap-northeast-2.amazonaws.com/${review.reviewMainimg2}|" th:width="200"></a>
 						</div>
 
 						<div th:id="|replies${status.count}|" style="display: none">
