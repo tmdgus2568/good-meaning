@@ -1,10 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="user/layout/layout_main">
+
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>굿미닝</title>
+<style>
+	table{
+		border-collapse: separate;
+		border-spacing: 0 1rem;
+	}
+	.title{
+		color:black; text-align:left; width:700px
+	}
+	
+	.product_name{
+		font-size:0.8em;
+	}
+	
+	.product_price{
+		font-size:0.6px;
+	}
+	
+	td{
+		width:175px;
+	}
+</style>
 </head>
 <body>
-<h1>메인화면</h1>
+<div class="panel panel-default" layout:fragment="content">
+	<br>
+	<br>
+	<div align="center">
+		<h4 class="title">NEW</h4>
+		
+		<table>
+			<tr>
+				<td th:if="${newlist1 != null}" th:each="new1:${newlist1}">
+					<div align="center">
+						<img
+					th:src="${new1.productMainimg1}"
+					th:onmouseover="this.src=[[${new1.productMainimg2}]]"
+					th:onmouseout="this.src=[[${new1.productMainimg1}]]"
+					th:width="100">
+						<br>
+						<span class="product_name" th:text="${new1.productName}"></span>
+						<br>
+						<span class="product_price" th:text="|${#numbers.formatInteger(new1.productPrice, 0, 'COMMA')}원|"></span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td th:if="${newlist2 != null}" th:each="new2:${newlist2}">
+					<div align="center">
+						<img
+					th:src="${new2.productMainimg1}"
+					th:onmouseover="this.src=[[${new2.productMainimg2}]]"
+					th:onmouseout="this.src=[[${new2.productMainimg1}]]"
+					th:width="100">
+						<br>
+						<span class="product_name" th:text="${new2.productName}"></span>
+						<br>
+						<span class="product_price" th:text="|${#numbers.formatInteger(new2.productPrice, 0, 'COMMA')}원|"></span>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+</div>
 </body>
+<th:block>
+<script>
+</script>
+</th:block>
 </html>
