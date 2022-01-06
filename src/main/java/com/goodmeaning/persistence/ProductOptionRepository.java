@@ -1,6 +1,7 @@
 package com.goodmeaning.persistence;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,6 @@ import com.goodmeaning.vo.ProductOptionVO;
 import com.goodmeaning.vo.ProductVO;
 
 public interface ProductOptionRepository extends CrudRepository<ProductOptionVO, Long> {
-
 	
 	public List<ProductOptionVO> findByProductNum(ProductVO product);
 	

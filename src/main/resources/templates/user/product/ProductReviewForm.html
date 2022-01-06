@@ -76,11 +76,11 @@
 			<tbody>
 				<tr>
 				<br>
-					<td><img th:src="${product.productMainimg1}" width="100px"></td>
+					<td><img th:src="${product.productMainimg1}" width="110px"></td>
 					<td> 상품명 : <a th:text="${product.productName}"
 						style="font-weight: bold"></a> 
-						<a th:if="${orderdetail.productOption != null}"><br> 
-						<span th::value="${orderdetail.productOption.optionName}"></span></a>
+						<a th:if="${orderdetail.productOption != null}"><br>
+						옵션명 : <span th:text="${orderdetail.productOption.optionName}"></span></a>
 						<br> 상품가격 : <a th:text="${product.productPrice}"></a><br>
 						구매수량 : <a th:text="${orderdetail.orderDetailQuantity}"></a><br>
 						구매날짜 : <a th:text="${date}"></a> 
@@ -123,6 +123,7 @@
 		</table>
 		<br>
 		<button type="button" class="btn btn-secondary"  id="reviewinsertjs" value="리뷰작성">리뷰작성</button>
+		<br><br>
 	</form>
 </body>
 </html>
