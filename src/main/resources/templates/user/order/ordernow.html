@@ -25,38 +25,51 @@
 			<tr>
 				<th>상품이미지</th>
 				<th>상품정보</th>
+				<th>옵션</th>
 				<th>수량</th>
 				<th>판매가</th>
-				<th>추가금액</th>
+				<th>추가금액</th> 
 				<!-- <th>합계</th> --> 
 			</tr>
 		</thead>
-		<tr class="product" id="list" th:each="item:${olist}">
+		<tr class="product" id="list" ><!-- th:each="item:${olist}" -->
 			<td>
-				<img th:src="${item[0]}" th:width="150">
+				<img th:src="${product.productMainimg1}" th:width="150">
 			</td>
-			<td align="left">
-				<h4 id="productName" th:text="${item[1]}"></h4>                
-				<span class="optionName" id="optionName" th:data-poname="${item[6]}" 
-                    th:text="|옵션: ${item[6]==null?'[없음]':item[6]}|" style="color:grey;"></span>
+			<td>
+				<span id="productName" th:text="${product.productName}"></span>             
 			</td>
-            <!-- 수랑 -->
-            <td>
-            	<span class="cartCount" id="cartCount" th:data-count="${item[2]}" 
-                	th:text="|${item[2]}|" style="color:grey;"></span>
+			
+			<!-- 옵션 	${#lists.size(arrList)}-->
+			<td>
+			<div th:each="item:${optionList}">
+				<span th:text="${item.optionName}"></span>
+			</div>
+			</td>        
+			<!-- 수량 -->	
+			<td class="count" id="count" th:data-count="${proquantity}" 
+                	if="${#lists.size(proquantity)!=0}" th:text="${proquantity}" style="color:grey;">
             </td>
-            <!-- 판매가 -->    
-			<td><span class="price" id="price" th:data-price="${item[3]}" 
-                	th:text="${item[3]}+'원'"></span>
+            <!-- <td class="count" id="count" th:data-count="${count}" 
+                	unless="${#lists.size(proquantity)!=0}" th:text="${opquantity}" style="color:grey;">
+			</td> -->
+			
+			<!-- 판매가 -->	
+			<td><span class="price" id="price" th:data-price="${product.productPrice}" 
+                	th:text="|${#numbers.formatInteger(product.productPrice, 0, 'COMMA')}원|"></span>
             </td>
             <!-- 추가금액 -->	
-			<td><span class="extraPrice" id="extraPrice" th:data-extra="${item[8]}"
-				th:text="|${#numbers.formatInteger(item[8]!=null?item[8]:0, 0, 'COMMA')}원|"></span>
+			<td>
+			<div th:each="item:${optionList}">
+				<span th:text="${item.extraprice}"></span>
+			</div>
 			</td>
-            <td>
-            	<input type="hidden" id="cartNum" th:value="${item[4]}" >
-            	<input type="hidden" name="productNum" id="productNum" th:value="${item[5]}" >
-            	<input type="hidden" name="optionNum" id="optionNum" th:value="${item[7]==null?0:item[7]}" >
+            <td >            	
+            	<input type="hidden" name="productNum" id="productNum" th:value="${product.productNum}" >
+            	<!-- 옵션Num -->
+            	<div th:each="item:${optionList}"><!-- ${#lists.size(item.optionNum)} -->
+            		<input type="hidden" name="optionNum" id="optionNum" th:value="${item.optionNum}" >					
+				</div>
             </td>
 		</tr>
 	</table>
@@ -66,8 +79,6 @@
 		</h2>     
 		<div style="font-size: 15px; font-weight: bold;">배송비:3,000원 (50,000원 이상 무료배송)</div>  	
 		<br>
-	
-	<!-- 주문form -->
 	
 	<h4 align="left">주문정보</h4>
 		<table id=sender_info class="table table-bordered">
@@ -111,6 +122,13 @@
 		var userEmail = $('#userEmail').text();//주문자이메일
 		var userAddress = $('#userAddress').text();//주소
 		var userPostcode = $('#userPostcode').text();//우편번호
+		
+		console.log(productName);
+		console.log(userName);
+		console.log(customer_uid);
+		console.log(userEmail);
+		console.log(userAddress);
+		console.log(userPostcode);
 			
 		IMP.init("imp03054995"); // 예: imp00000000
 		var msg;		
@@ -138,7 +156,7 @@
 	        	
 	        	//결제 완료시 OrderVo, OrderDetailVO에 저장하기 위한
 	        	var orderDetailQuantityArr = []
-	        	$(".cartCount").each(function(index, item){     		 
+	        	$(".count").each(function(index, item){     		 
 	        		orderDetailQuantityArr.push($(item).attr("data-count"));
 	 			});
 	
@@ -176,7 +194,7 @@
 	        	 };
 	        	console.log(JSON.stringify(orderInfo));
 	        	$.ajax({
-	        		url: "orderSave",
+	        		url: "/orderSave",
 	        		type: "post",
 	        		data:orderInfo,
 	        		success: function(responseData){
@@ -190,9 +208,9 @@
 		        	msg = '[결제 실패]\n';
 		        	msg += rsp.error_msg;
 		        	console.log(msg);
-		        	alert(msg+'. 장바구니로 돌아갑니다.');
+		        	alert(msg+'. 구매 페이지로 돌아갑니다.');
 		            //결제 실패시 이동할 페이지
-		        	location.href="/cartlist";
+		        	location.replace;
 	       		}
 	    	});
 		});
@@ -204,7 +222,7 @@
 			
 	        var price = Number($(this).find("span#price").attr("data-price"));
 	        var extraPrice = Number($(this).find("span#extraPrice").attr("data-extra"));
-	        var count = Number($(this).find("span#cartCount").attr("data-count"));
+	        var count = Number($(this).find("#count").attr("data-count"));
 		   	
 	        if(isNaN(extraPrice)){
             	extraPrice = 0;
@@ -218,8 +236,6 @@
 		 	
 		$("#orderTotalPrice").html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'원');
 	}
-</script>
-</th:block>
-
+</script> -->
 </body>
 </html>
