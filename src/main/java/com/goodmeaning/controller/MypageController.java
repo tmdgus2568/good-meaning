@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.goodmeaning.aws.S3Service;
 import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.ProductOptionRepository;
@@ -47,8 +49,16 @@ import com.querydsl.core.types.Predicate;
 
 @Controller
 public class MypageController {
-	@Value("${spring.servlet.multipart.location}")
-	String locationPath;
+	
+	
+	@Value("${cloud.aws.s3.bucket}")
+	String bucketName;
+	  
+	@Value("${cloud.aws.credentials.accessKey}")
+	String accessKey;
+	  
+	@Value("${cloud.aws.credentials.secretKey}")
+	String secretKey;
 	
 	@Autowired
 	MypageService mypageService;
@@ -70,11 +80,15 @@ public class MypageController {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder; // security config에서 Bean생성
+	
+	@Autowired
+	S3Service s3Service;
 
 	
 	// 회원수정 
 	@RequestMapping(value = "/mypage/user", method = RequestMethod.GET)
 	public String updateUserForm(Model model, HttpSession session) {
+		System.out.println("accessKey : " + accessKey);
 		UserVO user = (UserVO) session.getAttribute("user");
 		
 		Optional<UserVO> userInfo = mypageService.findUser(user.getUserPhone());
@@ -218,7 +232,7 @@ public class MypageController {
 		List<String> fileNames = new ArrayList<>();
 
 		// 이미지를 업로드할 폴더를 설정 = /uploadPath/imgUpload (저장하려고 찾아가는 것)
-		String uploadPath = locationPath + File.separator + "reviewupload";
+//		String uploadPath = locationPath + File.separator + "reviewupload";
 		// 위 폴더 기준 연월 폴더 생성
 		// String ymdPath = UpLoadFileUtils.calcPath(uploadPath);
 		int i = 0;
@@ -230,10 +244,11 @@ public class MypageController {
 				String fileName = null;
 				if (uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
 					try {
-						fileName = UpLoadFileUtils.fileUpload(uploadPath, uploadfile.getOriginalFilename(),
-								uploadfile.getBytes(), "");
-						fileName = "reviewupload" + File.separator + fileName;
+
+						fileName = "reviewupload" + File.separator + UUID.randomUUID() + uploadfile.getOriginalFilename();
 						System.out.println("fileName=" + fileName);
+						
+						s3Service.uploadFile(uploadfile, fileName) ;
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
