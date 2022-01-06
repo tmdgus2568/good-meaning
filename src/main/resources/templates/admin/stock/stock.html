@@ -35,23 +35,23 @@
 				<div class="form-check-inline">
 					<label class="form-check-label">
 					<input type="radio" class="form-check-input" id="all" name="stockState" value="전체"
-						th:checked="${pageVO.keyword==null || pageVO.keyword[4]=='전체'}">전체</label>
+						th:checked="${pageVO.keyword==null || pageVO.keyword[2]=='전체'}">전체</label>
 				</div>
 				<div class="form-check-inline">
 					<label class="form-check-label">
 					<input type="radio" class="form-check-input" value="정상" name="stockState"
-						th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='정상'}">정상</label>
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[2]=='정상'}">정상</label>
 				</div>
 				<div class="form-check-inline">
 					<label class="form-check-label">
 					<input type="radio" class="form-check-input" value="부족" name="stockState"
-						th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='부족'}">부족</label>
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[2]=='부족'}">부족</label>
 				</div>
 				<div class="form-check-inline">
 					<label class="form-check-label">
 					<input type="radio"
 						class="form-check-input" value="품절" name="stockState" 
-						th:checked="${pageVO.keyword!=null && pageVO.keyword[4]=='품절'}">품절</label>
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[2]=='품절'}">품절</label>
 				</div>
 			</div>
 			<div class="d-flex justify-content-center mt-4">
@@ -110,6 +110,9 @@
 					</tr>
 				</thead>
 				<tbody id="myTable">
+					<tr th:if="${#lists.size(stockPaging.result.content)}==0">
+						<td colspan="10" align="center">검색 조건에 맞는 상품이 없습니다.</td>
+					</tr>
 					<tr th:each="product, state:${stockPaging.result.content}" >
 						<td th:text="${state.count + (stockPaging.currentPageNum-1) * stockPaging.currentPage.pageSize}"></td>
 						<td th:text="${product[0]}"></td> 
@@ -235,10 +238,10 @@
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
 		//입고성공시 alert
-		var msg = [[${insertResult}]];
-				if(msg != null) {
-					alert(msg);
-				}
+/* 		var msg = [[${result}]];
+		if(msg != null) {
+			alert(msg);
+		} */
 		
 		//재고 상태 입력
 		var stockQuantity = document.getElementsByClassName("stockQuantity");
@@ -263,9 +266,6 @@
 			var ono = tds[3].innerHTML;
 			
 			if (ono== "" ) ono = 0;
-			
-			alert(ono);
-			alert(pno);
 			
 			$.ajax({
 	            url:"/admin/stockinfo?productNum=" + pno + "&optionNum=" + ono, 
@@ -301,9 +301,9 @@
 		}
 		
 		var formObj = $("#f1");
+		
 		//페이지 클릭시
 		$(".pagination a").click(function(e) { //클래스 pagination 자식중 a 클릭시 
-			alert($(this).attr('href'));
 			e.preventDefault(); //링크취소
 			formObj.find("[name='page']").val($(this).attr('href'));
 			$("#searchBtn").click(); //페이지만달라지고 다시 조회
@@ -311,6 +311,19 @@
 			//formObj.submit(); //그리고 나서 submit > list로 다시 감. 그때 pageVO로 넘어가는 것
 			//(controller에서 pagevo가 들어가는 것!)
 		});
+		
+    	//저장하고 난 후 input에 정보남기기
+    	var columnName = ["productName", "productNum", "stockState"];
+    	var columnValue = [[${pageVO.keyword}]];  //배열
+    	
+    	for(var idx = 0; columnValue!=null && idx < columnName.length; idx++){
+    		formObj.find("input[name='type']").eq(idx).val(columnName[idx]);
+    		formObj.find("input[name='keyword']").eq(idx).val(columnValue[idx]);
+    	}
+		 
+		if(formObj.find("[name='page']").val()==''){
+			formObj.find("[name='page']").val(1);
+		}
 		
 		//조건 검색시
 		$("#searchBtn").click(function() {
@@ -321,7 +334,7 @@
 			 
 			formObj.find("input[name='keyword']").eq(0).val($("#searchKeyword1").val());
 			formObj.find("input[name='keyword']").eq(1).val($("#searchKeyword2").val());
-			formObj.find("input[name='keyword']").eq(4).val($("input:radio[name='stockState']:checked").val());
+			formObj.find("input[name='keyword']").eq(2).val($("input:radio[name='stockState']:checked").val());
 
 			if(formObj.find("[name='page']").val()==''){
 				formObj.find("[name='page']").val(1);
@@ -350,21 +363,22 @@
 			$("#searchBtn").click();
 		});
 		
+		
 		// 입고등록 시 알림창
-		$("#myfrm").submit(function() {
+/* 		$("#myfrm").submit(function() {
 				if(confirm('입고등록을 하시겠습니까?') == true){
 					return true;
 				}
 				alert('취소되었습니다.');
 				return false;
-		});
+		}); */
 		
 		// 입고등록 시 해당페이지정보 가져가기
 		function checkInputData(){
 			$("#myfrm").find("input[name='page']").val($("#f1").find("input[name='page']").val());
 			$("#myfrm").find("input[name='size']").val($("#f1").find("input[name='size']").val());
 			$("#myfrm").find("input[name='colmnName']").val($("#f1").find("input[name='colmnName']").val());
-			for(var i = 0; i <2; i++) {
+			for(var i = 0; i <3; i++) {
 				$("#myfrm").find("input[name='type']").eq(i).val($("#f1").find("input[name='type']").eq(i).val());
 				$("#myfrm").find("input[name='keyword']").eq(i).val($("#f1").find("input[name='keyword']").eq(i).val());
 			}

@@ -17,7 +17,7 @@
 <body>
 
 	<div layout:fragment="content">
-		<h4>상품검색</h4>
+		<h3>📑 재고현황</h3>
 		<hr>
 <!-- 		<div class="mt-4">
 			<div class="input-group mb-3">
@@ -193,11 +193,13 @@
 					</tr>
 				</thead>
 				
-				<tbody id="myTable">
-					<th:block th:each="order, state:${orderHistory.result.content}">
-						<tr th:each="detail, s:${order.details}" >
+				<tbody id="myTable" th:with="num = 0">
+					<th:block th:each="order, state:${orderHistory.result.content}" >
+					    
+						<tr th:each="detail, s:${order.details}" th:with="num = ${num+1}">
 <!-- 							<td th:text="${orderHistory.currentPageNum}"></td> -->
-							<td th:text="${state.count + (orderHistory.currentPageNum-1) * orderHistory.currentPage.pageSize}"></td>
+							<td class="tdNum"></td>
+							<td th:text="${num + (orderHistory.currentPageNum-1) * orderHistory.currentPage.pageSize}"></td>
 							<td th:text="${order.orderNum}"></td>
 							<td th:text="${detail.orderDetailNum}"></td>
 							<td th:text="${detail.productNum.productNum}"></td>
@@ -255,6 +257,12 @@
 	</div> -->
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
+			$(".tdNum").each(function(index, item){
+	    		var trNum = ($(item).closest('tr').prevAll().length +1);
+	    		//+ [[${orderHistory.currentPageNum-1}]] * [[${orderHistory.currentPage.pageSize{]]
+	            $(item).text(trNum);
+    		});
+			
 			$("#historyTab").click(function(){
 				$(this).find("a").addClass("active").css("background-color", "#f7edbc");
 				$("#history").addClass("show");

@@ -49,7 +49,7 @@ public class AdminProductService {
 
 	 
 	// 상품등록
-	public ProductVO insertProduct(ProductVO product, String[] optionName, int[] optionPrice, String optionCategory) {
+	public String insertProduct(ProductVO product, String[] optionName, int[] optionPrice, String optionCategory) {
 		ProductVO newproduct = productRepo.save(product); // 객체생성후 저장
 		System.out.println(newproduct);
 		for (int i = 0; i < optionName.length; i++) {
@@ -61,8 +61,10 @@ public class AdminProductService {
 			System.out.println(option);
 			productOptionRepo.save(option);
 		}
+		
+		String result = newproduct==null?"실패하였습니다😭 다시 시도해주세요." : "등록되었습니다👏";
 
-		return newproduct;
+		return result;
 	}
 
 	// 상품딕테일
@@ -78,18 +80,19 @@ public class AdminProductService {
 
 	
 	@Transactional
-	public int deleteByProductNum(Long productNum) {
+	public String deleteByProductNum(Long productNum) {
 		ProductVO product = productRepo.findById(productNum).get();
+		//해당 상품에 주문내역있다면 삭제불가
 		if(orderDetailRepo.countByProductNum(product) > 0) {
-			return 0;
+			return "주문내역이 있어 삭제할 수 없습니다😭";
 		}
 		productOptionRepo.deleteByProductNum(productNum);
 		productRepo.deleteById(productNum); //지우는 순서 옵션 > 프로덕트
-		return 1;
+		return "삭제되었습니다👏";
 	}
 
 	@Transactional
-	public ProductVO updateProduct(ProductVO product, String[] optionName, Integer[] optionPrice, String optionCategory,
+	public String updateProduct(ProductVO product, String[] optionName, Integer[] optionPrice, String optionCategory,
 			Long[] optionNum, int options) {
 		ProductVO original = productRepo.findById(product.getProductNum()).get();
 		original.setProductCategory(product.getProductCategory());
@@ -136,7 +139,9 @@ public class AdminProductService {
 				System.out.println("update option : " + option);
 			}
 		}
-		return updateProduct;
+		
+		String result = (updateProduct==null)?"실패하였습니다😭 다시 시도해주세요." : "수정되었습니다👏";
+		return result;
 	}
 
 

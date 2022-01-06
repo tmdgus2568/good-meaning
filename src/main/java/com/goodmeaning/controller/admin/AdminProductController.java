@@ -47,7 +47,7 @@ public class AdminProductController {
 	
 	// 상품목록 보여주기
 	@GetMapping("/list") //리스트할때부터 온애(VO 2개있음)
-	public String getProductListPage(PageVO pageVO, Model model, HttpSession session, HttpServletRequest request,  String colmnName ) { //, ProductOptionVO prdOptVO
+	public String getProductListPage(PageVO pageVO, Model model, HttpServletRequest request,  String colmnName ) {
 		System.out.println(colmnName);
 		String sortColumn = colmnName;
 
@@ -69,12 +69,14 @@ public class AdminProductController {
 			if (pageVO2 != null) {
 				pageVO = pageVO2;
 			}
-			int result = (Integer)flashMap.get("deleteresult");
-			model.addAttribute("deleteResult", result==0?"삭제할 수 없습니다.":"삭제되었습니다.");
-
+			Object result = flashMap.get("result");
+			if(result != null) {
+				String resultMsg =  (String)result;
+				model.addAttribute("result", resultMsg);
+			} //return할때부터 메세지값을 주고 오기
 		}
 
-		if (pageVO == null) //맨 처음 null일때 
+		if (pageVO == null) //맨 처음 null일때
 			pageVO = PageVO.builder().page(1).size(12).type(null).keyword(null).build();
 
 		Page<ProductVO> result = adminService.productList(pageVO, direction, colmnName); //확인해보기
@@ -90,13 +92,13 @@ public class AdminProductController {
 	// 상품등록 페이지
 	@GetMapping("/productregister")
 	public String registerProduct(HttpSession session) {
-		//sessions 넣기
 		return "admin/product/register"; //forward 
 	}
 	
 	// 상품등록
 	@PostMapping("/productregister") //들어올때의 값들 
-	public String insertProduct(ProductVO product, String[] optionName, int[] optionPrice, String optionCategory, String optionCategory2) { //, HttpServletRequest request
+	public String insertProduct(PageVO pageVO, ProductVO product, String[] optionName, int[] optionPrice, 
+			String optionCategory, String optionCategory2, RedirectAttributes reAttr) {
 		
 		System.out.println("optionCategory2" + optionCategory2);
 		if(optionCategory.equals("Other")) optionCategory = optionCategory2;
@@ -109,7 +111,7 @@ public class AdminProductController {
 		List<String> fileNames = new ArrayList<>();  
 		
 		// 이미지를 업로드할 폴더를 설정 = /uploadPath/imgUpload (저장하려고 찾아가는 것)
-		String uploadPath = locationPath + File.separator + "upload";
+		String uploadPath = locationPath + File.separator + "productupload";
 		// 위 폴더 기준 연월 폴더 생성
 		String ymdPath = UpLoadFileUtils.calcPath(uploadPath);
 		
@@ -119,7 +121,7 @@ public class AdminProductController {
 			if(uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
 				try {
 					fileName = UpLoadFileUtils.fileUpload(uploadPath, uploadfile.getOriginalFilename(), uploadfile.getBytes(), ymdPath);
-					fileName = "upload" + ymdPath + File.separator + fileName;
+					fileName = "productupload" + ymdPath + File.separator + fileName;
 					System.out.println("fileName=" + fileName);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -147,8 +149,9 @@ public class AdminProductController {
 				break;				
 			}
 		}
-		adminService.insertProduct(product, optionName, optionPrice, optionCategory);
-		
+		String insertResult = adminService.insertProduct(product, optionName, optionPrice, optionCategory);
+		reAttr.addFlashAttribute("result", insertResult);
+		reAttr.addFlashAttribute("pageVO", pageVO);
 		return "redirect:list"; // /list 절대경로 요청주소(mapping으로)
 	}
 	
@@ -175,18 +178,7 @@ public class AdminProductController {
 	public String updateProduct(ProductVO product, String[] file, String[] optionName, Integer[] optionPrice,
 			String optionCategory, String writeOther, Long[] optionNum, int options, PageVO pageVO,
 			RedirectAttributes reAttr) throws IOException, Exception {
-		System.out.println(Arrays.toString(product.getUploadFile()) );
-		System.out.println("update pvo : " + product);
-		System.out.println("update optionName : " + Arrays.toString(optionName));
-		System.out.println("update optionName length : " + optionName.length);
-		System.out.println("update optionPrice : " + Arrays.toString(optionPrice));
-		System.out.println("update optionNum : " + Arrays.toString(optionNum));
-		System.out.println("update optionNum length : " + optionNum.length);
-		System.out.println("update optionCategory : " + optionCategory);
-		System.out.println("update optionCategory2 : " + writeOther);
 		
-		//product = adminService.findById(product.getProductNum());
-		//product.set
 		if (optionCategory.equals("Other"))
 			optionCategory = writeOther;
 		
@@ -199,7 +191,7 @@ public class AdminProductController {
  
 		for (int i = 0; multiFile != null && i < multiFile.length; i++) {
 
-			String imgUploadPath = locationPath + File.separator + "upload";
+			String imgUploadPath = locationPath + File.separator + "productupload";
 			String ymdPath = UpLoadFileUtils.calcPath(imgUploadPath); // 위의 폴더를 기준으로 연월일 폴더를 생성
 			String fileName = null;
 			String originalName = multiFile[i].getOriginalFilename();
@@ -208,7 +200,7 @@ public class AdminProductController {
 			if (originalName != null && !originalName.equals("")) {
 				// upload하기
 				fileName = UpLoadFileUtils.fileUpload(imgUploadPath, originalName, multiFile[i].getBytes(), ymdPath);
-				fileName = "upload" + ymdPath + File.separator + fileName;
+				fileName = "productupload" + ymdPath + File.separator + fileName;
 				columnSetting(i, fileName, product);
 				//현재 게시판에 존재하는 파일객체를 만듬 
 				//File file = new File(path + "\\" + "저장된 파일 이름"); 
@@ -224,8 +216,9 @@ public class AdminProductController {
 			} 
 		}
 		System.out.println("수정후 프로덕트 + " + product);
-		adminService.updateProduct(product, optionName, optionPrice, optionCategory, optionNum, options);
+		String updateResult = adminService.updateProduct(product, optionName, optionPrice, optionCategory, optionNum, options);
 		reAttr.addFlashAttribute("pageVO", pageVO);
+		reAttr.addAttribute("result", updateResult);
 		return "redirect:list";
 		
 	}
@@ -254,13 +247,12 @@ public class AdminProductController {
 	
 	// 상품 삭제
 	@GetMapping("/deleteProduct")
-	public String deleteProduct(Long productNum, RedirectAttributes reAttr, Model model, PageVO pageVO) {
+	public String deleteProduct(Long productNum, RedirectAttributes reAttr, PageVO pageVO) {
 		System.out.println("delete:" + pageVO);
 		System.out.println("productNum:" + productNum);
-		int result = adminService.deleteByProductNum(productNum);
-		model.addAttribute("pageVO", pageVO);
+		String deleteResult = adminService.deleteByProductNum(productNum);
 		reAttr.addFlashAttribute("pageVO", pageVO);
-		reAttr.addFlashAttribute("deleteResult", result);
+		reAttr.addFlashAttribute("result", deleteResult);
 		return "redirect:list";
 	}
 	

@@ -146,7 +146,7 @@ input{
 					<tr>
 						<th>No.</th>
 						<th>상품번호</th>
-						<!-- <i class="material-icons" style="font-size:15px">unfold_more</i> -->
+						<th>상품이미지</th>
 						<th>상품명</th>
 						<th>등록일</th>
 						<th>게시상태</th>
@@ -155,16 +155,21 @@ input{
 				</thead>
 				<tbody id="myTable">
 					<tr th:if="${#lists.size(productPaging.result.content)}==0">
-						<td colspan="6" >검색하신 조건에 맞는 상품이 없습니다.</td>
+						<td colspan="7" align="center">검색 조건에 맞는 상품이 없습니다.</td>
 					</tr>
 					<tr th:each="product, pstate:${productPaging.result.content}">
 						<!-- 객체, status(반복상태변수)  -->
 						<td
 							th:text="${pstate.count + (productPaging.currentPageNum-1) * productPaging.currentPage.pageSize}"></td>
 						<td th:text="${product.productNum}"></td>
+						<td align="center" th:if="${#strings.startsWith(product.productMainimg1,'https')}">
+							<img th:src="${product.productMainimg1}" width="80" height="80">
+						</td>
+						<td align="center" th:unless="${#strings.startsWith(product.productMainimg1,'https')}">
+							<img th:src="|/${product.productMainimg1}|" width="80" height="80">
+						</td>
 						<td th:text="${product.productName}"></td>
-						<td
-							th:text="${#dates.format(product.productCreatedate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${#dates.format(product.productCreatedate, 'yyyy-MM-dd')}"></td>
 						<td th:text="${product.postingState}"></td>
 						<td><a th:href="@{/productdetail(pno=${product.productNum})}"
 							onclick="event.cancelBubble=true" target='_blank'>바로가기</a></td>
@@ -208,12 +213,13 @@ input{
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
 			//jQuery는 ready를 여러번 쓸 수 있음. js는 불가능
-			
+			//수정완료 alert
 			$(function() {
-				var msg = [[${deleteResult}]];
+				var msg = [[${result}]];
 				if(msg != null) {
 					alert(msg);
 				}
+		
 				//modal 띄우기
 				$("#myTable").on("click", "tr", function(){
 				    

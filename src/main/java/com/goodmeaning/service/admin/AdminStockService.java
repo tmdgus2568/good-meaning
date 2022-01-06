@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goodmeaning.persistence.OrderDetailRepository;
-import com.goodmeaning.persistence.OrderRepository;
 import com.goodmeaning.persistence.PurchaseRepository;
+import com.goodmeaning.persistence.admin.AdminOrderRepository;
 import com.goodmeaning.persistence.admin.AdminProductOptionRepository;
 import com.goodmeaning.persistence.admin.AdminProductRepository;
-import com.goodmeaning.vo.OrderDetailVO;
 import com.goodmeaning.vo.OrderVO;
 import com.goodmeaning.vo.PageVO;
 import com.goodmeaning.vo.ProductOptionVO;
@@ -31,7 +30,7 @@ public class AdminStockService {
 	private PurchaseRepository purchaseRepo;
 	
 	@Autowired
-	private OrderRepository orderRepo;	
+	private AdminOrderRepository orderRepo;	
 	
 	@Autowired
 	private OrderDetailRepository orderDetailRepo;	
@@ -40,12 +39,10 @@ public class AdminStockService {
 	public Page<Object[]> stockList(PageVO pageVO, int direction, String colmnName) {
 
 		Pageable paging = pageVO.makePaging(direction, colmnName); // 전체 order
-		Object[] obj = pageVO.getKeyword();
-		String strKeyword = "%";
-		if (obj != null) {
-			strKeyword = (String) obj[0];
-			strKeyword = "%" + strKeyword + "%";
-		}
+		/*
+		 * Object[] obj = pageVO.getKeyword(); String strKeyword = "%"; if (obj != null)
+		 * { strKeyword = (String) obj[0]; strKeyword = "%" + strKeyword + "%"; }
+		 */
 
 		// Predicate pre = productRepo.makeStockPredicate(pageVO); // 조건넣기
 		Page<Object[]> result = productRepo.findStockAll(paging);
@@ -72,8 +69,11 @@ public class AdminStockService {
 		return productOptionRepo.findById(optionNum).orElse(null);
 	}
 
-	@Transactional // 여러개 저장
+	//입고하기
+	
+	@Transactional 
 	public String insertUpdate(Long productNum, Long optionNum, int purchaseQuantity) {
+		//입고내역저장
 		PurchaseVO purchaseList = new PurchaseVO();
 
 		ProductVO product = productRepo.findById(productNum).get();
@@ -81,14 +81,13 @@ public class AdminStockService {
 
 		ProductOptionVO option = null;
 		System.out.println("option기존거가져오기잉 : " + option);
-		if (optionNum != null && optionNum != 0L) {
+		
+		if (optionNum != null && optionNum != 0L) { //옵션재고 기존+입고수
 			option = productOptionRepo.findById(optionNum).get();
-			System.out.println("입고등록 널아닐때~ option = " + option);
 			purchaseList.setProductOption(option);
 			option.setOptionStock(option.getOptionStock() + purchaseQuantity);
 			productOptionRepo.save(option);
-		} else {
-			System.out.println("입고등록 널일때~ option = " + option);
+		} else { //상품재고 기존+입고수
 			product.setProductStock(product.getProductStock() + purchaseQuantity);
 			productRepo.save(product);
 		}
@@ -97,7 +96,8 @@ public class AdminStockService {
 
 		purchaseRepo.save(purchaseList);
 
-		return purchaseQuantity + "건 등록하였습니다.";
+		String result = purchaseList==null?"실패하였습니다😭 다시 시도해주세요." : "등록되었습니다👏";
+		return result;
 	}
 
 	// 입고내역 가져오기
