@@ -35,6 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.goodmeaning.aws.S3Service;
 import com.goodmeaning.persistence.OrderDetailRepository;
 import com.goodmeaning.persistence.OrderRepository;
+import com.goodmeaning.persistence.ProductOptionRepository;
 import com.goodmeaning.persistence.ProductRepository;
 import com.goodmeaning.persistence.ReviewAnswerRepository;
 import com.goodmeaning.persistence.ReviewRepository;
@@ -59,6 +60,9 @@ public class ReviewController {
 
 	@Autowired
 	ProductRepository prepo;
+	
+	@Autowired
+	ProductOptionRepository proptepo;
 
 	@Autowired
 	ReviewRepository rrepo;
@@ -153,13 +157,15 @@ public class ReviewController {
 		System.out.println(objlist.get(0)[6]);
 		
 		
+		ProductOptionVO proopt = proptepo.findById((Long)obj[5]).get();
+		
 		OrderDetailVO orderdetail = OrderDetailVO.builder()
 					.orderDetailNum(((BigInteger)obj[0]).longValue())
 					.orderDetailPrice((Integer)obj[1])
 					.orderDetailQuantity((Integer)obj[2])
 					//.orderNum((OrderVO)obj[3])
 					//.productNum((ProductVO)obj[4])
-					//.productOption(obj[5])
+					.productOption(proopt)
 					.build();
 		
 		model.addAttribute("date",(Date)obj[6]);

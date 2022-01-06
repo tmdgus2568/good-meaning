@@ -101,7 +101,7 @@
 				th:onclick="|showReview(${status.count}, ${review.reviewNum}, this)|"
 				style="border: none;">
 				<tr class="open">
-					<td><span hidden="" th:text="${review.reviewNum}"></span> <span
+					<td style="vertical-align:middle;"><span hidden="" th:text="${review.reviewNum}"></span> <span
 						th:if="${review.reviewLike} == 5"><a
 							style="color: #F3969A;">★★★★★</a></span> <span
 						th:if="${review.reviewLike} == 4"><a
@@ -119,9 +119,10 @@
 						th:text="${review.userPhone.userId} +' ' + ${#dates.format(review.reviewCreatedate, 'yyyy-MM-dd HH:mm')}"></span>
 						<br> <span th:text="${review.reviewTitle}"></span> <br>
 						<span th:text="${review.reviewContent}" style="display: none"
-						th:id="|detailcontent${status.count}|"></span> <br> <br>
+						th:id="|detailcontent${status.count}|"></span>
 						<div th:id="|images${status.count}|" th:name="images"
 							style="display: none">
+							<br>
 							<a th:if="${review.reviewMainimg1} != null"><img
 								th:id="|reviewimg1${status.count}|"
 								th:src="|https://good-meaning.s3.ap-northeast-2.amazonaws.com/${review.reviewMainimg1}|" th:width="200"></a> <a
@@ -152,10 +153,12 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
 		<span th:if="${user} != null">
 			<button class="btn btn-secondary"
 				th:onclick="reviewWrite([[${ordetail}]], [[${user.userPhone}]])">리뷰작성</button>
+				<br>
+				<br>
 		</span>
-	</div>
 </body>
 </html>
