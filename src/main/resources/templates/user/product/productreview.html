@@ -121,7 +121,7 @@
 						<span th:text="${review.reviewContent}" style="display: none"
 						th:id="|detailcontent${status.count}|"></span>
 						<div th:id="|images${status.count}|" th:name="images"
-							style="display: none">
+							style="display: none; margin-bottom: 5px;">
 							<br>
 							<a th:if="${review.reviewMainimg1} != null"><img
 								th:id="|reviewimg1${status.count}|"
@@ -145,7 +145,7 @@
 						<form th:id="|writing${status.count}|" style="display: none">
 							<textarea rows="3" cols="60" class="form-control"
 								id="replycontents" name="replycontents"
-								style="margin-bottom: 5px; padding-bottom: 5px;"></textarea>
+								style="margin-top: 10px; margin-bottom: 5px; padding-bottom: 5px;"></textarea>
 							<input type="button" name="replybtn" style="float: right;"
 								th:onclick="|writeReply(${review.reviewNum}, this, ${status.count})|"
 								class="btn btn-secondary" value="댓글작성">
