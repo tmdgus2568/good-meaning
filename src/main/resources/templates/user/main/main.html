@@ -27,10 +27,82 @@
 	td{
 		width:175px;
 	}
+	
+	.quotes{
+		width:20px;
+	}
+	a:link{
+		text-decoration: none;
+		color:gray;
+	}
+	a:visited{
+		text-decoration: none;
+		color:gray;
+	}
+	a:hover{
+		text-decoration: none;
+		color:gray;
+	}
 </style>
 </head>
 <body>
 <div class="panel panel-default" layout:fragment="content">
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div align="center">
+		<h3>
+		<!-- <img class="quotes" src="/img/q2.png"> -->
+		<I> 지구를 살리는 친환경 소비 </I>
+		<!-- <img class="quotes" src="/img/q1.png"> --></h3>
+		<br>
+		<img src="/img/leaf.jpeg" th:width="50">
+	</div>
+	<br>
+	<br>
+	<div align="center">
+		<h4 class="title">BEST</h4>
+		
+		<table>
+			<tr>
+				<td th:if="${bestlist1 != null}" th:each="best1:${bestlist1}">
+					<a th:href="@{/productdetail(pno=${best1.productNum})}">
+					<div align="center">
+						<img
+					th:src="${best1.productMainimg1}"
+			
+					th:width="100">
+						<br>
+						<span class="product_name" th:text="${best1.productName}"></span>
+						<br>
+						<h4 class="product_price" th:text="|${#numbers.formatInteger(best1.productPrice, 0, 'COMMA')}원|"></h4>
+					</div></a>
+				</td>
+			</tr>
+			<tr>
+				<td th:if="${bestlist2 != null}" th:each="best2:${bestlist2}">
+					<a th:href="@{/productdetail(pno=${best2.productNum})}">
+					<div align="center">
+						<img
+					th:src="${best2.productMainimg1}"
+		
+					th:width="100">
+						<br>
+						<span class="product_name" th:text="${best2.productName}"></span>
+						<br>
+						<h4 class="product_price" th:text="|${#numbers.formatInteger(best2.productPrice, 0, 'COMMA')}원|"></h4>
+					</div>
+					</a>
+				</td>
+			</tr>
+		</table>
+		<div align="right" style="width:700px">
+			<a href="/productlist" style="text-decoration: none;">더보기 ></a>
+		</div>
+
+	</div>
 	<br>
 	<br>
 	<div align="center">
@@ -39,38 +111,48 @@
 		<table>
 			<tr>
 				<td th:if="${newlist1 != null}" th:each="new1:${newlist1}">
+					<a th:href="@{/productdetail(pno=${new1.productNum})}">
 					<div align="center">
 						<img
 					th:src="${new1.productMainimg1}"
-					th:onmouseover="this.src=[[${new1.productMainimg2}]]"
-					th:onmouseout="this.src=[[${new1.productMainimg1}]]"
+				
 					th:width="100">
 						<br>
 						<span class="product_name" th:text="${new1.productName}"></span>
 						<br>
-						<span class="product_price" th:text="|${#numbers.formatInteger(new1.productPrice, 0, 'COMMA')}원|"></span>
-					</div>
+						<h4 class="product_price" th:text="|${#numbers.formatInteger(new1.productPrice, 0, 'COMMA')}원|"></h4>
+					</div></a>
 				</td>
 			</tr>
 			<tr>
 				<td th:if="${newlist2 != null}" th:each="new2:${newlist2}">
+					<a th:href="@{/productdetail(pno=${new2.productNum})}">
 					<div align="center">
 						<img
 					th:src="${new2.productMainimg1}"
-					th:onmouseover="this.src=[[${new2.productMainimg2}]]"
-					th:onmouseout="this.src=[[${new2.productMainimg1}]]"
+		
 					th:width="100">
 						<br>
 						<span class="product_name" th:text="${new2.productName}"></span>
 						<br>
-						<span class="product_price" th:text="|${#numbers.formatInteger(new2.productPrice, 0, 'COMMA')}원|"></span>
+						<h4 class="product_price" th:text="|${#numbers.formatInteger(new2.productPrice, 0, 'COMMA')}원|"></h4>
 					</div>
+					</a>
 				</td>
 			</tr>
 		</table>
+		<div align="right" style="width:700px">
+			<a href="/productlist" style="text-decoration: none;">더보기 ></a>
+		</div>
+
 	</div>
+	<br>
+	<br>
 
 </div>
+<br>
+<br>
+<br>
 </body>
 <th:block>
 <script>

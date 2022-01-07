@@ -19,11 +19,14 @@ public class MainController {
 	
 	@GetMapping("/")
 	public String main(Model model) {
-		List<ProductVO> bestlist = new ArrayList<>();
+		List<ProductVO> bestlist = service.findBestlist();
 		List<ProductVO> newlist = service.findNewlist();
 		
 		List<ProductVO> newlist1;
 		List<ProductVO> newlist2;
+		
+		List<ProductVO> bestlist1;
+		List<ProductVO> bestlist2;
 		
 		if(newlist.size()>=5) {
 			newlist1 = newlist.subList(0, 4);
@@ -39,7 +42,21 @@ public class MainController {
 		
 			
 		}
-		System.out.println(newlist);
+		
+		if(bestlist.size()>=5) {
+			bestlist1 = bestlist.subList(0, 4);
+			bestlist2 = bestlist.subList(4, bestlist.size());
+			
+			model.addAttribute("bestlist1", bestlist1);
+			model.addAttribute("bestlist2", bestlist2);
+		}
+		else {
+			bestlist1 = bestlist.subList(0, bestlist.size());
+			
+			model.addAttribute("bestlist1", bestlist1);
+		
+			
+		}
 		
 		
 		return "/user/main/main";

@@ -188,7 +188,8 @@ $(function() {
  		     if(option == null){
  		    	 option = "";
  		     }
-  		     $("#select_product_name").html($("#select_product_name").html()+"<option "+"value="+"'"+detail+"'"+">"+name+(option==''?'':'['+option+']')+"</option>") 
+  		     $("#select_product_name").html($("#select_product_name").html()+
+  		    		 "<option "+"value="+"'"+detail+"'"+">"+name+(option==''?'':'['+option+']')+"</option>") 
  		});
  		
 

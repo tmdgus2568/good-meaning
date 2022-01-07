@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,14 +32,21 @@ public class RegisterController {
 	UserService userService;
 	
 	// 트윌리오 
-	public static final String ACCOUNT_SID = "AC771abf36be029f37c310af1af666fe92";
-	public static final String AUTH_TOKEN = "915e1eac4369c3403d0feeb954688d57";
+	public static String ACCOUNT_SID;
+
+	public static String AUTH_TOKEN;
+	
+	public RegisterController(@Value("${twilio.account_sid}") String ACCOUNT_SID,
+							@Value("${twilio.auth_token}") String AUTH_TOKEN) {
+		this.ACCOUNT_SID = ACCOUNT_SID;
+		this.AUTH_TOKEN = AUTH_TOKEN;
+	}
 	
 
 	// 회원가입 - 회원가입창 (이용동의를 넘어서 user를 가져와야하기 때문에 post로)
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String registerForm(@RequestParam Map<String, Object> userInfo, Model model) {
-		
+		System.out.println(ACCOUNT_SID);
 		for(String key:userInfo.keySet()) {
 			if(userInfo.get(key)!="" && userInfo.get(key)!=null) {
 				model.addAttribute(key,userInfo.get(key));

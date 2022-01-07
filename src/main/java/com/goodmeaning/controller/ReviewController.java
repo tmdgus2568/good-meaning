@@ -211,7 +211,7 @@ public class ReviewController {
 				if (uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
 					try {
 
-						fileName = "reviewupload" + File.separator + UUID.randomUUID() + uploadfile.getOriginalFilename();
+						fileName = "reviewupload" + File.separator + UpLoadFileUtils.makeUniqueFileName(uploadfile.getOriginalFilename());
 						System.out.println("fileName=" + fileName);
 						
 						s3Service.uploadFile(uploadfile, fileName);

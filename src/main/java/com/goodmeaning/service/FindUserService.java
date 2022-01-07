@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,22 @@ public class FindUserService {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
+
+	private static String hostSMTP;//네이버 이용시 smtp.naver.com
 	
-	private static String hostSMTP = "smtp.naver.com"; //네이버 이용시 smtp.naver.com
-	private static String hostSMTPid = "tmdgus2568@naver.com";
-	private static String hostSMTPpwd = "(깃헙보안을 위해 잠시 막아둡니다..)";
+
+	private static String hostSMTPid;
+	
+
+	private static String hostSMTPpwd;
+	
+	public FindUserService(@Value("${spring.mail.host}") String hostSMTP,
+			@Value("${spring.mail.username}") String hostSMTPid,
+			@Value("${spring.mail.password}") String hostSMTPpwd) {
+		this.hostSMTP = hostSMTP;
+		this.hostSMTPid = hostSMTPid;
+		this.hostSMTPpwd = hostSMTPpwd;
+	}
 	
 	// 주어진 정보로 아이디 찾기
 	public String findId(String userPhone, String userName, String userEmail) {
@@ -36,7 +49,7 @@ public class FindUserService {
 		String charSet = "utf-8";
 
 		// 보내는 사람 EMail, 제목, 내용
-		String fromEmail = "tmdgus2568@naver.com";
+		String fromEmail = hostSMTPid;
 		String fromName = "굿미닝";
 		String subject = "";
 		String msg = "";

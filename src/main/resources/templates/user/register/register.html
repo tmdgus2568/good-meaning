@@ -346,7 +346,8 @@ $(function () {
 	});
 	
 	$("#btn_auth").on('click',function(){
-		if($("#userPhone1").val()=="" || $("#userPhone2").val()=="" || $("#userPhone3").val()=="") alert("휴대폰 번호를 입력해 주세요.");
+		if($("#userPhone1").val()=="" || $("#userPhone2").val()=="" || $("#userPhone3").val()=="") 
+			alert("휴대폰 번호를 입력해 주세요.");
 		else{
 			$("#userPhone").val($("#userPhone1").val()+$("#userPhone2").val()+$("#userPhone3").val());
 	
