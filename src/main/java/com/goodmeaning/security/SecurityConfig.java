@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -64,7 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override // WebSecurity를 통해 HTTP 요청에 대한 웹 기반 보안을 구성
 	public void configure(WebSecurity web) throws Exception {
 		// 파일 기준은 resources/static 디렉터리의 하위 파일 목록은 인증 무시 ( = 항상통과 )
-		web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/reviewupload/**");
+		web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/reviewupload/**", "/productupload/**");
+		//web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations()); //static 전부 무시
 
 	}
 
@@ -77,9 +79,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// hasRole : 특정권한을 가진 사람만 접근가능하다는 의미
 		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 		http.authorizeRequests() // HttpServletRequest에 따라 접근(access)을 제한
+
+				.antMatchers("/","/productlist","/productdetail","/productReview","/writeReviewReply","/register/**", "/auth/**").permitAll() // 누구나 접근 허용
+
 				.antMatchers("/","/productlist/**","/productdetail","/productReview","/writeReviewReply","/register/**","/admin/**","/auth/**").permitAll() // 누구나 접근 허용
+
 				.antMatchers("/mypage/**").hasRole("USER") 
-//				.antMatchers("/admin/**").hasRole("ADMIN") // /admin으로 시작하는 경로는 ADMIN롤을 가진 사용자만 접근 가능(자동으로 ROLE_가 삽입)
+				.antMatchers("/admin/**").hasRole("ADMIN") // /admin으로 시작하는 경로는 ADMIN롤을 가진 사용자만 접근 가능(자동으로 ROLE_가 삽입)
 //				.antMatchers("/manager/**").hasRole("MANAGER").antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.anyRequest().authenticated() // anyRequest() 나머지요청 , authenticated() : 인증된 사용자만 접근가능,
 										// anonymous():인증도지않은 사용자가 접근가능

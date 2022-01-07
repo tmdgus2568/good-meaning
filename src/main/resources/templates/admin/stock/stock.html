@@ -53,6 +53,12 @@
 						class="form-check-input" value="품절" name="stockState" 
 						th:checked="${pageVO.keyword!=null && pageVO.keyword[2]=='품절'}">품절</label>
 				</div>
+				<div class="form-check-inline">
+					<label class="form-check-label">
+					<input type="radio"
+						class="form-check-input" value="첫입고" name="stockState" 
+						th:checked="${pageVO.keyword!=null && pageVO.keyword[2]=='첫입고'}">첫입고</label>
+				</div>
 			</div>
 			<div class="d-flex justify-content-center mt-4">
 				<div>
@@ -84,12 +90,13 @@
 			<div class="form-group" style="float:right; width:190px;">
 				<select id = "sortColumn" class="form-control"> <!-- asc1 desc0 가져가는 방법 찾기 -->
 					<option value="product_num0" th:selected="${sortColumn=='product_num0'}">상품번호(오름차순)</option>
-					<option value="total_stock0" th:selected="${sortColumn=='total_stock0'}">총재고량 높은순</option>
-					<option value="total_stock1" th:selected="${sortColumn=='total_stock1'}">총재고량 낮은순</option>
-					<option value="sales_quantity0" th:selected="${sortColumn=='sales_quantity0'}">금일판매량 높은순</option>
-					<option value="sales_quantity1" th:selected="${sortColumn=='sales_quantity1'}">금일판매량 낮은순</option>
-					<option value="purchase_quantity0" th:selected="${sortColumn=='purchase_quantity0'}">금일입고량 높은순</option>
-					<option value="purchase_quantity1" th:selected="${sortColumn=='purchase_quantity1'}">금일입고량 낮은순</option>
+					<option value="product_num0" th:selected="${sortColumn=='product_num1'}">상품번호(내림차순)</option>
+					<option value="total_stock0" th:selected="${sortColumn=='total_stock0'}">총재고량(높은순)</option>
+					<option value="total_stock1" th:selected="${sortColumn=='total_stock1'}">총재고량(낮은순)</option>
+					<option value="sales_quantity0" th:selected="${sortColumn=='sales_quantity0'}">금일판매량(높은순)</option>
+					<option value="sales_quantity1" th:selected="${sortColumn=='sales_quantity1'}">금일판매량(낮은순)</option>
+					<option value="purchase_quantity0" th:selected="${sortColumn=='purchase_quantity0'}">금일입고량(높은순)</option>
+					<option value="purchase_quantity1" th:selected="${sortColumn=='purchase_quantity1'}">금일입고량(낮은순)</option>
 				</select>
 			</div>
 		</div>
@@ -116,13 +123,13 @@
 					<tr th:each="product, state:${stockPaging.result.content}" >
 						<td th:text="${state.count + (stockPaging.currentPageNum-1) * stockPaging.currentPage.pageSize}"></td>
 						<td th:text="${product[0]}"></td> 
-						<td th:text="${product[1]}"></td>
+						<td th:text="${product[1]}"></td> 
 						<td class="hidden-col" th:text="${product[3]}"></td> <!-- optionNum -->
  						<td th:text="${product[4]}"></td>
- 						<td th:text="${product[8]}"></td>
- 						<td th:text="${product[9]}"></td>
-						<td class="stockQuantity" th:text="${product[10]}"></td>
-						<td class="stockStatus"></td>
+ 						<td th:text="${product[8]}"></td> 
+ 						<td th:text="${product[9]}"></td> 
+						<td th:text="${product[10]}"></td> 
+						<td th:text="${product[11]}"></td> 
 						<td >
 							<a href="#" onclick = "pibtn(this);">입고하기</a> 
 								<!-- The Modal -->
@@ -238,13 +245,16 @@
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
 		//입고성공시 alert
-/* 		var msg = [[${result}]];
-		if(msg != null) {
-			alert(msg);
-		} */
+		//function없으면 미리로드
+		$(function(){ //로드가끝나면
+	 		var msg = [[${result}]];
+			if(msg != null) {
+				alert(msg);
+			}
+		}); 
 		
 		//재고 상태 입력
-		var stockQuantity = document.getElementsByClassName("stockQuantity");
+/* 		var stockQuantity = document.getElementsByClassName("stockQuantity");
 		var stockStatus = document.getElementsByClassName("stockStatus");
 		console.log(stockQuantity);
  		for(var i = 0; i < stockQuantity.length; i++) {
@@ -257,7 +267,7 @@
 			} else {
 				stockStatus[i].innerHTML = "정상"
 			}
-		} 
+		}  */
 		
 		//입고등록 모달에 정보 보내기
 		function pibtn (obj) {
@@ -342,18 +352,24 @@
 			formObj.submit();
 		});
 	
+		
 		$("#searchBox input").change(function(){ 
 			formObj.find("[name='page']").val(1);
 		});
 		
 		//resetBtn 누를때
-		$(function() {
-			$("#resetBtn").click(function(){
-				$('input').each(function(index, item){
-					console.log()
+		$("#resetBtn").click(function(){
+			var val = $("#searchBox").children('input');
+			
+			$('input').each(function(index, item){
+				console.log(index + " : " + $(item).val());
+				if(index < 2) {
 					$(item).val('');
-				});
+					$("input:radio[name ='stockState']:input[value='전체']").attr("checked", true);
+				}
 			});
+			$("#f1").find("input[name='page']").val(1);
+			$("#searchBtn").click();
 		});
 		
 		//전체 sort시
@@ -365,13 +381,13 @@
 		
 		
 		// 입고등록 시 알림창
-/* 		$("#myfrm").submit(function() {
-				if(confirm('입고등록을 하시겠습니까?') == true){
+ 		$("#myfrm").submit(function() {
+				if(confirm('입고 하시겠습니까?') == true){
 					return true;
 				}
 				alert('취소되었습니다.');
 				return false;
-		}); */
+		});
 		
 		// 입고등록 시 해당페이지정보 가져가기
 		function checkInputData(){

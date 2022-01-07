@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.goodmeaning.aws.S3Service;
 import com.goodmeaning.service.admin.AdminProductService;
 import com.goodmeaning.util.UpLoadFileUtils;
 import com.goodmeaning.vo.PageMaker;
@@ -38,12 +39,15 @@ import com.goodmeaning.vo.ProductVO;
 public class AdminProductController {
 	
 	//브라우저 해석 : static //서버해석 : templates
-	
+		
 	@Value("${spring.servlet.multipart.location}")
 	String locationPath;
 
 	@Autowired
 	AdminProductService adminService;
+	
+	@Autowired
+	S3Service s3Service;
 	
 	// 상품목록 보여주기
 	@GetMapping("/list") //리스트할때부터 온애(VO 2개있음)
@@ -121,7 +125,10 @@ public class AdminProductController {
 			if(uploadfile.getOriginalFilename() != null && !uploadfile.getOriginalFilename().equals("")) {
 				try {
 					fileName = UpLoadFileUtils.fileUpload(uploadPath, uploadfile.getOriginalFilename(), uploadfile.getBytes(), ymdPath);
-					fileName = "productupload" + ymdPath + File.separator + fileName;
+					String url = "https://good-meaning.s3.ap-northeast-2.amazonaws.com/";
+					String path = "productupload" + ymdPath + "/" + fileName;
+					fileName = url + path;
+					s3Service.uploadFile(uploadfile, path) ;
 					System.out.println("fileName=" + fileName);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -218,7 +225,7 @@ public class AdminProductController {
 		System.out.println("수정후 프로덕트 + " + product);
 		String updateResult = adminService.updateProduct(product, optionName, optionPrice, optionCategory, optionNum, options);
 		reAttr.addFlashAttribute("pageVO", pageVO);
-		reAttr.addAttribute("result", updateResult);
+		reAttr.addFlashAttribute("result", updateResult);
 		return "redirect:list";
 		
 	}
