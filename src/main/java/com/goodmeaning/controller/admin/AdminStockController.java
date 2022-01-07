@@ -150,8 +150,8 @@ public class AdminStockController {
 	
 	// 입고삭제
 	@PostMapping("/cancel")
-	public String cancelPurchase(Long purchaseNum, RedirectAttributes reAttr) {
-		String cancelPurchase = stockService.cancelPurchase(purchaseNum);
+	public String cancelPurchase(Long purchaseNum, Long optionNum, Long productNum, int purchaseQuantity, RedirectAttributes reAttr) {
+		String cancelPurchase = stockService.cancelPurchase(purchaseNum, optionNum, productNum , purchaseQuantity);
 		reAttr.addFlashAttribute("result",  cancelPurchase);
 		return "redirect:history";
 	}

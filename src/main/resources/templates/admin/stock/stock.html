@@ -128,7 +128,7 @@
  						<td th:text="${product[4]}"></td>
  						<td th:text="${product[8]}"></td> 
  						<td th:text="${product[9]}"></td> 
-						<td th:text="${product[10]}"></td> 
+						<td th:text="${product[10] - product[9]}"></td> 
 						<td th:text="${product[11]}"></td> 
 						<td >
 							<a href="#" onclick = "pibtn(this);">입고하기</a> 
@@ -229,15 +229,15 @@
 		</nav>
 
 
- 		//추후 hidden으로 변경
+ 		<!-- hidden -->
 		<form id="f1" th:action="@{stock}" method="get" >
-			<input type="text" name="page" th:value="${stockPaging.currentPageNum}"> 
-			<input type="text" name="size" th:value="${stockPaging.currentPage.pageSize}">
+			<input type="hidden" name="page" th:value="${stockPaging.currentPageNum}"> 
+			<input type="hidden" name="size" th:value="${stockPaging.currentPage.pageSize}">
 			<div th:each="num : ${#numbers.sequence(0,2)}">
-				<input type="text" name="type" value=""> 
-				<input type="text" name="keyword" value="">
+				<input type="hidden" name="type" value=""> 
+				<input type="hidden" name="keyword" value="">
 			</div>
-			<input type="text" id="sort" name="colmnName" th:value="${sortColumn}">
+			<input type="hidden" id="sort" name="colmnName" th:value="${sortColumn}">
 		</form>
 		
 
@@ -280,8 +280,6 @@
 			$.ajax({
 	            url:"/admin/stockinfo?productNum=" + pno + "&optionNum=" + ono, 
 	            success:function(responseData){
-	            	console.log(responseData.product);
-	            	console.log(responseData.productOption);
 	            	$("#options").attr("style", "display:'';");
  					$("input[name='purchaseQuantity']").val("");
 					putDataList(responseData);
@@ -294,7 +292,6 @@
 		function putDataList(responseData) {
 			var product = responseData.product;
 			var option = responseData.productOption;
-			console.log("option: " + option);
 			$("input[name='productNum']").val(product.productNum);
 			$("input[name='productName']").val(product.productName);
 			if(option != null){
@@ -362,7 +359,6 @@
 			var val = $("#searchBox").children('input');
 			
 			$('input').each(function(index, item){
-				console.log(index + " : " + $(item).val());
 				if(index < 2) {
 					$(item).val('');
 					$("input:radio[name ='stockState']:input[value='전체']").attr("checked", true);
@@ -374,7 +370,6 @@
 		
 		//전체 sort시
 		$("#sortColumn").change(function(){
-			alert($(this).val());
 			formObj.find("#sort").val($(this).val());
 			$("#searchBtn").click();
 		});

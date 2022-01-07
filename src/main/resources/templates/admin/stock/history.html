@@ -17,65 +17,8 @@
 <body>
 
 	<div layout:fragment="content">
-		<h3>📑 재고현황</h3>
+		<h3>📑 입출고내역</h3>
 		<hr>
-<!-- 		<div class="mt-4">
-			<div class="input-group mb-3">
-				<div class="input-group-prepend">
-					<span class="input-group-text">검색어</span>
-				</div>
-				<input type="text" id="searchKeyword1" class="form-control" placeholder="상품명 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품명 입력'">
-				<input type="text" id="searchKeyword2" class="form-control" placeholder="상품번호 입력" onfocus="this.placeholder=''" onblur="this.placeholder='상품번호 입력'">
-			</div>
-			<label for="selectPeriod">기간선택</label>
-			<div class="form-row" id="selectPeriod">
-				<span >From</span>
-			    <div class="col input-group mb-3">
-			        <div class="input-group-prepend">
-			          <span class="input-group-text"><i class="material-icons">date_range</i></span>
-			        </div>
-			        <input type="text" class="form-control datepicker" id="datepicker1" placeholder="날짜선택" name="datepicker">
-			    </div>
-			    <div class="mt-2 ml-3 mr-3">
-			    	<span class="input-group-addon"><i class="material-icons">play_arrow</i></span>
-			    </div>
-			    <div class="col input-group mb-3">
-			        <div class="input-group-prepend">
-			          <span class="input-group-text"><i class="material-icons">date_range</i></span>
-			        </div>
-			        <input type="text" class="form-control datepicker"  id="datepicker2" placeholder="날짜선택" name="datepicker">
-			    </div>
-			</div>
-			<label for="statePosting">게시상태</label>
-			<div id="statePosting">
-				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" name="postingState" value="전체">전체</label>
-				</div>
-				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" value="게시중" name="postingState">게시중</label>
-				</div>
-				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" value="일시중단" name="postingState">일시중단</label>
-				</div>
-				<div class="form-check-inline">
-					<label class="form-check-label"><input type="radio" class="form-check-input" value="게시종료" name="postingState">게시종료</label>
-				</div>
-			</div>
-			<div class="d-flex justify-content-center mt-3">
-				<div>
-					<button class="btn btn-info mr-4" id="searchBtn"><i class="material-icons">&nbsp;&nbsp;search&nbsp;&nbsp;</i></button>
-				</div>
-				<div>
-					<button class="btn btn-danger" id="resetBtn"><i class="material-icons">&nbsp;&nbsp;cached&nbsp;&nbsp;</i></button>
-				</div>
-			</div>
-		</div> -->
-        
-		<!-- 			<img alt="이미지" th:src="@{/images/coffee-blue.jpg}" width="50px"
-				height="50px"> -->
-		<div class="p-3 ">
-			<hr>
-		</div>
 		<div>
 		    <ul class="nav nav-tabs nav-justified">
 		        <li id="historyTab" class="nav-item">
@@ -122,18 +65,18 @@
 				<tbody id="myTable">
 					<tr th:each="p, state:${purchaseHistory.result.content}" >
 						<td th:text="${state.count + (purchaseHistory.currentPageNum-1) * purchaseHistory.currentPage.pageSize}"></td>
-						<td class="pnum" th:text="${p.purchaseNum}"></td>
-						<td th:text="${p.productNum.productNum}"></td>
+						<td class="purchaseNum" th:text="${p.purchaseNum}"></td>
+						<td class="productNum" th:text="${p.productNum.productNum}"></td>
 						<td th:text="${p.productNum.productName}"></td>
-						<td th:if="${#strings.isEmpty(p.productOption)}">-</td>
-						<td th:if="${!#strings.isEmpty(p.productOption)}" th:text="${p.productOption.optionNum}"></td>
+						<td class="optionNum" th:if="${#strings.isEmpty(p.productOption)}">-</td>
+						<td class="optionNum" th:if="${!#strings.isEmpty(p.productOption)}" th:text="${p.productOption.optionNum}"></td>
 						<td th:if="${#strings.isEmpty(p.productOption)}">-</td>
 						<td th:if="${!#strings.isEmpty(p.productOption)}" th:text="${p.productOption.optionName}"></td>
 						<td th:if="${#strings.isEmpty(p.productOption)}" th:text="${#numbers.formatInteger(p.productNum.productPrice, 0, 'COMMA')}" ></td>
 						<td th:unless="${#strings.isEmpty(p.productOption)}" 
 						th:text="${#numbers.formatInteger(p.productNum.productPrice + p.productOption.extraprice, 0, 'COMMA')}" ></td>
 <!-- 						th:text="${p.productNum.productPrice} + ${p.productOption.extraprice}" ></td> -->
-						<td th:text="${p.purchaseQuantity}"></td>
+						<td class="purchaseQuantity" th:text="${p.purchaseQuantity}"></td>
 						<td class="purchaseDate" th:text="${#dates.format(p.purchaseDate, 'yyyy-MM-dd HH:mm')}"></td>
 						<td>
 							<a class="deletTag" href="#" onclick="cancelPurchase(this);">취소</a>
@@ -142,7 +85,10 @@
 				</tbody>
 			</table>
 			<form id="f1" th:action="@{cancel}" method="post" >
-				<input type="text" name="purchaseNum" value=""> 
+				<input type="hidden" name="purchaseNum" value=""> 
+				<input type="hidden" name="productNum" value=""> 
+				<input type="hidden" name="optionNum" value=""> 
+				<input type="hidden" name="purchaseQuantity" value=""> 
 			</form>
 			<nav>
 				<div>
@@ -274,7 +220,10 @@
 				if(confirm('입고를 취소하시겠습니까?') == true){
 					var purchaseNum = $(obj).parent().parent().find(".pnum").text();
 					alert("pnum: " + purchaseNum);
-					$("#f1").find("input[name='purchaseNum']").val(purchaseNum)
+					$("#f1").find("input[name='purchaseNum']").val(purchaseNum);
+					$("#f1").find("input[name='productNum']").val(productNum);
+					$("#f1").find("input[name='optionNum']").val(optionNum);
+					$("#f1").find("input[name='purchaseQuantity']").val(purchaseQuantity);
 					$("#f1").submit();
 					return true;
 				} else {
