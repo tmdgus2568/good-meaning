@@ -52,7 +52,7 @@
 			<td class="td_product_name" align="left">
 				<a th:href="@{/productdetail(pno=${review.orderDetail.productNum.productNum})}" th:text="${review.orderDetail.productNum.productName}" style="font-size:17px;" class="product_name"></a><br>
 				<span th:text="|수량: ${review.orderDetail.orderDetailQuantity}|" style="color:grey;"></span><br>
-				<span th:text="|옵션: ${review.orderDetail.productOption==null?'[없음]':detail.productOption}|" style="color:grey;"></span>
+				<span th:text="|옵션: ${review.orderDetail.productOption==null?'[없음]':review.orderDetail.productOption.optionName}|" style="color:grey;"></span>
 <!-- 				<a href="" th:text="${review.orderDetail.productNum.productName}" class="product_name"></a> -->
 				
 			</td>
