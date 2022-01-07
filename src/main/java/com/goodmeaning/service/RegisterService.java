@@ -22,4 +22,11 @@ public class RegisterService {
 		if(userRepo.findByUserId(userId).isPresent()) result = true;
 		return result;
 	}
+	
+	// 핸드폰 번호 중복체크 (true: 이미 있음, false: 없음 )
+	public boolean checkUserPhone(String userPhone) {
+		boolean result = false;
+		if(userRepo.findById(userPhone).isPresent()) result = true;
+		return result;
+	}
 }

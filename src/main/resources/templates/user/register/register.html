@@ -358,6 +358,11 @@ $(function () {
 					userPhone: $("#userPhone").val()
 				},
 				success: function(data){
+					if(data.result == true){
+						alert("이미 사용된 핸드폰 번호입니다. 사용하실 수 없습니다.");
+						return;
+					}
+				
 					alert("인증번호가 발송되었습니다.");
 					$("#auth_num_data").val(data.authNum);
 					

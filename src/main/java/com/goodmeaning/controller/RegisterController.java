@@ -125,6 +125,12 @@ public class RegisterController {
 	@ResponseBody
 	public Map<String, Object> authUserPhone(String userPhone){
 		Map<String, Object> map = new HashMap<>();
+		boolean result = registerService.checkUserPhone(userPhone);
+		if(result) {
+			map.put("result", result);
+			return map;
+		}
+		
 		
 		map.put("authNum",sendSMS("82",userPhone));
 		return map;
