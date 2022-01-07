@@ -248,46 +248,52 @@
 	});
 	 
 	
-	function getOrderTotalPrice(){			
+	function getOrderTotalPrice(){	
+		var totalPrice=0;
 		$("tr.product").each(function(){
-						
 			var price = Number($(this).find("span#price").attr("data-price"));
-	        
+ 
 	        var extraPrice = [] 
 	        $(".extraprice").each(function(index, item){
 	        	extraPrice.push($(item).attr("data-extra"));	        	
 			});
-			        
+			
 	        var count = [] 
 	        $(".count").each(function(index, item){
 	        	count.push($(item).attr("data-count"));	        	
 			});
-			
-	        /*for (var extraPrice = 0; i < extraPrice.length; i++) { // 배열의 모든 요소의 인덱스(index)를 숫자로 바꿈.
-	        	
-	        }*/
-	        console.log("extraPrice:"+extraPrice.length);
-	        console.log("count:"+count.length);
+				        	        
+	        
+	        //console.log("extraprice:"+extraprice);
+	        console.log("count:"+count);//====================
 	        console.log("price:"+price);
 	        
-	        if(isNaN(extraPrice)){
-            	extraPrice = 0;
-            	console.log("extraPrice:"+extraPrice);
-            }
 	        
-	        if(extraprice.length>1){//@@@@@@@@@@@@@@@@@@@@@@@@@@@같은 상품에 여러 종류의 옵션 오면 추가금 합계 안됨.
-	        	extraPrice += extraPrice;
-	        }
-	        
-	        if(count.length>1 && count==1){//count가 1개 이상이면 배열의 length만큼 합하면 되고,
-			   	totalPrice += (price*count.length)+(extraPrice*count.length);	        	
-	        }else{//count가 1개 이상이하면 그냥 다 합하면 된다.
-			   	totalPrice += (price*count)+(extraPrice*count);	        		        	
-	        }     	
-	        
+		        var sum = 0;
+	        	for(var i = 0; i < extraPrice.length; i++){//extraprice 있을 때 그거만큼 for문 돌아감
+	        		console.log(Number(extraPrice[i]));
+	        		sum += Number(extraPrice[i]);
+	        		console.log("sum:"+sum);	        		
+	                    	       	
+		          	totalPrice += (price*count[i])+(extraPrice[i]*count[i]);	    	   
+		       	}
+        	
+        	/* if(extraPrice==null){
+        		console.log("==null?");
+        		var sum = 0;
+        		for(var i = 0; i < count.length; i++){
+        		//extraprice 없을 때
+        		sum += count[i];
+        		
+		    	totalPrice += (price*count[i]);
+		    	}
+		       	   	       	
+	        } */
+	        console.log("count:"+count[i]);    	
 		    console.log("extraPrice:"+extraPrice);
-		    console.log("count:"+count);
-			console.log(totalPrice);
+	     
+		    
+		
 		});
 		
 		if(totalPrice<50000) totalPrice+=3000;

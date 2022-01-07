@@ -125,11 +125,7 @@
             var price = $("#price" + cartNum).attr("data-price");
             var extraPrice = Number($("#extraPrice" + cartNum).attr("data-extra"));
             var count = $("#count" + cartNum).val();
-            
-            console.log(price);
-		    //console.log("extraPrice:"+extraPrice);		    
-		   	console.log(count);
-		   	
+	   	
             if(isNaN(extraPrice)){
             	extraPrice = 0;
             	console.log("extraPrice:"+extraPrice);
@@ -138,13 +134,10 @@
             
             //합계 계산되는 코드
             totalPrice = (count*price)+(extraPrice*count);
-           	$("#totalPrice" + cartNum).html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");
-		   							
+           	$("#totalPrice" + cartNum).html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원");		   							
 		});
 		
-		if(orderTotalPrice<50000) orderTotalPrice+=3000;
-			console.log(orderTotalPrice);
-		
+		if(orderTotalPrice<50000) orderTotalPrice+=3000;		
 		
 		$("#orderTotalPrice").html(orderTotalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'원');
 		
@@ -156,7 +149,7 @@
         var cartNum = obj.id.split('t')[1];
         var price = $("#price" + cartNum).data("price");
         var extraPrice = Number($("#extraPrice" + cartNum).attr("data-extra"));
-        
+        console.log("changeCount:"+cartNum);
         if(isNaN(extraPrice)){
         	extraPrice = 0;
         	console.log("extraPrice:"+extraPrice);
