@@ -39,14 +39,14 @@ public class ProductController {
 	@Autowired
 	ProductOptionRepository porepo;
 
-	@RequestMapping("/productlist/{cate}")
-	public String selectAll(@PathVariable("cate") String cate, Model model, PageVO pageVO, HttpSession session, HttpServletRequest request,
+	@RequestMapping("/productlist")
+	public String selectAll(Model model, PageVO pageVO, HttpSession session, HttpServletRequest request,
 			Category category) {
 
-		System.out.println(cate);
-		if(!(cate.equals("ALL"))){
-		System.out.println(Category.valueOf(cate));
-		}
+		/*
+		 * System.out.println(cate); if(!(cate.equals("ALL"))){
+		 * System.out.println(Category.valueOf(cate)); }
+		 */
 		
 		Predicate p = prepo.makePredicate(pageVO.getType(), pageVO.getKeyword()); // pvo변수로 받아온 값으로 주기
 		// Pageable pageable = PageRequest.of(0, 3);
