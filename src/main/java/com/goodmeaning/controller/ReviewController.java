@@ -214,7 +214,8 @@ public class ReviewController {
 						fileName = "reviewupload" + File.separator + UUID.randomUUID() + uploadfile.getOriginalFilename();
 						System.out.println("fileName=" + fileName);
 						
-						s3Service.uploadFile(uploadfile, fileName) ;
+						s3Service.uploadFile(uploadfile, fileName);
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
