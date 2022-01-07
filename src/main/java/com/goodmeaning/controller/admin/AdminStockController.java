@@ -37,7 +37,7 @@ public class AdminStockController {
 
 	//재고리스트 totalStock
 	@GetMapping("/stock") //리스트할때부터 온애(VO 2개있음)
-	public String getStockListPage(PageVO pageVO, Model model, HttpServletRequest request, String colmnName) { //, ProductOptionVO prdOptVO
+	public String getStockListPage(PageVO pageVO, Model model, HttpServletRequest request, String colmnName) {
 		
 		String sortColumn = colmnName;
 		System.out.println("pagevo: " + pageVO);
@@ -68,10 +68,12 @@ public class AdminStockController {
 			pageVO = PageVO.builder().page(1).size(12).type(null).keyword(null).build();
 		
 		Page<Object[]> result = stockService.stockList(pageVO, direction, colmnName); //확인해보기
+		int resultCount = (int) result.getTotalElements();
 		
 		model.addAttribute("stockPaging", new PageMaker<>(result));
 		model.addAttribute("sortColumn", sortColumn);
-		//model.addAttribute("totalCount", stockService.selectStockAll());
+		model.addAttribute("totalCount", resultCount);
+		model.addAttribute("pageVO", pageVO);
          
 		return "admin/stock/stock";
 	}
@@ -102,13 +104,20 @@ public class AdminStockController {
 	@GetMapping("/history")
 	public String getHistoryPage(PageVO pageVO, Model model, HttpServletRequest request) {
 		
-//		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-//
-//		if (flashMap != null) {
-//			PageVO pageVO2 = (PageVO) flashMap.get("pageVO");
-//			if (pageVO2 != null) {
-//				pageVO = pageVO2;
-//			}
+		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+
+		if (flashMap != null) {
+			PageVO pageVO2 = (PageVO) flashMap.get("pageVO");
+			if (pageVO2 != null) {
+				pageVO = pageVO2;
+			}
+			Object result = flashMap.get("result");
+			if(result != null) {
+				String resultMsg =  (String)result;
+				model.addAttribute("result", resultMsg);
+			} //return할때부터 메세지값을 주고 오기
+		}
+		
 //		}
 		int direction = 0;
 		String sortColumn1 = "purchaseDate";
@@ -123,6 +132,7 @@ public class AdminStockController {
 		Page<OrderVO> result2 = stockService.ordersList(pageVO, direction, sortColumn2);
 		model.addAttribute("orderHistory", new PageMaker<>(result2));
 		model.addAttribute("totalCountO", stockService.selectOrderAll());
+		model.addAttribute("pageVO", pageVO);
          
 		return "admin/stock/history";
 	}
@@ -132,10 +142,18 @@ public class AdminStockController {
 	public String insertStock(Long productNum, Long optionNum, int purchaseQuantity, RedirectAttributes reAttr, PageVO pageVO) {
 		
 		System.out.println("입고등록 때 오는 pageVO : " + pageVO);
-		String insertResult = stockService.insertUpdate(productNum, optionNum,purchaseQuantity);
+		String insertResult = stockService.insertUpdate(productNum, optionNum, purchaseQuantity);
 		reAttr.addFlashAttribute("result",  insertResult);
 		reAttr.addFlashAttribute("pageVO", pageVO);
 		return "redirect:stock"; // /list 절대경로 요청주소(mapping으로)
+	}
+	
+	// 입고삭제
+	@PostMapping("/cancel")
+	public String cancelPurchase(Long purchaseNum, RedirectAttributes reAttr) {
+		String cancelPurchase = stockService.cancelPurchase(purchaseNum);
+		reAttr.addFlashAttribute("result",  cancelPurchase);
+		return "redirect:history";
 	}
 	
 }

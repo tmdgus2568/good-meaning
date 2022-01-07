@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 
 public class UpLoadFileUtils {
@@ -43,8 +42,8 @@ public class UpLoadFileUtils {
 		//폴더이름 및 폴더 생성
 		public static String calcPath(String uploadPath) {
 			Calendar cal = Calendar.getInstance();
-			String yearPath = File.separator + cal.get(Calendar.YEAR);
-			String monthPath = yearPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.MONTH) + 1);
+			String yearPath = "/" + cal.get(Calendar.YEAR);
+			String monthPath = yearPath + "/" + new DecimalFormat("00").format(cal.get(Calendar.MONTH) + 1);
 			makeDir(uploadPath, yearPath, monthPath);
 			return monthPath;
 		}

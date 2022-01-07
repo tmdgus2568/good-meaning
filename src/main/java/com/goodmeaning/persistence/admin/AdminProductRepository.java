@@ -20,23 +20,26 @@ import com.querydsl.core.types.Predicate;
 public interface AdminProductRepository
 		extends PagingAndSortingRepository<ProductVO, Long>, QuerydslPredicateExecutor<ProductVO> {
 
-	static final String SQL1 = "select p.product_num, p.product_name, p.product_stock, o.option_num, o.option_name, o.option_stock, "
-			+ "p.product_price, o.extraprice, "
-			+ "SUM(CASE WHEN DATE_FORMAT(c.purchase_date, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') THEN ifnull(c.purchase_quantity, 0) "
-			+ "ELSE 0 END) purchase_quantity , ifnull(a.sales_quantity, 0), (ifnull(p.product_stock, 0) + ifnull(o.option_stock, 0)) total_stock";
+	static final String SQL1 = "select p.product_num, p.product_name, ifnull(p.product_stock, 0), o.option_num, ifnull(o.option_name, '-'), ifnull(o.option_stock, 0), p.product_price, ifnull(o.extraprice, 0), "
+			+ "SUM(CASE WHEN DATE_FORMAT(c.purchase_date, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') THEN ifnull(c.purchase_quantity, 0) ELSE 0 END) purchase_quantity, "
+			+ "ifnull(a.sales_quantity, 0), (ifnull(p.product_stock, 0) + ifnull(o.option_stock, 0) ) total_stock, "
+			+ "        case when ((ifnull(p.product_stock, 0) + ifnull(o.option_stock, 0))  >= 10) then '정상' "
+			+ "		when ((c.purchase_date is not null) and (ifnull(p.product_stock, 0) + ifnull(o.option_stock, 0))  = 0) then '품절' "
+			+ "		when ( (c.purchase_date is null) or ((ifnull(p.product_stock, 0) + ifnull(o.option_stock, 0))  = 0)) then '첫입고' "
+			+ "		else '부족' end stock_state "; //재고상황에 따라 달라지는것이기 때문에 디비에 넣을 수 없다. where 우선순위, order by 후순
 
 	static final String SQL2 = "SELECT COUNT(*) ";
 	
-	static final String SQL3 = "from tbl_product p "
+	static final String SQL3 =  "from tbl_product p "
 			+ "left outer join tbl_product_option o on (p.product_num = o.product_num) "
 			+ "left outer join tbl_purchase c on "
 			+ "case when c.option_num is null then (p.product_num = c.product_num) "
 			+ "when c.option_num is not null then (o.option_num = c.option_num) end "
-			+ "		left outer join "
+			+ "		left outer join"
 			+ "		(select p.product_num,  o.option_num,"
-			+ "		sum(case when DATE_FORMAT(r.order_date, '%Y-%m-%d') = DATE_FORMAT(now()-interval 2 day, '%Y-%m-%d') and"
+			+ "		sum(case when DATE_FORMAT(r.order_date, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') and"
 			+ "        (r.order_status = '주문완료' or r.order_status = '입금완료' or r.order_status = '배송완료' or r.order_status = '배송준비중')  then ifnull(d.order_detail_quantity, 0) else 0 end)"
-			+ "        - sum(case when DATE_FORMAT(r.order_date, '%Y-%m-%d') = DATE_FORMAT(now()-interval 2 day, '%Y-%m-%d') and"
+			+ "        - sum(case when DATE_FORMAT(r.order_date, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') and"
 			+ "        (r.order_status = '구매취소' or r.order_status = '반품') then ifnull(d.order_detail_quantity, 0) else 0 end) as sales_quantity"
 			+ "		from tbl_product p"
 			+ "		left outer join tbl_order_detail d on (p.product_num = d.product_num)"
@@ -46,27 +49,15 @@ public interface AdminProductRepository
 			+ "		left outer join tbl_order r on (r.order_num = d.order_num)"
 			+ "		group by p.product_num, p.product_name, o.option_num, o.option_name) a  on"
 			+ "        case when o.option_num is null then (p.product_num = a.product_num)"
-			+ "		when o.option_num is not null then (o.option_num = a.option_num) end"
-			+ "group by p.product_num, p.product_name, p.product_stock, o.option_num, o.option_name, o.option_stock,"
-			+ "p.product_price, o.extraprice order by #{#paging}";
+			+ "		when o.option_num is not null then (o.option_num = a.option_num) end "
+			+ "where p.product_name like ?1 or p.product_num = ?2 "
+			+ "group by p.product_num, p.product_name, p.product_stock, o.option_num, o.option_name, o.option_stock, "
+			+ "p.product_price, o.extraprice";
 	
-	// 상품모두(옵션따로)가져오기
+	// 상품모두(옵션까지)가져오기
 	@Query(value = SQL1 + SQL3, countQuery = SQL2 + SQL3, nativeQuery = true)  
-	public Page<Object[]> findStockAll(Pageable paging); //nativequery는 predicate 쓸 수 없음. querydsl이 entity를 사용하는 것//Predicate pre
+	public Page<Object[]> findStockAll(String name, Long num, Pageable paging); //nativequery는 predicate 쓸 수 없음. querydsl이 entity를 사용하는 것//Predicate pre
 	
-	//+ " where p.product_name like ?1 and p.product_num ?2  ?3 "
-	//String pname, String op, Long num,  #{#paging}
-	
-	/*
-	 * @Query(value = SQL, countQuery = SQL, nativeQuery = true) public
-	 * List<Object[]> findStockAll(Predicate pre);
-	 */
-	
-	/*
-	 * @Query(countQuery = SQL, nativeQuery = true) public Long
-	 * countStockAll(Predicate pre);
-	 */
-
 	
 	// 상품검색(Querydsl)
 	public default Predicate makeProductPredicate(PageVO pageVO) {
@@ -105,6 +96,11 @@ public interface AdminProductRepository
 
 		return builder;
 	}
+
+
+
+
+
 
 	// 재고검색(Querydsl)
 	/*

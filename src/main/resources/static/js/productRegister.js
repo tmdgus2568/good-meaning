@@ -12,7 +12,6 @@ function checkInputData() {
 		for (var idx = 0; idx < optionPrice.length; idx++) {
 		optionPrice[idx].value = optionPrice[idx].value.replace(",", "");
 		}
-		alert('상품 1건이 등록되었습니다.');
 		return true;
 	} 
 		alert('상품등록이 취소되었습니다.');

@@ -1,5 +1,7 @@
 package com.goodmeaning.service.admin;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,17 +37,58 @@ public class AdminStockService {
 	@Autowired
 	private OrderDetailRepository orderDetailRepo;	
 
-	// 재고 리스트 가져오기
+	// 재고 리스트 가져오기(nativeQuery > QueryDSL 사용x)
 	public Page<Object[]> stockList(PageVO pageVO, int direction, String colmnName) {
 
 		Pageable paging = pageVO.makePaging(direction, colmnName); // 전체 order
-		/*
-		 * Object[] obj = pageVO.getKeyword(); String strKeyword = "%"; if (obj != null)
-		 * { strKeyword = (String) obj[0]; strKeyword = "%" + strKeyword + "%"; }
-		 */
+		
+		
+		Object[] obj = pageVO.getKeyword(); 
+		// Cannot load from object array because "obj" is null 
+		// Cannot store to object array because "obj" is null
 
-		// Predicate pre = productRepo.makeStockPredicate(pageVO); // 조건넣기
-		Page<Object[]> result = productRepo.findStockAll(paging);
+		
+//		System.out.println(obj[0] + "_________________");
+//		System.out.println(obj[1]);
+//		System.out.println(obj[2]);
+		String name = "%";
+		Long num = 0L;
+//		String state = "%";
+		
+		if(obj == null || obj.length == 0) {
+			obj = new Object[2]; //자체가없는데 넣을 수 없으니까 만들기
+			obj[0] = name;
+			obj[1] = num;
+		} else {
+			if(obj[0] != "" && (String)obj[1] != "") {
+				name = "%" + obj[0] + "%";
+				num = Long.valueOf((String) obj[1]);
+			} else if (obj[0] == "" && (String)obj[1] != "") {
+				name = "%ㄲㅋ%";
+				num = Long.valueOf((String) obj[1]);
+			} else if(obj[0] != "" && (String)obj[1] == "") {
+				name = "%" + obj[0] + "%";
+				num = 0L;
+			} else {
+				name = "%";
+				num = 0L;
+			}
+		}
+//			if(obj[2] != null && !obj[2].equals("전체")) {
+//				state = "%" + obj[2] + "%";
+//			} else {
+//				state = "%";
+//			}
+//		} 
+//		
+		System.out.println(name + "_________________");
+		System.out.println(num);
+//		System.out.println(state);
+		
+		 
+		Page<Object[]> result = productRepo.findStockAll(name, num, paging);
+
+		
 		// pre, String colmnName, String direction
 		// colmnName, direction==0?"desc":"asc"
 		// strKeyword, " = ", 1169L,
@@ -80,7 +123,6 @@ public class AdminStockService {
 		purchaseList.setProductNum(product);
 
 		ProductOptionVO option = null;
-		System.out.println("option기존거가져오기잉 : " + option);
 		
 		if (optionNum != null && optionNum != 0L) { //옵션재고 기존+입고수
 			option = productOptionRepo.findById(optionNum).get();
@@ -129,4 +171,10 @@ public class AdminStockService {
 	public long selectOrderAll() {
 		return orderDetailRepo.count();
 	}
+
+	public String cancelPurchase(Long purchaseNum) {
+		purchaseRepo.deleteById(purchaseNum);
+		return "입고등록이 취소되었습니다👏";
+	}
+
 }

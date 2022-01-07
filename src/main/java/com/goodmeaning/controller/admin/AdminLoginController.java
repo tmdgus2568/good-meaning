@@ -42,7 +42,9 @@ public class AdminLoginController {
 			session.setAttribute("user", (UserVO)user.get());
 			return "admin/product/list";
 		}
-		return "redirect:adminlogin";
+			
+			return "redirect:adminlogin";
+		
 	}
 
 	

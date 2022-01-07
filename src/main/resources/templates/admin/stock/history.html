@@ -122,7 +122,7 @@
 				<tbody id="myTable">
 					<tr th:each="p, state:${purchaseHistory.result.content}" >
 						<td th:text="${state.count + (purchaseHistory.currentPageNum-1) * purchaseHistory.currentPage.pageSize}"></td>
-						<td th:text="${p.purchaseNum}"></td>
+						<td class="pnum" th:text="${p.purchaseNum}"></td>
 						<td th:text="${p.productNum.productNum}"></td>
 						<td th:text="${p.productNum.productName}"></td>
 						<td th:if="${#strings.isEmpty(p.productOption)}">-</td>
@@ -134,13 +134,16 @@
 						th:text="${#numbers.formatInteger(p.productNum.productPrice + p.productOption.extraprice, 0, 'COMMA')}" ></td>
 <!-- 						th:text="${p.productNum.productPrice} + ${p.productOption.extraprice}" ></td> -->
 						<td th:text="${p.purchaseQuantity}"></td>
-						<td th:text="${#dates.format(p.purchaseDate, 'yy-MM-dd HH:mm')}"></td>
+						<td class="purchaseDate" th:text="${#dates.format(p.purchaseDate, 'yyyy-MM-dd HH:mm')}"></td>
 						<td>
-							<a href="#">취소</a>
+							<a class="deletTag" href="#" onclick="cancelPurchase(this);">취소</a>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+			<form id="f1" th:action="@{cancel}" method="post" >
+				<input type="text" name="purchaseNum" value=""> 
+			</form>
 			<nav>
 				<div>
 					<ul class="pagination justify-content-center">
@@ -199,7 +202,7 @@
 						<tr th:each="detail, s:${order.details}" th:with="num = ${num+1}">
 <!-- 							<td th:text="${orderHistory.currentPageNum}"></td> -->
 							<td class="tdNum"></td>
-							<td th:text="${num + (orderHistory.currentPageNum-1) * orderHistory.currentPage.pageSize}"></td>
+							<!-- <td th:text="${num + (orderHistory.currentPageNum-1) * orderHistory.currentPage.pageSize}"></td> -->
 							<td th:text="${order.orderNum}"></td>
 							<td th:text="${detail.orderDetailNum}"></td>
 							<td th:text="${detail.productNum.productNum}"></td>
@@ -214,8 +217,11 @@
 							<td th:unless="${#strings.isEmpty(detail.productOption)}" 
 							th:text="${#numbers.formatInteger(detail.productNum.productPrice + detail.productOption.extraprice, 0, 'COMMA')}" ></td>
 							
-							<td th:if="${order.orderStatus.toString().equals('구매취소')} or ${order.orderStatus.toString().equals('반품')}" th:text="|-${detail.orderDetailQuantity}|"></td>
-							<td th:unless="${order.orderStatus.toString().equals('구매취소')} or ${order.orderStatus.toString().equals('반품')}" th:text="${detail.orderDetailQuantity}"></td>
+							<td th:if="${order.orderStatus.toString().equals('구매취소')} or ${order.orderStatus.toString().equals('반품')}" 
+								th:text="|-${detail.orderDetailQuantity}|"></td>
+							<td th:unless="${order.orderStatus.toString().equals('구매취소')} or ${order.orderStatus.toString().equals('반품')}" 
+								th:text="${detail.orderDetailQuantity}"></td>
+								
 							<td th:text="${#dates.format(order.orderDate, 'yy-MM-dd')}"></td>
 							<td th:text="${order.orderStatus}"></td>
 	
@@ -257,9 +263,58 @@
 	</div> -->
 	<th:block layout:fragment="script">
 		<script th:inline="javascript">
+		$(function(){ //로드가끝나면
+	 		var msg = [[${result}]];
+			if(msg != null) {
+				alert(msg);
+			}
+		}); 
+			function cancelPurchase(obj){
+				alert(obj);
+				if(confirm('입고를 취소하시겠습니까?') == true){
+					var purchaseNum = $(obj).parent().parent().find(".pnum").text();
+					alert("pnum: " + purchaseNum);
+					$("#f1").find("input[name='purchaseNum']").val(purchaseNum)
+					$("#f1").submit();
+					return true;
+				} else {
+					
+					return false;
+				}
+			$("#f1").submit();
+			}
+			
+/* 			var today = toStringByFormatting(new Date());
+			var purchaseDate = document.getElementsByClassName("purchaseDate"); 
+			
+			for(var i = 0; i < purchaseDate.length; i++){
+				var date = purchaseDate[i].innerHTML.substr(0, 10);
+				console.log(date);
+				console.log(today);
+				if(today == date){
+					console.log("같아");
+					$('.deletTag').eq(i).removeClass("hidden");
+				}
+			} */
+			
+			function leftPad(value) {
+				if (value >= 10) {
+					 return value;
+				}
+				return `0${value}`;
+			}
+			
+			function toStringByFormatting(source, delimiter = '-') {
+				const year = source.getFullYear();
+				const month = leftPad(source.getMonth() + 1);
+				const day = leftPad(source.getDate());
+				return [year, month, day].join(delimiter);
+			}
+
+			
+			//번호주기
 			$(".tdNum").each(function(index, item){
 	    		var trNum = ($(item).closest('tr').prevAll().length +1);
-	    		//+ [[${orderHistory.currentPageNum-1}]] * [[${orderHistory.currentPage.pageSize{]]
 	            $(item).text(trNum);
     		});
 			
