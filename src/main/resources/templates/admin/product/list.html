@@ -342,9 +342,10 @@ input{
 						if(index < 4) {
 							$(item).val('');
 							$("input:radio[name ='postingState']:input[value='전체']").attr("checked", true);
-							$("#searchBtn").click();
 						}
 					});
+					$("#f1").find("input[name='page']").val(1);
+					$("#searchBtn").click();
 				});
 				
 				//datepicker 사용
