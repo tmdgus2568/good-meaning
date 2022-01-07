@@ -65,8 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override // WebSecurity를 통해 HTTP 요청에 대한 웹 기반 보안을 구성
 	public void configure(WebSecurity web) throws Exception {
 		// 파일 기준은 resources/static 디렉터리의 하위 파일 목록은 인증 무시 ( = 항상통과 )
+
 		web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/reviewupload/**", "/productupload/**");
 		//web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations()); //static 전부 무시
+
 
 	}
 

@@ -16,7 +16,19 @@ public class MainService {
 	ProductRepository productRepo;
 	
 	public List<ProductVO> findNewlist(){
-		// ASC -> DESC로 바꾸기 
+
+		Sort sort = Sort.by(Sort.Direction.DESC, "productCreatedate");
+		List<ProductVO> newlist = productRepo.findAll(sort);
+		if(newlist.size()>8) {
+			newlist = newlist.subList(0, 8);
+		}
+		System.out.println(newlist.size());
+		return newlist;
+		
+	}
+	
+	public List<ProductVO> findBestlist(){
+
 		Sort sort = Sort.by(Sort.Direction.ASC, "productCreatedate");
 		List<ProductVO> newlist = productRepo.findAll(sort);
 		if(newlist.size()>8) {

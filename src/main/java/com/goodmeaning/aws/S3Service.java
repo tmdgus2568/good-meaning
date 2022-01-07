@@ -31,12 +31,9 @@ public class S3Service {
 	  @Autowired
 	  final private AmazonS3 s3Client;
 
-
 	  String bucketName;
-
 	 
 	  String accessKey ;
-
 	  
 	  String secretKey ;
 
@@ -67,7 +64,8 @@ public class S3Service {
 
 	      // save in S3
 	      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-	      this.s3Client.putObject(this.bucketName, s3Path.replace(File.separatorChar, '/'), byteArrayInputStream, objectMetadata);
+	      this.s3Client.putObject(this.bucketName, s3Path.replace(File.separatorChar, '/'), 
+	    		  									byteArrayInputStream, objectMetadata);
 		  
 	      byteArrayInputStream.close();
 	      

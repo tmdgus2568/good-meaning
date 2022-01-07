@@ -346,7 +346,8 @@ $(function () {
 	});
 	
 	$("#btn_auth").on('click',function(){
-		if($("#userPhone1").val()=="" || $("#userPhone2").val()=="" || $("#userPhone3").val()=="") alert("휴대폰 번호를 입력해 주세요.");
+		if($("#userPhone1").val()=="" || $("#userPhone2").val()=="" || $("#userPhone3").val()=="") 
+			alert("휴대폰 번호를 입력해 주세요.");
 		else{
 			$("#userPhone").val($("#userPhone1").val()+$("#userPhone2").val()+$("#userPhone3").val());
 	
@@ -357,6 +358,11 @@ $(function () {
 					userPhone: $("#userPhone").val()
 				},
 				success: function(data){
+					if(data.result == true){
+						alert("이미 사용된 핸드폰 번호입니다. 사용하실 수 없습니다.");
+						return;
+					}
+				
 					alert("인증번호가 발송되었습니다.");
 					$("#auth_num_data").val(data.authNum);
 					
