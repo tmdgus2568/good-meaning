@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -156,8 +157,12 @@ public class ReviewController {
 		System.out.println(objlist.get(0)[5]);
 		System.out.println(objlist.get(0)[6]);
 		
+		ProductOptionVO proopt = null;
 		
-		ProductOptionVO proopt = proptepo.findById((Long)obj[5]).get();
+		if(obj[5] != null) {
+			proopt = proptepo.findById(((BigInteger)obj[5]).longValue()).get();
+		}
+		
 		
 		OrderDetailVO orderdetail = OrderDetailVO.builder()
 					.orderDetailNum(((BigInteger)obj[0]).longValue())
@@ -209,7 +214,8 @@ public class ReviewController {
 						fileName = "reviewupload" + File.separator + UUID.randomUUID() + uploadfile.getOriginalFilename();
 						System.out.println("fileName=" + fileName);
 						
-						s3Service.uploadFile(uploadfile, fileName) ;
+						s3Service.uploadFile(uploadfile, fileName);
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

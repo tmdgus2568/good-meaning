@@ -35,8 +35,10 @@ div.right {
 	float: none;
 }
 
-#footer {
-	float: left;
+.sideBanner {
+	position: relative;
+	top: 50px;
+	width: 300px;
 }
 
 select {
@@ -58,8 +60,33 @@ select {
 <body>
 	<div class="panel panel-default" layout:fragment="content"
 		align="center">
-
-		<div class="banner"></div>
+		<div class="banner">
+			<div class="sideBanner">
+				<table class="table table-hover" style="text-align: center;">
+					<tr class="table-secondary">
+						<td onclick="location.href='/productlist'">ALL</td>
+					</tr>
+					<tr class="table-secondary">
+						<td onclick="location.href='/productlist'">LIVING</td>
+					</tr>
+					<tr class="table-secondary">
+						<td onclick="location.href='/productlist'">KITCHEN</td>
+					</tr>
+					<tr class="table-secondary">
+						<td onclick="location.href='/productlist'">OFFICE</td>
+					</tr>
+					<tr class="table-secondary">
+						<td onclick="location.href='/productlist'">BATHROOM</td>
+					</tr>
+					<tr class="table-secondary">
+						<td onclick="location.href='/productlist'">TRAVEL</td>
+					</tr>
+					<tr class="table-secondary">
+						<td onclick="location.href='/productlist'">MARKET</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 		<div style="width: 75%; text-align: right; align-items: center;">
 			<form action="" style="padding: 10px;">
 				<select class="form-label mt-4" id="exampleSelect1"
@@ -143,6 +170,23 @@ select {
 				formObj.submit();
 			});
 		});
+
+		// 기본 위치(top)값
+		var floatPosition = parseInt($(".sideBanner").css('top'))
+
+		// scroll 인식
+		$(window).scroll(function() {
+
+			// 현재 스크롤 위치
+			var currentTop = $(window).scrollTop();
+			var bannerTop = currentTop + floatPosition + "px";
+
+			//이동 애니메이션
+			$(".sideBanner").stop().animate({
+				"top" : bannerTop
+			}, 500);
+
+		}).scroll();
 	</script>
 </th:block>
 </html>
