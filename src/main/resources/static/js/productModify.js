@@ -8,7 +8,6 @@ function checkInputData(){
 	var productPrice = $("#productPrice").val();
 	$("#productPrice").val(productPrice.replace(",",""));
 	var optionPrice = document.getElementsByName("optionPrice");
-	console.log(optionPrice);
 	for(var idx = 0; idx < optionPrice.length; idx++){
 		optionPrice[idx].value = optionPrice[idx].value.replace(",","");
 	}
@@ -78,9 +77,6 @@ $("#addOptionBtn").click(function(){
 	$('.deleteBtn').on('click', function () { 
 /*		var optionNumber = $(this).parent().next().children().val();
         if(optionNumber != null || optionNumber != "") { //옵션번호
-        	console.log($(this).parent().next().children().val());
-        	console.log($(this).parent().parent().find(".optionPrice").val());
-        	console.log($(this).parent().parent().find("#optionName").val());
         	$(this).parent().parent().find(".optionPrice").val("");
         	$(this).parent().parent().find("#optionName").val("");
         } */
@@ -107,10 +103,8 @@ $("#delProdBtn").click(function(){
 	
 	$("#f1").attr("action", "deleteProduct");
 	$("#f1").append("<input type='text' name='productNum' value=" + $("#productNum").val() + ">");
-	console.log($("#f1"));
 	
 	if(confirm('해당 상품을 삭제하시겠습니까?') == true){
-			//alert('삭제되었습니다.');
 			$("#f1").submit();
 		} else {
 			alert('취소되었습니다.');
@@ -152,7 +146,6 @@ $(".btnDelete").click(function () {
 	num = num.charAt(num.length-1);
 	$(this).parent().parent().find("input[type='file']").val('');
 	var a = $(this).parent().parent().find("label").html('Choose File' + num);
-	console.log(a);
 });
 */
 

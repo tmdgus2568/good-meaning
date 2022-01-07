@@ -242,12 +242,8 @@ input{
 				});
 				
 				function putDataList(responseData){
-					//{"product":{}, "productOption":{}}
 					var product = responseData.product; 
 					var option = responseData.productOption;
-					//console.log(option[0].optionNum + " " + option[0].optionCategory);
-					//console.log(option.length);
-					//console.log(option[0].optionNum);
 					$("input[name='productNum']").val(product.productNum);
 	                $("input[name='productName']").val(product.productName);
 	                $("input[name='productPrice']").val(Number(product.productPrice).toLocaleString('en').split(".")[0]);
@@ -261,13 +257,10 @@ input{
 					$("input[name='file']").eq(4).val(product.productDetailimg);
 	                
 	                //체크박스 가져오기
-	                console.log(product.productCategory); 
 	                 
 	                $('input:checkbox[name=productCategory]').each(function(index, item){
 	                	 
-	                	console.log( $.inArray($(item).val(), product.productCategory)  );
 	                	if($.inArray($(item).val(), product.productCategory) >= 0 ){
-	                		console.log($(item).val())
 	                		$(item).prop("checked", true);
 	                	} else {
 	                		$(item).prop("checked", false);
@@ -296,7 +289,6 @@ input{
 		                }
 		                $("input[name='optionName']").val(option[0].optionName);
 		                $("input[name='optionPrice']").val(Number(option[0].extraprice).toLocaleString('en').split(".")[0]);
-		                console.log($("input[name='optionNum']").val(option[0].optionNum));
 						
 		                
 						for(var idx = 1; idx < option.length; idx++){
@@ -305,7 +297,6 @@ input{
 							 $("input[name='optionName']").eq(idx).val(option[idx].optionName);
 				             $("input[name='optionPrice']").eq(idx).val(Number(option[idx].extraprice).toLocaleString('en').split(".")[0]);
 				             $("input[name='optionNum']").eq(idx).val(option[idx].optionNum);
-				             console.log($("input[name='optionNum']").eq(idx).val(option[idx].optionNum));
 						}
 
 						//삭제버튼 1번째 x 2번째부터 o
@@ -317,10 +308,6 @@ input{
 						 // optionNum 있을 때, 삭제시 value ""로 변경후 hidden
 						$('.deleteBtn').on('click', function () { 
 					        if($(this).parent().next().children().val() != null) { //옵션번호
-					        	console.log($(this).parent().next().children().val());
-					        	console.log($(this).parent().parent().find(".optionPrice").val());
-					        	console.log($(this).parent().parent().find("#optionName").val());
-					        	console.log($(this).parent().parent());
 					        	$(this).parent().parent().find(".optionPrice").val("").attr("hidden", true);
 					        	$(this).parent().parent().find("#optionName").val("").attr("hidden", true);
 					        	$(this).parent().parent().find("#addOptionBtn").attr("hidden", true);
@@ -338,7 +325,6 @@ input{
 					var val = $("#searchBox").children('input');
 					
 					$('input').each(function(index, item){
-						console.log(index + " : " + $(item).val());
 						if(index < 4) {
 							$(item).val('');
 							$("input:radio[name ='postingState']:input[value='전체']").attr("checked", true);
@@ -391,7 +377,6 @@ input{
 					 
 					formObj.find("input[name='keyword']").eq(0).val($("#searchKeyword1").val());
 					formObj.find("input[name='keyword']").eq(1).val($("#searchKeyword2").val());
-					alert($("#searchKeyword2").val());
 					formObj.find("input[name='keyword']").eq(2).val($("#datepicker1").val());
 					formObj.find("input[name='keyword']").eq(3).val($("#datepicker2").val());
 					formObj.find("input[name='keyword']").eq(4).val($("input:radio[name='postingState']:checked").val());
@@ -410,14 +395,12 @@ input{
 				
 				//전체 sort시
 				$("#sortColumn").change(function(){
-					alert($(this).val());
 					formObj.find("#sort").val($(this).val());
 					$("#searchBtn").click();
 				});
 				
 				//페이지 클릭시
 				$(".pagination a").click(function(e) { //클래스 pagination 자식중 a 클릭시 
-					alert($(this).attr('href'));
 					e.preventDefault(); //링크취소
 					formObj.find("[name='page']").val($(this).attr('href'));
 					 

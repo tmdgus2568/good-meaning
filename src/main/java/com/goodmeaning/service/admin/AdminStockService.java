@@ -172,8 +172,9 @@ public class AdminStockService {
 		return orderDetailRepo.count();
 	}
 
-	public String cancelPurchase(Long purchaseNum) {
+	public String cancelPurchase(Long purchaseNum, Long optionNum, Long productNum, int purchaseQuantity) {
 		purchaseRepo.deleteById(purchaseNum);
+		
 		return "입고등록이 취소되었습니다👏";
 	}
 

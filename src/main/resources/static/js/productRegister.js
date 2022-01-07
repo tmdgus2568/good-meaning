@@ -8,7 +8,6 @@ function checkInputData() {
 		var productPrice = $("#productPrice").val();
 		$("#productPrice").val(productPrice.replace(",", ""));
 		var optionPrice = document.getElementsByName("optionPrice");
-		console.log(optionPrice);
 		for (var idx = 0; idx < optionPrice.length; idx++) {
 		optionPrice[idx].value = optionPrice[idx].value.replace(",", "");
 		}
@@ -50,7 +49,6 @@ $(".btnDelete").click(function() {
 	num = num.charAt(num.length - 1);
 	$(this).parent().parent().find("input[type='file']").val('');
 	var a = $(this).parent().parent().find("label").html('Choose File' + num);
-	console.log(a);
 });
 
 //대표이미지 파일1 requried 
@@ -64,10 +62,8 @@ $(".custom-file-input").on("change", function() {
 
 //카테고리 checkbox 선택시 required 해제
 var tmp = document.getElementsByName('productCategory');
-console.log(tmp);
 $(".productCategory").change(function() {
 	for (var i = 0; i < tmp.length; i++) {
-		console.log(tmp[i].checked);
 		if (tmp[i].checked == true) {
 			$(".productCategory").attr("required", false);
 			break;
